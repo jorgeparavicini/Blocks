@@ -6,7 +6,7 @@ bool BlocksEngine::Application::GetCloseOnWindowsDestroyed() const noexcept
     return closeOnWindowsDestroyed_;
 }
 
-void BlocksEngine::Application::SetOnWindowsDestroyed(const bool value) noexcept
+void BlocksEngine::Application::SetCloseOnWindowsDestroyed(const bool value) noexcept
 {
     closeOnWindowsDestroyed_ = value;
 }

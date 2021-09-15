@@ -33,7 +33,7 @@ class BlocksEngine::Application
 {
 public:
     [[nodiscard]] bool GetCloseOnWindowsDestroyed() const noexcept;
-    void SetOnWindowsDestroyed(bool value) noexcept;
+    void SetCloseOnWindowsDestroyed(bool value) noexcept;
     void RegisterWindow(std::unique_ptr<Window> window) noexcept;
 
 private:
