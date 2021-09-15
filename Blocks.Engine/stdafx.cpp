@@ -1,1 +1,5 @@
-﻿#include "stdafx.h"
+﻿//
+// Include the standard header and generate the precompiled header.
+//
+
+#include "stdafx.h"
