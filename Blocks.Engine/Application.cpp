@@ -15,3 +15,27 @@ void BlocksEngine::Application::RegisterWindow(std::unique_ptr<Window> window) n
 {
     windows_.push_back(std::move(window));
 }
+
+int BlocksEngine::Application::MainLoop()
+{
+    while (true)
+    {
+        if (shutdownForced_) return ForceShutdown();
+    }
+}
+
+void BlocksEngine::Application::RequestShutdown() noexcept
+{
+    shutdownRequested_ = true;
+}
+
+void BlocksEngine::Application::RequestImmediateShutdown() noexcept
+{
+    shutdownForced_ = true;
+}
+
+int BlocksEngine::Application::ForceShutdown()
+{
+    // TODO: Implement
+    return 0;
+}

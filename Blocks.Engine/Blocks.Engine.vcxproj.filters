@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Core">
       <UniqueIdentifier>{3b2f787f-7a22-4a90-8769-90417a1b7aaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Internal">
+      <UniqueIdentifier>{bf012d08-b2bb-45e3-9ef7-110d7f1b9423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Internal">
+      <UniqueIdentifier>{80a0acef-0af3-4311-99ac-c3e682e1f55c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -30,6 +36,9 @@
     <ClInclude Include="Window.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="WindowOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -40,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowOptions.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

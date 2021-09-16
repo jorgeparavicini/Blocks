@@ -36,7 +36,14 @@ public:
     void SetCloseOnWindowsDestroyed(bool value) noexcept;
     void RegisterWindow(std::unique_ptr<Window> window) noexcept;
 
+    int MainLoop();
+    void RequestShutdown() noexcept;
+    void RequestImmediateShutdown() noexcept;
+
 private:
+    bool shutdownRequested_{false};
+    bool shutdownForced_{false};
     bool closeOnWindowsDestroyed_{false};
     std::vector<std::unique_ptr<Window>> windows_{};
+    int ForceShutdown();
 };

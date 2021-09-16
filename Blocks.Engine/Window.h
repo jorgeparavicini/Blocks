@@ -17,4 +17,13 @@ namespace BlocksEngine
 class BlocksEngine::Window
 {
 public:
+    explicit Window(int width = CW_USEDEFAULT, int height = CW_USEDEFAULT) noexcept;
+    explicit Window(std::wstring name, int width = CW_USEDEFAULT, int height = CW_USEDEFAULT) noexcept;
+
+private:
+    static HRESULT CALLBACK WindowProcSetup(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
+    static HRESULT CALLBACK WindowProcRelay(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
+
+protected:
+    LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
 };
