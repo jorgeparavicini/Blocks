@@ -8,6 +8,11 @@
 // File: Window.h
 
 #pragma once
+#include <optional>
+#include <unordered_map>
+
+#include "WindowClass.h"
+#include "WindowOptions.h"
 
 namespace BlocksEngine
 {
@@ -17,13 +22,31 @@ namespace BlocksEngine
 class BlocksEngine::Window
 {
 public:
-    explicit Window(int width = CW_USEDEFAULT, int height = CW_USEDEFAULT) noexcept;
-    explicit Window(std::wstring name, int width = CW_USEDEFAULT, int height = CW_USEDEFAULT) noexcept;
+    Window() = delete;
+    explicit Window(std::wstring name = L"Default Window",
+                    int x = CW_USEDEFAULT,
+                    int y = CW_USEDEFAULT,
+                    int width = CW_USEDEFAULT,
+                    int height = CW_USEDEFAULT,
+                    std::unique_ptr<WindowOptions> options = {}) noexcept;
 
-private:
-    static HRESULT CALLBACK WindowProcSetup(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
-    static HRESULT CALLBACK WindowProcRelay(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
+    // Do not allow the window to be copied
+    ~Window();
+    Window(const Window&) = delete;
+    Window& operator=(const Window&) = delete;
+    Window(Window&&) = delete;
+    Window& operator=(Window&&) = delete;
+
+    [[nodiscard]] std::optional<int> ProcessMessages() const noexcept;
 
 protected:
     LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
+
+private:
+    static LRESULT CALLBACK WindowProcSetup(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
+    static LRESULT CALLBACK WindowProcRelay(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
+    static constexpr const wchar_t* ClassName = L"Blocks Engine Window";
+
+    Internal::WindowClass windowClass_;
+    HWND hWnd_;
 };
