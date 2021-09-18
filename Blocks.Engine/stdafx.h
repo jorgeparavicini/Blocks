@@ -10,11 +10,6 @@
 
 #pragma once
 
-
-// Disable reserved identifier
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wreserved-id-macro"
-
 #include <winsdkver.h>
 #ifndef _WIN32_WINNT
 
@@ -27,8 +22,6 @@
 
 #endif
 #include <sdkddkver.h>
-
-#pragma clang diagnostic pop
 
 
 // Use the C++ standard templated min/max
