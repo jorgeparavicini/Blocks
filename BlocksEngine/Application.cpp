@@ -1,6 +1,11 @@
 ﻿#include "pch.h"
 #include "Application.h"
 
+BlocksEngine::Application::Application()
+    : window_{std::make_unique<Window>()}
+{
+}
+
 bool BlocksEngine::Application::GetCloseOnWindowsDestroyed() const noexcept
 {
     return closeOnWindowsDestroyed_;
@@ -9,11 +14,6 @@ bool BlocksEngine::Application::GetCloseOnWindowsDestroyed() const noexcept
 void BlocksEngine::Application::SetCloseOnWindowsDestroyed(const bool value) noexcept
 {
     closeOnWindowsDestroyed_ = value;
-}
-
-void BlocksEngine::Application::RegisterWindow(std::unique_ptr<Window> window) noexcept
-{
-    windows_.push_back(std::move(window));
 }
 
 int BlocksEngine::Application::MainLoop()

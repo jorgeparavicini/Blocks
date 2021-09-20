@@ -22,13 +22,12 @@ namespace BlocksEngine
 class BlocksEngine::Window
 {
 public:
-    Window() = delete;
     explicit Window(std::wstring name = L"Default Window",
                     int x = CW_USEDEFAULT,
                     int y = CW_USEDEFAULT,
                     int width = CW_USEDEFAULT,
                     int height = CW_USEDEFAULT,
-                    std::unique_ptr<WindowOptions> options = {}) noexcept;
+                    std::unique_ptr<WindowOptions> options = std::make_unique<WindowOptions>());
 
     // Do not allow the window to be copied
     ~Window();

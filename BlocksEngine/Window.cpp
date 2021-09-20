@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "Window.h"
 
+#include "WindowException.h"
+
 std::unordered_map<std::wstring, BlocksEngine::Window> ClassNamesPerWindow{};
 
 BlocksEngine::Window::Window(const std::wstring name,
@@ -8,7 +10,7 @@ BlocksEngine::Window::Window(const std::wstring name,
                              const int y,
                              const int width,
                              const int height,
-                             std::unique_ptr<WindowOptions> options) noexcept
+                             std::unique_ptr<WindowOptions> options)
     : windowClass_{name, std::move(options), WindowProcSetup},
       hWnd_{
           CreateWindowEx(windowClass_.Options().dwExStyle,
@@ -27,8 +29,7 @@ BlocksEngine::Window::Window(const std::wstring name,
 {
     if (hWnd_ == nullptr)
     {
-        // TODO: Implement tasty exception
-        return;
+        throw WindowException(__LINE__, __FILE__, static_cast<HRESULT>(GetLastError()));
     }
 
     ShowWindow(hWnd_, SW_SHOWDEFAULT);
@@ -81,5 +82,5 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
 
 LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept
 {
-    return 0;
+    return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }

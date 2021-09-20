@@ -17,7 +17,7 @@ namespace BlocksEngine
 
 struct BlocksEngine::WindowOptions
 {
-    UINT style{};
+    UINT style{CS_OWNDC};
     int cbClsExtra{};
     int cbWndExtra{};
     HICON hIcon{};

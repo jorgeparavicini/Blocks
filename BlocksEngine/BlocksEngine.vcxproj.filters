@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Internal">
       <UniqueIdentifier>{80a0acef-0af3-4311-99ac-c3e682e1f55c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Internal\Exceptions">
+      <UniqueIdentifier>{5fa3a04d-71b3-4725-a26f-e0a1eaffa9ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Internal\Exceptions">
+      <UniqueIdentifier>{30f90965-7dd2-4894-b041-14ad3a16225f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -42,6 +48,15 @@
     <ClInclude Include="WindowOptions.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>Header Files\Internal\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowException.h">
+      <Filter>Header Files\Internal\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsException.h">
+      <Filter>Header Files\Internal\Exceptions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -55,6 +70,15 @@
     </ClCompile>
     <ClCompile Include="WindowClass.cpp">
       <Filter>Source Files\Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception.cpp">
+      <Filter>Source Files\Internal\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsException.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

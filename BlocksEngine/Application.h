@@ -33,9 +33,9 @@ namespace BlocksEngine
 class BlocksEngine::Application
 {
 public:
+    Application();
     [[nodiscard]] bool GetCloseOnWindowsDestroyed() const noexcept;
     void SetCloseOnWindowsDestroyed(bool value) noexcept;
-    void RegisterWindow(std::unique_ptr<Window> window) noexcept;
 
     int MainLoop();
     void RequestShutdown() noexcept;
@@ -45,6 +45,6 @@ private:
     bool shutdownRequested_{false};
     bool shutdownForced_{false};
     bool closeOnWindowsDestroyed_{false};
-    std::vector<std::unique_ptr<Window>> windows_{};
+    std::unique_ptr<Window> window_;
     int ForceShutdown();
 };
