@@ -1,8 +1,8 @@
-﻿#include "stdafx.h"
+﻿#include "pch.h"
 
 #include <Windows.h>
 
-#include "Application.h"
+#include "BlocksEngine/Application.h"
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,

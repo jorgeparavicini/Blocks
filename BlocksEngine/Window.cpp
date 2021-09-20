@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+﻿#include "pch.h"
 #include "Window.h"
 
 std::unordered_map<std::wstring, BlocksEngine::Window> ClassNamesPerWindow{};

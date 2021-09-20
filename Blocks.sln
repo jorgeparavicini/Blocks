@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Blocks", "Blocks\Blocks.vcxproj", "{75A9D248-A344-4AF0-9EC3-510DC54F7455}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Blocks.Engine", "Blocks.Engine\Blocks.Engine.vcxproj", "{367A269F-7C6E-4222-AAC9-8A56B436CFEF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlocksEngine", "BlocksEngine\BlocksEngine.vcxproj", "{367A269F-7C6E-4222-AAC9-8A56B436CFEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

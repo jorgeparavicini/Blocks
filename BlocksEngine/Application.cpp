@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+﻿#include "pch.h"
 #include "Application.h"
 
 bool BlocksEngine::Application::GetCloseOnWindowsDestroyed() const noexcept
