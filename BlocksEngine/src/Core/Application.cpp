@@ -1,46 +1,30 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Application.h"
 
-BlocksEngine::Application::Application()
-    : window_{std::make_unique<Window>()}
+BlocksEngine::Application::Application(std::unique_ptr<WindowOptions> options)
+    : window_{std::move(options)}
 {
 }
 
-bool BlocksEngine::Application::GetCloseOnWindowsDestroyed() const noexcept
-{
-    return closeOnWindowsDestroyed_;
-}
-
-void BlocksEngine::Application::SetCloseOnWindowsDestroyed(const bool value) noexcept
-{
-    closeOnWindowsDestroyed_ = value;
-}
-
-int BlocksEngine::Application::MainLoop()
+int BlocksEngine::Application::MainLoop() const
 {
     while (true)
     {
-        if (shutdownForced_) return ForceShutdown();
+        if (shutdownForced_) return 0;
 
-        if (const auto eCode = window_->ProcessMessages())
+        if (const auto eCode = window_.ProcessMessages())
         {
             return *eCode;
         }
     }
 }
 
-void BlocksEngine::Application::RequestShutdown() noexcept
+void BlocksEngine::Application::Exit() noexcept
 {
-    shutdownRequested_ = true;
+    PostQuitMessage(0);
 }
 
-void BlocksEngine::Application::RequestImmediateShutdown() noexcept
+void BlocksEngine::Application::ForceExit() noexcept
 {
     shutdownForced_ = true;
-}
-
-int BlocksEngine::Application::ForceShutdown()
-{
-    // TODO: Implement
-    return 0;
 }

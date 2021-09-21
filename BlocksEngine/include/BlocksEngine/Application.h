@@ -9,7 +9,6 @@
 //
 
 #pragma once
-#include <memory>
 
 #include "Window.h"
 
@@ -32,18 +31,13 @@ namespace BlocksEngine
 class BlocksEngine::Application
 {
 public:
-    Application();
-    [[nodiscard]] bool GetCloseOnWindowsDestroyed() const noexcept;
-    void SetCloseOnWindowsDestroyed(bool value) noexcept;
-
-    int MainLoop();
-    void RequestShutdown() noexcept;
-    void RequestImmediateShutdown() noexcept;
+    Application() = default;
+    explicit Application(std::unique_ptr<WindowOptions> options);
+    [[nodiscard]] int MainLoop() const;
+    static void Exit() noexcept;
+    void ForceExit() noexcept;
 
 private:
-    bool shutdownRequested_{false};
     bool shutdownForced_{false};
-    bool closeOnWindowsDestroyed_{false};
-    std::unique_ptr<Window> window_;
-    int ForceShutdown();
+    Window window_;
 };

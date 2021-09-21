@@ -24,7 +24,7 @@
     <ClInclude Include="include\BlocksEngine\GraphicsException.h" />
     <ClInclude Include="include\BlocksEngine\pch.h" />
     <ClInclude Include="include\BlocksEngine\Window.h" />
-    <ClInclude Include="include\BlocksEngine\WindowClass.h" />
+    <ClInclude Include="src\Core\WindowClass.h" />
     <ClInclude Include="include\BlocksEngine\WindowException.h" />
     <ClInclude Include="include\BlocksEngine\WindowOptions.h" />
   </ItemGroup>

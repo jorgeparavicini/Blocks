@@ -36,7 +36,7 @@
     <ClInclude Include="include\BlocksEngine\WindowException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\WindowClass.h">
+    <ClInclude Include="src\Core\WindowClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

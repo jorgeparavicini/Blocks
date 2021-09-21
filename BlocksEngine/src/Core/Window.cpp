@@ -1,32 +1,29 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Window.h"
 
-#include <unordered_map>
-
 #include "BlocksEngine/WindowException.h"
 
-BlocksEngine::Window::Window(const std::wstring name,
+BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
+                             const std::wstring name,
                              const int x,
                              const int y,
                              const int width,
-                             const int height,
-                             std::unique_ptr<WindowOptions> options)
-    : windowClass_{name, std::move(options), WindowProcSetup},
-      hWnd_{
-          CreateWindowEx(windowClass_.Options().dwExStyle,
-                         windowClass_.Name().c_str(),
-                         name.c_str(),
-                         windowClass_.Options().dwStyle,
-                         x,
-                         y,
-                         width,
-                         height,
-                         nullptr,
-                         nullptr,
-                         windowClass_.Instance(),
-                         this)
-      }
+                             const int height)
+    : windowClass_{name, std::move(options), WindowProcSetup}
 {
+    hWnd_ = CreateWindowEx(windowClass_.Options().dwExStyle,
+                           windowClass_.Name().c_str(),
+                           name.c_str(),
+                           windowClass_.Options().dwStyle,
+                           x,
+                           y,
+                           width,
+                           height,
+                           nullptr,
+                           nullptr,
+                           windowClass_.Instance(),
+                           this);
+
     if (hWnd_ == nullptr)
     {
         throw WindowException(__LINE__, __FILE__, static_cast<HRESULT>(GetLastError()));
@@ -35,11 +32,14 @@ BlocksEngine::Window::Window(const std::wstring name,
     ShowWindow(hWnd_, SW_SHOWDEFAULT);
 }
 
-BlocksEngine::Window::~Window()
-{
-    DestroyWindow(hWnd_);
-}
 
+/**
+ * Initializes the relay WindowProc function
+ *
+ * First it retrieves the custom Window instance that created the system window responsible for sending this message.
+ * It then stores this Window reference in the UserData for the hWnd and points the WindowProc to WindowProcRelay
+ */
+// ReSharper disable once CppParameterMayBeConst
 LRESULT BlocksEngine::Window::WindowProcSetup(HWND hWnd, const UINT uMsg, const WPARAM wParam,
                                               const LPARAM lParam) noexcept
 {
@@ -55,6 +55,10 @@ LRESULT BlocksEngine::Window::WindowProcSetup(HWND hWnd, const UINT uMsg, const 
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+/**
+ * Gets the Window reference associated with the calling hWnd and calls the WindowProc for that instance.
+ */
+// ReSharper disable once CppParameterMayBeConst
 LRESULT BlocksEngine::Window::WindowProcRelay(HWND hWnd, const UINT uMsg, const WPARAM wParam,
                                               const LPARAM lParam) noexcept
 {
@@ -62,7 +66,10 @@ LRESULT BlocksEngine::Window::WindowProcRelay(HWND hWnd, const UINT uMsg, const 
     return pWnd->WindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-
+/**
+ * Handle all messages on the message stack and return if there are no more messages
+ * If something is returned (not an empty optional) then the application should stop with the return code inside the optional.
+ */
 std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
 {
     MSG msg;
@@ -71,7 +78,7 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
     {
         if (msg.message == WM_QUIT)
         {
-            return msg.wParam;
+            return static_cast<int>(msg.wParam);
         }
 
         TranslateMessage(&msg);
@@ -81,7 +88,20 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
     return {};
 }
 
-LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept
+/**
+ * Handle all Window Messages
+ */
+// ReSharper disable once CppParameterMayBeConst
+LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam) noexcept
 {
+    switch (uMsg)
+    {
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+
+    default: break;
+    }
+
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
