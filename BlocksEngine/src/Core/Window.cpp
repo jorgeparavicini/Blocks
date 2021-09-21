@@ -1,9 +1,9 @@
-﻿#include "pch.h"
-#include "Window.h"
+﻿#include "BlocksEngine/pch.h"
+#include "BlocksEngine/Window.h"
 
-#include "WindowException.h"
+#include <unordered_map>
 
-std::unordered_map<std::wstring, BlocksEngine::Window> ClassNamesPerWindow{};
+#include "BlocksEngine/WindowException.h"
 
 BlocksEngine::Window::Window(const std::wstring name,
                              const int x,
@@ -61,6 +61,7 @@ LRESULT BlocksEngine::Window::WindowProcRelay(HWND hWnd, const UINT uMsg, const 
     const auto pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
     return pWnd->WindowProc(hWnd, uMsg, wParam, lParam);
 }
+
 
 std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
 {

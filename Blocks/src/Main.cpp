@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿#include "Blocks/pch.h"
 
 #include <Windows.h>
 
@@ -11,6 +11,9 @@ int WINAPI WinMain(
     _In_ LPSTR lpCmdLine,
     _In_ int nShowCmd)
 {
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
+
     try
     {
         return BlocksEngine::Application{}.MainLoop();

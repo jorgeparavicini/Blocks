@@ -8,6 +8,8 @@
 // File: Exception.h
 
 #pragma once
+#include <exception>
+#include <string>
 
 namespace BlocksEngine
 {

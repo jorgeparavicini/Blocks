@@ -13,71 +13,53 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Core">
-      <UniqueIdentifier>{1b6ec5dd-a0e2-49a8-8783-e1c941a41014}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Core">
-      <UniqueIdentifier>{3b2f787f-7a22-4a90-8769-90417a1b7aaf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Internal">
-      <UniqueIdentifier>{bf012d08-b2bb-45e3-9ef7-110d7f1b9423}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Internal">
-      <UniqueIdentifier>{80a0acef-0af3-4311-99ac-c3e682e1f55c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Internal\Exceptions">
-      <UniqueIdentifier>{5fa3a04d-71b3-4725-a26f-e0a1eaffa9ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Internal\Exceptions">
-      <UniqueIdentifier>{30f90965-7dd2-4894-b041-14ad3a16225f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="include\BlocksEngine\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Header Files\Core</Filter>
+    <ClInclude Include="include\BlocksEngine\Application.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files\Core</Filter>
+    <ClInclude Include="include\BlocksEngine\Window.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowClass.h">
-      <Filter>Header Files\Internal</Filter>
+    <ClInclude Include="include\BlocksEngine\WindowOptions.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowOptions.h">
-      <Filter>Header Files\Core</Filter>
+    <ClInclude Include="include\BlocksEngine\Exception.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Exception.h">
-      <Filter>Header Files\Internal\Exceptions</Filter>
+    <ClInclude Include="include\BlocksEngine\GraphicsException.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowException.h">
-      <Filter>Header Files\Internal\Exceptions</Filter>
+    <ClInclude Include="include\BlocksEngine\WindowException.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsException.h">
-      <Filter>Header Files\Internal\Exceptions</Filter>
+    <ClInclude Include="include\BlocksEngine\WindowClass.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="src\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowClass.cpp">
-      <Filter>Source Files\Internal</Filter>
-    </ClCompile>
-    <ClCompile Include="Exception.cpp">
-      <Filter>Source Files\Internal\Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowException.cpp">
+    <ClCompile Include="src\Exceptions\WindowException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsException.cpp">
+    <ClCompile Include="src\Exceptions\GraphicsException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Exceptions\Exception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\WindowClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
