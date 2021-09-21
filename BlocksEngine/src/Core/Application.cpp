@@ -21,6 +21,11 @@ int BlocksEngine::Application::MainLoop()
     while (true)
     {
         if (shutdownForced_) return ForceShutdown();
+
+        if (const auto eCode = window_->ProcessMessages())
+        {
+            return *eCode;
+        }
     }
 }
 
