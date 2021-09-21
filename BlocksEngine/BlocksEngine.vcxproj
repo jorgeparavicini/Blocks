@@ -21,14 +21,16 @@
   <ItemGroup>
     <ClInclude Include="include\BlocksEngine\Application.h" />
     <ClInclude Include="include\BlocksEngine\Exception.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics.h" />
     <ClInclude Include="include\BlocksEngine\GraphicsException.h" />
     <ClInclude Include="include\BlocksEngine\pch.h" />
     <ClInclude Include="include\BlocksEngine\Window.h" />
-    <ClInclude Include="src\Core\WindowClass.h" />
+    <ClInclude Include="include\BlocksEngine\WindowClass.h" />
     <ClInclude Include="include\BlocksEngine\WindowException.h" />
     <ClInclude Include="include\BlocksEngine\WindowOptions.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Graphics.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Exceptions\Exception.cpp" />
     <ClCompile Include="src\Exceptions\GraphicsException.cpp" />

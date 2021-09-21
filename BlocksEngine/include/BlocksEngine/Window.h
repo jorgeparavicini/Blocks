@@ -11,7 +11,7 @@
 #include <optional>
 #include <unordered_map>
 
-#include "WindowClass.h"
+#include "BlocksEngine/WindowClass.h"
 #include "BlocksEngine/WindowOptions.h"
 
 namespace BlocksEngine
@@ -30,8 +30,7 @@ public:
                     int height = CW_USEDEFAULT
     );
 
-    // Do not allow the window to be copied
-    ~Window();
+    ~Window() = default;
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
     Window(Window&&) = delete;
