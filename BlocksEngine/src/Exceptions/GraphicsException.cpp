@@ -1,5 +1,5 @@
-﻿#include "pch.h"
-#include "GraphicsException.h"
+﻿#include "BlocksEngine/pch.h"
+#include "BlocksEngine/GraphicsException.h"
 
 const char* BlocksEngine::GraphicsException::GetType() const noexcept
 {

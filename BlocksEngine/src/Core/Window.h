@@ -12,7 +12,7 @@
 #include <unordered_map>
 
 #include "WindowClass.h"
-#include "WindowOptions.h"
+#include "BlocksEngine/WindowOptions.h"
 
 namespace BlocksEngine
 {

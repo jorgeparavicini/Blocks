@@ -19,29 +19,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="Exception.h" />
-    <ClInclude Include="GraphicsException.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="WindowClass.h" />
-    <ClInclude Include="WindowException.h" />
-    <ClInclude Include="WindowOptions.h" />
+    <ClInclude Include="include\BlocksEngine\Application.h" />
+    <ClInclude Include="include\BlocksEngine\Exception.h" />
+    <ClInclude Include="include\BlocksEngine\GraphicsException.h" />
+    <ClInclude Include="include\BlocksEngine\pch.h" />
+    <ClInclude Include="src\Core\Window.h" />
+    <ClInclude Include="src\Core\WindowClass.h" />
+    <ClInclude Include="include\BlocksEngine\WindowException.h" />
+    <ClInclude Include="include\BlocksEngine\WindowOptions.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Exception.cpp" />
-    <ClCompile Include="GraphicsException.cpp" />
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Exceptions\Exception.cpp" />
+    <ClCompile Include="src\Exceptions\GraphicsException.cpp" />
+    <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WindowClass.cpp" />
-    <ClCompile Include="WindowException.cpp" />
+    <ClCompile Include="src\Core\Window.cpp" />
+    <ClCompile Include="src\Core\WindowClass.cpp" />
+    <ClCompile Include="src\Exceptions\WindowException.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -118,7 +118,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;BLOCKSENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>BlocksEngine/pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -140,7 +140,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;BLOCKSENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>BlocksEngine/pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -162,7 +162,7 @@
       <PreprocessorDefinitions>_DEBUG;BLOCKSENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>BlocksEngine/pch.h</PrecompiledHeaderFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
@@ -181,7 +181,7 @@
       <PreprocessorDefinitions>NDEBUG;BLOCKSENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>BlocksEngine/pch.h</PrecompiledHeaderFile>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>

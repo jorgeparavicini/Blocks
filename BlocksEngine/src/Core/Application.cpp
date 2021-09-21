@@ -1,5 +1,5 @@
-﻿#include "pch.h"
-#include "Application.h"
+﻿#include "BlocksEngine/pch.h"
+#include "BlocksEngine/Application.h"
 
 BlocksEngine::Application::Application()
     : window_{std::make_unique<Window>()}
