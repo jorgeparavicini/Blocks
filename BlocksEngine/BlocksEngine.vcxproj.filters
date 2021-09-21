@@ -21,7 +21,7 @@
     <ClInclude Include="include\BlocksEngine\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Window.h">
+    <ClInclude Include="include\BlocksEngine\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BlocksEngine\WindowOptions.h">
@@ -36,7 +36,7 @@
     <ClInclude Include="include\BlocksEngine\WindowException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\WindowClass.h">
+    <ClInclude Include="include\BlocksEngine\WindowClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

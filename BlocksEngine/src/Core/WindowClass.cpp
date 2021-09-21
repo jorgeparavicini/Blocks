@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "WindowClass.h"
+#include "BlocksEngine/WindowClass.h"
 
 #include "BlocksEngine/WindowOptions.h"
 
