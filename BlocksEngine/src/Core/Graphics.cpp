@@ -47,6 +47,9 @@ void BlocksEngine::Graphics::CreateDevice()
         &featureLevel_,
         context.ReleaseAndGetAddressOf()
     ));
+
+    GFX_THROW_INFO(device.As(&pDevice_));
+    GFX_THROW_INFO(context.As(&pContext_));
 }
 
 void BlocksEngine::Graphics::CreateResources()
