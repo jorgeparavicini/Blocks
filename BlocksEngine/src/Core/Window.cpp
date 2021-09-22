@@ -74,7 +74,7 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
 {
     MSG msg;
 
-    while (PeekMessage(&msg, hWnd_, 0, 0, PM_REMOVE))
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         if (msg.message == WM_QUIT)
         {
