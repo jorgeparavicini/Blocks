@@ -17,7 +17,7 @@ namespace BlocksEngine
 
 struct BlocksEngine::WindowOptions
 {
-    UINT style{};
+    UINT style{CS_OWNDC};
     int cbClsExtra{};
     int cbWndExtra{};
     HICON hIcon{};
@@ -25,6 +25,6 @@ struct BlocksEngine::WindowOptions
     HBRUSH hbrBackground{};
     LPCWSTR lpszMenuName{};
     HICON hIconSm{};
-    DWORD dwExStyle{};
-    DWORD dwStyle{};
+    DWORD dwExStyle{WS_EX_OVERLAPPEDWINDOW};
+    DWORD dwStyle{WS_OVERLAPPEDWINDOW};
 };

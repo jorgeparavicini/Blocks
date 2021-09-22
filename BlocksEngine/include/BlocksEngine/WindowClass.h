@@ -10,7 +10,7 @@
 #pragma once
 #include <memory>
 
-#include "WindowOptions.h"
+#include "BlocksEngine/WindowOptions.h"
 
 namespace BlocksEngine::Internal
 {

@@ -1,14 +1,21 @@
-﻿#include "stdafx.h"
-#include "WindowClass.h"
+﻿#include "BlocksEngine/pch.h"
+#include "BlocksEngine/WindowClass.h"
 
-#include "WindowOptions.h"
+#include "BlocksEngine/WindowOptions.h"
 
 BlocksEngine::Internal::WindowClass::WindowClass(const std::wstring name,
                                                  std::unique_ptr<WindowOptions> options,
                                                  WNDPROC windowProc)
-    : hInst_{GetModuleHandle(nullptr)}, name_{name}, options_{std::move(options)}
+    : hInst_{GetModuleHandle(nullptr)},
+      name_{name},
+      options_{std::move(options)}
 {
-    WNDCLASSEX wc{};
+    if (options_ == nullptr)
+    {
+        options_ = std::make_unique<WindowOptions>();
+    }
+
+    WNDCLASSEX wc;
     wc.cbSize = sizeof wc;
     wc.style = Options().style;
     wc.lpfnWndProc = windowProc;

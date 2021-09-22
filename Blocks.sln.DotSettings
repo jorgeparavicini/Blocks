@@ -100,8 +100,8 @@ class $CLASS$ {public:$END$};&#xD;
 </s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=64EDB544AC8E924696C7B438289B12B6/Description/@EntryValue">&amp;Game Class</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=64EDB544AC8E924696C7B438289B12B6/Field/=PCH/@KeyIndexDefined">False</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=64EDB544AC8E924696C7B438289B12B6/Section/=31B1FDA15A59B442AB9CC8E9B1839C17/SectionPlain/Text/@EntryValue">#include "stdafx.h"&#xD;
-#include "$NAME$.h"</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=64EDB544AC8E924696C7B438289B12B6/Section/=31B1FDA15A59B442AB9CC8E9B1839C17/SectionPlain/Text/@EntryValue">#include "Blocks/pch.h"&#xD;
+#include "Blocks/$NAME$.h"</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=64EDB544AC8E924696C7B438289B12B6/Text/@EntryValue">$HEADER$#pragma once&#xD;
 &#xD;
 namespace Blocks {&#xD;
@@ -135,8 +135,8 @@ class Blocks::$CLASS$ {public:$END$};&#xD;
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/Section/=3304034A4C7F744EB0745F4D35444963/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig File="$NAME$.cpp" /&gt;</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/Section/=3304034A4C7F744EB0745F4D35444963/LocationSelectorName/@EntryValue">manual</s:String>
 	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/Section/=3304034A4C7F744EB0745F4D35444963/Order/@EntryValue">0</s:Int64>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/Section/=3304034A4C7F744EB0745F4D35444963/SectionPlain/Text/@EntryValue">#include "stdafx.h"&#xD;
-#include "$NAME$.h"</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/Section/=3304034A4C7F744EB0745F4D35444963/SectionPlain/Text/@EntryValue">#include "BlocksEngine/pch.h"&#xD;
+#include "BlocksEngine/$NAME$.h"</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/Text/@EntryValue">$HEADER$#pragma once&#xD;
 &#xD;
