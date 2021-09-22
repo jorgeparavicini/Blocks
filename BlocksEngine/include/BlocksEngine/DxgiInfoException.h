@@ -14,7 +14,7 @@
 #include "BlocksEngine/Exception.h"
 
 #ifndef NDEBUG
-#define GFX_THROW_INFO_ONLY(call) DxgiInfoManager.Set(); (call); {auto v = DxgiInfoManager.GetMessages(); if (!v.empty()) {throw GraphicsException(__LINE__, __FILE__, v); }}
+#define GFX_THROW_INFO_ONLY(call) DxgiInfoManager::Set(); (call); {auto v = DxgiInfoManager::GetMessages(); if (!v.empty()) {throw GraphicsException(__LINE__, __FILE__, v); }}
 #else
 #define GFX_THROW_INFO_ONLY(call) (call)
 #endif
