@@ -9,21 +9,22 @@ BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
                              const int y,
                              const int width,
                              const int height)
-    : windowClass_{name, std::move(options), WindowProcSetup}
+    : windowClass_{name, std::move(options), WindowProcSetup},
+      hWnd_{
+          CreateWindowEx(windowClass_.Options().dwExStyle,
+                         windowClass_.Name().c_str(),
+                         name.c_str(),
+                         windowClass_.Options().dwStyle,
+                         x,
+                         y,
+                         width,
+                         height,
+                         nullptr,
+                         nullptr,
+                         windowClass_.Instance(),
+                         this)
+      }
 {
-    hWnd_ = CreateWindowEx(windowClass_.Options().dwExStyle,
-                           windowClass_.Name().c_str(),
-                           name.c_str(),
-                           windowClass_.Options().dwStyle,
-                           x,
-                           y,
-                           width,
-                           height,
-                           nullptr,
-                           nullptr,
-                           windowClass_.Instance(),
-                           this);
-
     if (hWnd_ == nullptr)
     {
         throw WindowException(__LINE__, __FILE__, static_cast<HRESULT>(GetLastError()));

@@ -18,8 +18,8 @@
 #define GFX_THROW_NOINFO(hrCall) if (FAILED(hr=(hrCall))) throw GraphicsException(__LINE__, __FILE__, hr)
 
 #ifndef NDEBUG
-#define GFX_EXCEPT(hr) GraphicsException(__LINE__, __FILE__, hr, DxgiInfoManager.GetMessages())
-#define GFX_THROW_INFO(hrCall) DxgiInfoManager.Set(); if (FAILED(hr = (hrCall))) throw GFX_EXCEPT(hr)
+#define GFX_EXCEPT(hr) GraphicsException(__LINE__, __FILE__, hr, DxgiInfoManager::GetMessages())
+#define GFX_THROW_INFO(hrCall) DxgiInfoManager::Set(); if (FAILED(hr = (hrCall))) throw GFX_EXCEPT(hr)
 #else
 #define GFX_EXCEPT(hr) GraphicsException(__LINE__, __FILE__, hr)
 #define GFX_THROW_INFO(hrCall) GFX_THROW_NOINFO(hrCall)

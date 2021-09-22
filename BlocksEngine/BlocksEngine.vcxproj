@@ -30,9 +30,11 @@
     <ClInclude Include="include\BlocksEngine\DxgiInfoManager.h" />
     <ClInclude Include="include\BlocksEngine\DxgiInfoException.h" />
     <ClInclude Include="include\BlocksEngine\DeviceRemovedException.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Graphics.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\Core\WindowClass.cpp" />
     <ClCompile Include="src\DebugUtility\DxgiInfoManager.cpp" />

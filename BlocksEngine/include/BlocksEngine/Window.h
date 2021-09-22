@@ -47,5 +47,5 @@ private:
     static constexpr const wchar_t* ClassName = L"Blocks Engine Window";
 
     Internal::WindowClass windowClass_;
-    HWND hWnd_;
+    HWND hWnd_{};
 };
