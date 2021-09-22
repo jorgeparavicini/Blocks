@@ -7,8 +7,12 @@
 // Author: Jorge Paravicini
 // File: WindowException.h
 
+// ReSharper disable CppClangTidyCppcoreguidelinesMacroUsage
 #pragma once
 #include "Exception.h"
+
+#define WND_EXCEPT(hr) WindowException(__LINE__, __FILE__, hr)
+#define WND_LAST_EXCEPT() WindowException(__LINE__, __FILE__, static_cast<HRESULT>(GetLastError()))
 
 namespace BlocksEngine
 {

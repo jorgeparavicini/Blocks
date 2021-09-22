@@ -39,7 +39,13 @@
     <ClInclude Include="include\BlocksEngine\WindowClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Graphics.h">
+    <ClInclude Include="include\BlocksEngine\DxgiInfoManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\DxgiInfoException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\DeviceRemovedException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,7 +71,13 @@
     <ClCompile Include="src\Core\WindowClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Graphics.cpp">
+    <ClCompile Include="src\DebugUtility\DxgiInfoManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Exceptions\DxgiInfoException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Exceptions\DeviceRemovedException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
