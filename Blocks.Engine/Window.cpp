@@ -27,8 +27,7 @@ BlocksEngine::Window::Window(const std::wstring name,
 {
     if (hWnd_ == nullptr)
     {
-        // TODO: Implement tasty exception
-        return;
+        throw WND_LAST_EXCEPT();
     }
 
     ShowWindow(hWnd_, SW_SHOWDEFAULT);
