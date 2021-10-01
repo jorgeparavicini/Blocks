@@ -170,6 +170,31 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
         }
         break;
 
+    case WM_SYSKEYDOWN:
+        // Alt + Enter
+        if (wParam == VK_RETURN && (lParam & 0x60000000) == 0x20000000)
+        {
+            if (isFullscreen_)
+            {
+                SetWindowLongPtr(hWnd_, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+                SetWindowLongPtr(hWnd_, GWL_EXSTYLE, 0);
+
+                ShowWindow(hWnd, SW_SHOWNORMAL);
+                SetWindowPos(hWnd, HWND_TOP, 0, 0, defaultWidth_, defaultHeight_,
+                             SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+            }
+            else
+            {
+                SetWindowLongPtr(hWnd_, GWL_STYLE, WS_POPUP);
+                SetWindowLongPtr(hWnd_, GWL_EXSTYLE, WS_EX_TOPMOST);
+
+                SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                ShowWindow(hWnd_, SW_SHOWMAXIMIZED);
+            }
+
+            isFullscreen_ = !isFullscreen_;
+        }
+
 
     default: break;
     }

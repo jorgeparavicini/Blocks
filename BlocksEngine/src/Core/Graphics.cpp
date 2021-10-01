@@ -129,7 +129,6 @@ void BlocksEngine::Graphics::CreateResources()
         pSwapChain_.ReleaseAndGetAddressOf()
     ));
 
-    // TODO: Implement exclusive fullscreen mode
     // This will disable exclusive fullscreen mode
     GFX_THROW_INFO(dxgiFactory->MakeWindowAssociation(window_, DXGI_MWA_NO_ALT_ENTER));
 

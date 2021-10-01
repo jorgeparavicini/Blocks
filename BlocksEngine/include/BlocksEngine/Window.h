@@ -58,6 +58,8 @@ private:
 
     int minWidth_{320};
     int minHeight_{200};
+    int defaultWidth_{800};
+    int defaultHeight_{600};
 
     bool isResizing_{false};
     bool isSuspended_{false};
