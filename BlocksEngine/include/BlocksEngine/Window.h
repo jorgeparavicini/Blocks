@@ -66,4 +66,5 @@ private:
 
     // Events
     std::function<void()> onSuspending_;
+    std::function<void()> onResuming_;
 };

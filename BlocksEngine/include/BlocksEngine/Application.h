@@ -44,4 +44,5 @@ private:
 
     void Tick() const;
     void Update();
+    static std::optional<int> ProcessApplicationMessages() noexcept;
 };

@@ -83,11 +83,6 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
 
     while (PeekMessage(&msg, hWnd_, 0, 0, PM_REMOVE))
     {
-        if (msg.message == WM_QUIT)
-        {
-            return static_cast<int>(msg.wParam);
-        }
-
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -142,8 +137,26 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
                 isSuspended_ = true;
             }
         }
+        else if (isMinimized_)
+        {
+            isMinimized_ = false;
+            if (isSuspended_ && onResuming_)
+            {
+                onResuming_();
+            }
+            isSuspended_ = false;
+        }
+        else if (isResizing_)
+        {
+            pGraphics_->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
+        }
+
+    case WM_ENTERSIZEMOVE:
+        isResizing_ = true;
+        break;
 
     case WM_EXITSIZEMOVE:
+        isResizing_ = false;
         RECT rc;
         GetClientRect(hWnd_, &rc);
 
