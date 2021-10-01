@@ -163,15 +163,15 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
         pGraphics_->OnWindowSizeChanged(rc.right - rc.left, rc.bottom - rc.top);
         break;
 
-        /* case WM_GETMINMAXINFO:
-             if (lParam)
-             {
-                 const auto info = reinterpret_cast<MINMAXINFO*>(lParam);
-                 info->ptMinTrackSize.x = minWidth_;
-                 info->ptMinTrackSize.y = minHeight_;
-             }
-             break;
-             */
+    case WM_GETMINMAXINFO:
+        if (lParam)
+        {
+            const auto info = reinterpret_cast<MINMAXINFO*>(lParam);
+            info->ptMinTrackSize.x = minWidth_;
+            info->ptMinTrackSize.y = minHeight_;
+        }
+        break;
+
 
     default: break;
     }
