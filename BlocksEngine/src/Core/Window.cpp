@@ -1,8 +1,6 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Window.h"
 
-#include <sstream>
-
 #include "BlocksEngine/WindowException.h"
 
 BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
