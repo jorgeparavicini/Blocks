@@ -22,7 +22,7 @@ namespace BlocksEngine
 class BlocksEngine::Graphics
 {
 public:
-    explicit Graphics(HWND hWnd);
+    explicit Graphics(HWND hWnd, int width, int height);
     ~Graphics() = default;
     Graphics(const Graphics&) = delete;
     Graphics& operator=(const Graphics&) = delete;
@@ -31,9 +31,25 @@ public:
 
     void CreateDevice();
     void CreateResources();
+    void Render();
+    void OnWindowSizeChanged(int width, int height);
 
 private:
+    HWND window_;
+    int width_;
+    int height_;
+
     D3D_FEATURE_LEVEL featureLevel_;
+
     Microsoft::WRL::ComPtr<ID3D11Device1> pDevice_;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> pContext_;
+
+    Microsoft::WRL::ComPtr<IDXGISwapChain1> pSwapChain_;
+    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTarget_;
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView_;
+
+    void Clear();
+    void Present();
+
+    void OnDeviceLost();
 };

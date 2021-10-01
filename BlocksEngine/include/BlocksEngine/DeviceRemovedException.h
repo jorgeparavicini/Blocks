@@ -25,5 +25,7 @@ namespace BlocksEngine
 class BlocksEngine::DeviceRemovedException final : public GraphicsException
 {
 public:
+    DeviceRemovedException(int line, const char* file, HRESULT hr, const std::vector<std::string>& basicStrings);
+
     [[nodiscard]] const char* GetType() const noexcept override;
 };

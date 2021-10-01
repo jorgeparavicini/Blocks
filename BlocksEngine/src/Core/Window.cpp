@@ -1,6 +1,8 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Window.h"
 
+#include <sstream>
+
 #include "BlocksEngine/WindowException.h"
 
 BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
@@ -9,26 +11,30 @@ BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
                              const int y,
                              const int width,
                              const int height)
-    : windowClass_{name, std::move(options), WindowProcSetup},
-      hWnd_{
-          CreateWindowEx(windowClass_.Options().dwExStyle,
-                         windowClass_.Name().c_str(),
-                         name.c_str(),
-                         windowClass_.Options().dwStyle,
-                         x,
-                         y,
-                         width,
-                         height,
-                         nullptr,
-                         nullptr,
-                         windowClass_.Instance(),
-                         this)
-      }
+    : windowClass_{name, std::move(options), WindowProcSetup}
 {
+    hWnd_ = CreateWindowEx(windowClass_.Options().dwExStyle,
+                           windowClass_.Name().c_str(),
+                           name.c_str(),
+                           windowClass_.Options().dwStyle,
+                           x,
+                           y,
+                           width,
+                           height,
+                           nullptr,
+                           nullptr,
+                           windowClass_.Instance(),
+                           this);
+
     if (hWnd_ == nullptr)
     {
         throw WindowException(__LINE__, __FILE__, static_cast<HRESULT>(GetLastError()));
     }
+
+    RECT rect;
+    GetWindowRect(hWnd_, &rect);
+
+    pGraphics_ = std::make_unique<Graphics>(hWnd_, rect.right - rect.left, rect.bottom - rect.top);
 
     ShowWindow(hWnd_, SW_SHOWDEFAULT);
 }
@@ -42,7 +48,7 @@ BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
  */
 // ReSharper disable once CppParameterMayBeConst
 LRESULT BlocksEngine::Window::WindowProcSetup(HWND hWnd, const UINT uMsg, const WPARAM wParam,
-                                              const LPARAM lParam) noexcept
+                                              const LPARAM lParam)
 {
     if (uMsg == WM_NCCREATE)
     {
@@ -61,7 +67,7 @@ LRESULT BlocksEngine::Window::WindowProcSetup(HWND hWnd, const UINT uMsg, const 
  */
 // ReSharper disable once CppParameterMayBeConst
 LRESULT BlocksEngine::Window::WindowProcRelay(HWND hWnd, const UINT uMsg, const WPARAM wParam,
-                                              const LPARAM lParam) noexcept
+                                              const LPARAM lParam)
 {
     const auto pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
     return pWnd->WindowProc(hWnd, uMsg, wParam, lParam);
@@ -89,17 +95,70 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
     return {};
 }
 
+void BlocksEngine::Window::Render() const
+{
+    pGraphics_->Render();
+}
+
+void BlocksEngine::Window::OnWindowSizeChanged(const int width, const int height) const
+{
+    pGraphics_->OnWindowSizeChanged(width, height);
+}
+
+void BlocksEngine::Window::SetMinWindowSize(const int minWidth, const int minHeight)
+{
+    minWidth_ = std::max(minWidth, 1);
+    minHeight_ = std::max(minHeight, 1);
+}
+
+void BlocksEngine::Window::SetOnSuspending(std::function<void()> function)
+{
+    onSuspending_ = std::move(function);
+}
+
 /**
  * Handle all Window Messages
  */
 // ReSharper disable once CppParameterMayBeConst
-LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam) noexcept
+LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam,
+                                         const LPARAM lParam)
 {
     switch (uMsg)
     {
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+
+    case WM_SIZE:
+        if (wParam == SIZE_MINIMIZED)
+        {
+            if (!isMinimized_)
+            {
+                isMinimized_ = true;
+                if (!isSuspended_ && onSuspending_)
+                {
+                    onSuspending_();
+                }
+                isSuspended_ = true;
+            }
+        }
+
+    case WM_EXITSIZEMOVE:
+        RECT rc;
+        GetClientRect(hWnd_, &rc);
+
+        pGraphics_->OnWindowSizeChanged(rc.right - rc.left, rc.bottom - rc.top);
+        break;
+
+        /* case WM_GETMINMAXINFO:
+             if (lParam)
+             {
+                 const auto info = reinterpret_cast<MINMAXINFO*>(lParam);
+                 info->ptMinTrackSize.x = minWidth_;
+                 info->ptMinTrackSize.y = minHeight_;
+             }
+             break;
+             */
 
     default: break;
     }

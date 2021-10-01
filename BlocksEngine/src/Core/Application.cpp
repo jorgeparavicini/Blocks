@@ -16,6 +16,8 @@ int BlocksEngine::Application::MainLoop() const
         {
             return *eCode;
         }
+
+        Tick();
     }
 }
 
@@ -27,4 +29,14 @@ void BlocksEngine::Application::Exit() noexcept
 void BlocksEngine::Application::ForceExit() noexcept
 {
     shutdownForced_ = true;
+}
+
+void BlocksEngine::Application::Tick() const
+{
+    // TODO: Tick & Update
+    window_.Render();
+}
+
+void BlocksEngine::Application::Update()
+{
 }
