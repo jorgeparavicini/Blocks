@@ -79,7 +79,7 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
 {
     MSG msg;
 
-    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+    while (PeekMessage(&msg, hWnd_, 0, 0, PM_REMOVE))
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -104,6 +104,7 @@ void BlocksEngine::Window::SetMinWindowSize(const int minWidth, const int minHei
     minHeight_ = std::max(minHeight, 1);
 }
 
+// TODO: Find a good signal library (maybe Sevi?)
 void BlocksEngine::Window::SetOnSuspending(std::function<void()> function)
 {
     onSuspending_ = std::move(function);
