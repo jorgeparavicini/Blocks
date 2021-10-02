@@ -8,9 +8,11 @@
 // File: Window.h
 
 #pragma once
+#include <functional>
 #include <optional>
 #include <unordered_map>
 
+#include "Graphics.h"
 #include "BlocksEngine/WindowClass.h"
 #include "BlocksEngine/WindowOptions.h"
 
@@ -37,15 +39,34 @@ public:
     Window& operator=(Window&&) = delete;
 
     [[nodiscard]] std::optional<int> ProcessMessages() const noexcept;
+    void Render() const;
+    void OnWindowSizeChanged(int width, int height) const;
+    void SetMinWindowSize(int minWidth, int minHeight);
+    void SetOnSuspending(std::function<void()> function);
 
 protected:
-    LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
+    LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 private:
-    static LRESULT CALLBACK WindowProcSetup(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
-    static LRESULT CALLBACK WindowProcRelay(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept;
+    static LRESULT CALLBACK WindowProcSetup(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK WindowProcRelay(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     static constexpr const wchar_t* ClassName = L"Blocks Engine Window";
 
     Internal::WindowClass windowClass_;
-    HWND hWnd_;
+    HWND hWnd_{};
+    std::unique_ptr<Graphics> pGraphics_{};
+
+    int minWidth_{320};
+    int minHeight_{200};
+    int defaultWidth_{800};
+    int defaultHeight_{600};
+
+    bool isResizing_{false};
+    bool isSuspended_{false};
+    bool isMinimized_{false};
+    bool isFullscreen_{false};
+
+    // Events
+    std::function<void()> onSuspending_;
+    std::function<void()> onResuming_;
 };

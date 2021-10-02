@@ -29,6 +29,11 @@ BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
         throw WindowException(__LINE__, __FILE__, static_cast<HRESULT>(GetLastError()));
     }
 
+    RECT rect;
+    GetWindowRect(hWnd_, &rect);
+
+    pGraphics_ = std::make_unique<Graphics>(hWnd_, rect.right - rect.left, rect.bottom - rect.top);
+
     ShowWindow(hWnd_, SW_SHOWDEFAULT);
 }
 
@@ -41,7 +46,7 @@ BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
  */
 // ReSharper disable once CppParameterMayBeConst
 LRESULT BlocksEngine::Window::WindowProcSetup(HWND hWnd, const UINT uMsg, const WPARAM wParam,
-                                              const LPARAM lParam) noexcept
+                                              const LPARAM lParam)
 {
     if (uMsg == WM_NCCREATE)
     {
@@ -60,7 +65,7 @@ LRESULT BlocksEngine::Window::WindowProcSetup(HWND hWnd, const UINT uMsg, const 
  */
 // ReSharper disable once CppParameterMayBeConst
 LRESULT BlocksEngine::Window::WindowProcRelay(HWND hWnd, const UINT uMsg, const WPARAM wParam,
-                                              const LPARAM lParam) noexcept
+                                              const LPARAM lParam)
 {
     const auto pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
     return pWnd->WindowProc(hWnd, uMsg, wParam, lParam);
@@ -76,11 +81,6 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
 
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
-        if (msg.message == WM_QUIT)
-        {
-            return static_cast<int>(msg.wParam);
-        }
-
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -88,17 +88,113 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
     return {};
 }
 
+void BlocksEngine::Window::Render() const
+{
+    pGraphics_->Render();
+}
+
+void BlocksEngine::Window::OnWindowSizeChanged(const int width, const int height) const
+{
+    pGraphics_->OnWindowSizeChanged(width, height);
+}
+
+void BlocksEngine::Window::SetMinWindowSize(const int minWidth, const int minHeight)
+{
+    minWidth_ = std::max(minWidth, 1);
+    minHeight_ = std::max(minHeight, 1);
+}
+
+void BlocksEngine::Window::SetOnSuspending(std::function<void()> function)
+{
+    onSuspending_ = std::move(function);
+}
+
 /**
  * Handle all Window Messages
  */
 // ReSharper disable once CppParameterMayBeConst
-LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam) noexcept
+LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam,
+                                         const LPARAM lParam)
 {
     switch (uMsg)
     {
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+
+    case WM_SIZE:
+        if (wParam == SIZE_MINIMIZED)
+        {
+            if (!isMinimized_)
+            {
+                isMinimized_ = true;
+                if (!isSuspended_ && onSuspending_)
+                {
+                    onSuspending_();
+                }
+                isSuspended_ = true;
+            }
+        }
+        else if (isMinimized_)
+        {
+            isMinimized_ = false;
+            if (isSuspended_ && onResuming_)
+            {
+                onResuming_();
+            }
+            isSuspended_ = false;
+        }
+        else if (isResizing_)
+        {
+            pGraphics_->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
+        }
+
+    case WM_ENTERSIZEMOVE:
+        isResizing_ = true;
+        break;
+
+    case WM_EXITSIZEMOVE:
+        isResizing_ = false;
+        RECT rc;
+        GetClientRect(hWnd_, &rc);
+
+        pGraphics_->OnWindowSizeChanged(rc.right - rc.left, rc.bottom - rc.top);
+        break;
+
+    case WM_GETMINMAXINFO:
+        if (lParam)
+        {
+            const auto info = reinterpret_cast<MINMAXINFO*>(lParam);
+            info->ptMinTrackSize.x = minWidth_;
+            info->ptMinTrackSize.y = minHeight_;
+        }
+        break;
+
+    case WM_SYSKEYDOWN:
+        // Alt + Enter
+        if (wParam == VK_RETURN && (lParam & 0x60000000) == 0x20000000)
+        {
+            if (isFullscreen_)
+            {
+                SetWindowLongPtr(hWnd_, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+                SetWindowLongPtr(hWnd_, GWL_EXSTYLE, 0);
+
+                ShowWindow(hWnd, SW_SHOWNORMAL);
+                SetWindowPos(hWnd, HWND_TOP, 0, 0, defaultWidth_, defaultHeight_,
+                             SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+            }
+            else
+            {
+                SetWindowLongPtr(hWnd_, GWL_STYLE, WS_POPUP);
+                SetWindowLongPtr(hWnd_, GWL_EXSTYLE, WS_EX_TOPMOST);
+
+                SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                ShowWindow(hWnd_, SW_SHOWMAXIMIZED);
+            }
+
+            isFullscreen_ = !isFullscreen_;
+        }
+
 
     default: break;
     }

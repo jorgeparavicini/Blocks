@@ -40,4 +40,9 @@ public:
 private:
     bool shutdownForced_{false};
     Window window_;
+
+
+    void Tick() const;
+    void Update();
+    static std::optional<int> ProcessApplicationMessages() noexcept;
 };
