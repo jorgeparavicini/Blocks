@@ -2,7 +2,8 @@
 #include "BlocksEngine/Application.h"
 
 BlocksEngine::Application::Application(std::unique_ptr<WindowOptions> options)
-    : window_{std::move(options)}
+    : window_{std::move(options)},
+      pGame_{std::make_shared<Game>()}
 {
 }
 

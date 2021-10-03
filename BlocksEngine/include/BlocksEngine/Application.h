@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "Game.h"
 #include "Window.h"
 
 // ReSharper disable CppInconsistentNaming
@@ -40,6 +41,7 @@ public:
 private:
     bool shutdownForced_{false};
     Window window_;
+    std::shared_ptr<Game> pGame_;
 
 
     void Tick() const;

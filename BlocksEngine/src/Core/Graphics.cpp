@@ -8,6 +8,7 @@
 
 using Microsoft::WRL::ComPtr;
 
+
 BlocksEngine::Graphics::Graphics(HWND hWnd, const int width, const int height)
     : window_{hWnd},
       width_{std::max(width, 1)},
@@ -46,7 +47,7 @@ void BlocksEngine::Graphics::CreateDevice()
         nullptr,
         creationFlags,
         FeatureLevels,
-        std::size(FeatureLevels),
+        static_cast<UINT>(std::size(FeatureLevels)),
         D3D11_SDK_VERSION,
         device.ReleaseAndGetAddressOf(),
         &featureLevel_,
