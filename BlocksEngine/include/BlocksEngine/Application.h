@@ -32,7 +32,7 @@ namespace BlocksEngine
 class BlocksEngine::Application
 {
 public:
-    Application() = default;
+    Application();
     explicit Application(std::unique_ptr<WindowOptions> options);
     [[nodiscard]] int MainLoop() const;
     static void Exit() noexcept;
@@ -40,7 +40,7 @@ public:
 
 private:
     bool shutdownForced_{false};
-    Window window_;
+    std::unique_ptr<Window> pWindow_;
     std::shared_ptr<Game> pGame_;
 
 

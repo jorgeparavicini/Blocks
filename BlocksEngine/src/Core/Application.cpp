@@ -4,8 +4,12 @@
 #include "BlocksEngine/PixelShader.h"
 #include "BlocksEngine/VertexShader.h"
 
+BlocksEngine::Application::Application() : Application{std::make_unique<WindowOptions>()}
+{
+}
+
 BlocksEngine::Application::Application(std::unique_ptr<WindowOptions> options)
-    : window_{std::move(options)},
+    : pWindow_{std::make_unique<Window>(std::move(options))},
       pGame_{std::make_shared<Game>()}
 {
 }
@@ -16,7 +20,7 @@ int BlocksEngine::Application::MainLoop() const
     {
         if (shutdownForced_) return 0;
 
-        if (const auto eCode = window_.ProcessMessages())
+        if (const auto eCode = pWindow_->ProcessMessages())
         {
             return *eCode;
         }
@@ -27,8 +31,8 @@ int BlocksEngine::Application::MainLoop() const
         }
 
         Tick();
-        std::shared_ptr<VertexShader> vs = VertexShader::SolidColor(window_.Gfx());
-        std::shared_ptr<PixelShader> ps = PixelShader::SolidColor(window_.Gfx());
+        std::shared_ptr<VertexShader> vs = VertexShader::SolidColor(pWindow_->Gfx());
+        std::shared_ptr<PixelShader> ps = PixelShader::SolidColor(pWindow_->Gfx());
     }
 }
 
@@ -45,7 +49,7 @@ void BlocksEngine::Application::ForceExit() noexcept
 void BlocksEngine::Application::Tick() const
 {
     // TODO: Tick & Update
-    window_.Render();
+    pWindow_->Render();
 }
 
 void BlocksEngine::Application::Update()
