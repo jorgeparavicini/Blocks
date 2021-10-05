@@ -4,6 +4,7 @@
 
 #include "BlocksEngine/Application.h"
 #include "BlocksEngine/Exception.h"
+#include "BlocksEngine/PixelShader.h"
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,
@@ -16,6 +17,9 @@ int WINAPI WinMain(
 
     try
     {
+        TCHAR NPath[MAX_PATH];
+        GetCurrentDirectory(MAX_PATH, NPath);
+        OutputDebugString(NPath);
         return BlocksEngine::Application{}.MainLoop();
     }
     catch (const BlocksEngine::Exception& e)

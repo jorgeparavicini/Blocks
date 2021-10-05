@@ -18,7 +18,7 @@ const char* BlocksEngine::GraphicsException::what() const noexcept
         << std::dec << "(" << static_cast<unsigned long>(GetErrorCode()) << ")" << '\n'
         << "[Error Description] " << GetErrorDescription() << std::endl;
 
-    if (!info_.empty())
+    if (!GetErrorInfo().empty())
     {
         oss << "\n[Error Info]\n" << GetErrorInfo() << '\n' << std::endl;
     }

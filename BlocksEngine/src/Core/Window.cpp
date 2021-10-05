@@ -88,6 +88,11 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
     return {};
 }
 
+const BlocksEngine::Graphics& BlocksEngine::Window::Gfx() const
+{
+    return *pGraphics_;
+}
+
 void BlocksEngine::Window::Render() const
 {
     pGraphics_->Render();

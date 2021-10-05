@@ -38,9 +38,6 @@ void BlocksEngine::Graphics::CreateDevice()
         D3D_FEATURE_LEVEL_10_0
     };
 
-    ComPtr<ID3D11Device> device;
-    ComPtr<ID3D11DeviceContext> context;
-
     GFX_THROW_INFO(D3D11CreateDevice(
         nullptr, // Default adapter
         D3D_DRIVER_TYPE_HARDWARE,
@@ -49,13 +46,10 @@ void BlocksEngine::Graphics::CreateDevice()
         FeatureLevels,
         static_cast<UINT>(std::size(FeatureLevels)),
         D3D11_SDK_VERSION,
-        device.ReleaseAndGetAddressOf(),
+        pDevice_.ReleaseAndGetAddressOf(),
         &featureLevel_,
-        context.ReleaseAndGetAddressOf()
+        pContext_.ReleaseAndGetAddressOf()
     ));
-
-    GFX_THROW_INFO(device.As(&pDevice_));
-    GFX_THROW_INFO(context.As(&pContext_));
 }
 
 void BlocksEngine::Graphics::CreateResources()
@@ -170,6 +164,16 @@ void BlocksEngine::Graphics::OnWindowSizeChanged(const int width, const int heig
     height_ = std::max(height, 1);
 
     CreateResources();
+}
+
+ID3D11Device& BlocksEngine::Graphics::GetDevice() const noexcept
+{
+    return *pDevice_.Get();
+}
+
+ID3D11DeviceContext& BlocksEngine::Graphics::GetContext() const noexcept
+{
+    return *pContext_.Get();
 }
 
 void BlocksEngine::Graphics::Clear()

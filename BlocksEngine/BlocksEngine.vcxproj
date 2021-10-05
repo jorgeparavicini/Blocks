@@ -20,9 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BlocksEngine\Application.h" />
+    <ClInclude Include="include\BlocksEngine\ConstantBuffer.h" />
     <ClInclude Include="include\BlocksEngine\Exception.h" />
     <ClInclude Include="include\BlocksEngine\GraphicsException.h" />
     <ClInclude Include="include\BlocksEngine\pch.h" />
+    <ClInclude Include="include\BlocksEngine\PixelConstantBuffers.h" />
+    <ClInclude Include="include\BlocksEngine\VertexConstantBuffer.h" />
     <ClInclude Include="include\BlocksEngine\Window.h" />
     <ClInclude Include="include\BlocksEngine\WindowClass.h" />
     <ClInclude Include="include\BlocksEngine\WindowException.h" />
@@ -32,10 +35,20 @@
     <ClInclude Include="include\BlocksEngine\DeviceRemovedException.h" />
     <ClInclude Include="include\BlocksEngine\Graphics.h" />
     <ClInclude Include="include\BlocksEngine\Game.h" />
+    <ClInclude Include="include\BlocksEngine\Bindable.h" />
+    <ClInclude Include="include\BlocksEngine\VertexShader.h" />
+    <ClInclude Include="include\BlocksEngine\PixelShader.h" />
+    <ClInclude Include="include\BlocksEngine\InputLayout.h" />
+    <ClInclude Include="include\BlocksEngine\Material.h" />
+    <ClInclude Include="include\BlocksEngine\VertexBuffer.h" />
+    <ClInclude Include="include\BlocksEngine\IndexBuffer.h" />
+    <ClInclude Include="include\BlocksEngine\Topology.h" />
+    <ClInclude Include="include\BlocksEngine\Mesh.h" />
+    <ClInclude Include="include\BlocksEngine\SolidColor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp" />
-    <ClCompile Include="src\Core\Graphics.cpp" />
+    <ClCompile Include="src\Graphics\Graphics.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\Core\WindowClass.cpp" />
     <ClCompile Include="src\DebugUtility\DxgiInfoManager.cpp" />
@@ -45,6 +58,16 @@
     <ClCompile Include="src\Game\Game.cpp" />
     <ClCompile Include="src\Exceptions\GraphicsException.cpp" />
     <ClCompile Include="src\Exceptions\WindowException.cpp" />
+    <ClCompile Include="src\Graphics\Bindable.cpp" />
+    <ClCompile Include="src\Graphics\Material\InputLayout.cpp" />
+    <ClCompile Include="src\Graphics\Material\Material.cpp" />
+    <ClCompile Include="src\Graphics\Material\PixelShader.cpp" />
+    <ClCompile Include="src\Graphics\Material\SolidColor\SolidColor.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\IndexBuffer.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\Mesh.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\Topology.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\VertexBuffer.cpp" />
+    <ClCompile Include="src\Graphics\Material\VertexShader.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -58,6 +81,32 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

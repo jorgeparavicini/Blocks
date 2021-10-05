@@ -34,6 +34,9 @@ public:
     void Render();
     void OnWindowSizeChanged(int width, int height);
 
+    [[nodiscard]] ID3D11Device& GetDevice() const noexcept;
+    [[nodiscard]] ID3D11DeviceContext& GetContext() const noexcept;
+
 private:
     HWND window_;
     int width_;
@@ -41,8 +44,8 @@ private:
 
     D3D_FEATURE_LEVEL featureLevel_;
 
-    Microsoft::WRL::ComPtr<ID3D11Device1> pDevice_;
-    Microsoft::WRL::ComPtr<ID3D11DeviceContext1> pContext_;
+    Microsoft::WRL::ComPtr<ID3D11Device> pDevice_;
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext_;
 
     Microsoft::WRL::ComPtr<IDXGISwapChain1> pSwapChain_;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTarget_;

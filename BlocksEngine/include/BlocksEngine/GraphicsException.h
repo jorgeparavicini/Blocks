@@ -41,5 +41,4 @@ public:
 
 private:
     HRESULT hr_;
-    std::string info_;
 };

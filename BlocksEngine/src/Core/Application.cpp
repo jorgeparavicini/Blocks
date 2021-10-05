@@ -1,6 +1,9 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Application.h"
 
+#include "BlocksEngine/PixelShader.h"
+#include "BlocksEngine/VertexShader.h"
+
 BlocksEngine::Application::Application(std::unique_ptr<WindowOptions> options)
     : window_{std::move(options)},
       pGame_{std::make_shared<Game>()}
@@ -24,6 +27,8 @@ int BlocksEngine::Application::MainLoop() const
         }
 
         Tick();
+        std::shared_ptr<VertexShader> vs = VertexShader::SolidColor(window_.Gfx());
+        std::shared_ptr<PixelShader> ps = PixelShader::SolidColor(window_.Gfx());
     }
 }
 
