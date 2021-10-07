@@ -93,9 +93,14 @@ const BlocksEngine::Graphics& BlocksEngine::Window::Gfx() const
     return *pGraphics_;
 }
 
-void BlocksEngine::Window::Render() const
+void BlocksEngine::Window::Clear() const
 {
-    pGraphics_->Render();
+    pGraphics_->Clear();
+}
+
+void BlocksEngine::Window::Present() const
+{
+    pGraphics_->Present();
 }
 
 void BlocksEngine::Window::OnWindowSizeChanged(const int width, const int height) const

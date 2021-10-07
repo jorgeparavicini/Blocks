@@ -149,15 +149,6 @@ void BlocksEngine::Graphics::CreateResources()
             ReleaseAndGetAddressOf()));
 }
 
-void BlocksEngine::Graphics::Render()
-{
-    Clear();
-
-    // TODO: Rendering calls
-
-    Present();
-}
-
 void BlocksEngine::Graphics::OnWindowSizeChanged(const int width, const int height)
 {
     width_ = std::max(width, 1);

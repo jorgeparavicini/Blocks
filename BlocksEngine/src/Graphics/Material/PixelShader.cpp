@@ -22,14 +22,3 @@ void BlocksEngine::PixelShader::Bind(const Graphics& gfx) noexcept
 {
     gfx.GetContext().PSSetShader(pPixelShader_.Get(), nullptr, 0u);
 }
-
-std::shared_ptr<BlocksEngine::PixelShader> BlocksEngine::PixelShader::pSolidColor_ = nullptr;
-
-std::shared_ptr<BlocksEngine::PixelShader> BlocksEngine::PixelShader::SolidColor(const Graphics& gfx)
-{
-    if (!pSolidColor_)
-    {
-        pSolidColor_ = std::make_shared<PixelShader>(gfx, L"resources/SolidColorPS.cso");
-    }
-    return pSolidColor_;
-}

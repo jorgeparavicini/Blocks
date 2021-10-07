@@ -25,13 +25,7 @@ public:
     void Bind(const Graphics& gfx) noexcept override;
     [[nodiscard]] ID3DBlob* GetByteCode() const noexcept;
 
-    static std::shared_ptr<VertexShader> SolidColor(const Graphics& gfx);
-
-
 protected:
     Microsoft::WRL::ComPtr<ID3DBlob> pByteCodeBlob_;
     Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader_;
-
-private:
-    static std::shared_ptr<VertexShader> pSolidColor_;
 };

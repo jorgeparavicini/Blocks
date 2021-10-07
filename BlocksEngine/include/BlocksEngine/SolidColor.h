@@ -8,6 +8,8 @@
 // File: SolidColor.h
 
 #pragma once
+#include "ConstantBuffer.h"
+#include "PixelConstantBuffers.h"
 #include "BlocksEngine/Material.h"
 
 namespace BlocksEngine
@@ -15,7 +17,20 @@ namespace BlocksEngine
     class SolidColor;
 }
 
-class BlocksEngine::SolidColor : public Material
+class BlocksEngine::SolidColor final : public Material
 {
 public:
+    explicit SolidColor(const Graphics& gfx, DirectX::XMVECTORF32 color = DirectX::Colors::Gray);
+
+    static std::shared_ptr<VertexShader> GetVertexShader(const Graphics& gfx);
+    static std::shared_ptr<PixelShader> GetPixelShader(const Graphics& gfx);
+    static std::shared_ptr<InputLayout> GetInputLayout(const Graphics& gfx);
+
+    void Bind(const Graphics& gfx) noexcept override;
+
+private:
+    static std::shared_ptr<VertexShader> pVertexShader_;
+    static std::shared_ptr<PixelShader> pPixelShader_;
+    static std::shared_ptr<InputLayout> pInputLayout_;
+    std::unique_ptr<PixelConstantBuffer<DirectX::XMVECTOR>> pConstantBuffer_{};
 };

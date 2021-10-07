@@ -26,14 +26,3 @@ ID3DBlob* BlocksEngine::VertexShader::GetByteCode() const noexcept
 {
     return pByteCodeBlob_.Get();
 }
-
-std::shared_ptr<BlocksEngine::VertexShader> BlocksEngine::VertexShader::pSolidColor_ = nullptr;
-
-std::shared_ptr<BlocksEngine::VertexShader> BlocksEngine::VertexShader::SolidColor(const Graphics& gfx)
-{
-    if (!pSolidColor_)
-    {
-        pSolidColor_ = std::make_shared<VertexShader>(gfx, L"resources/SolidColorVS.cso");
-    }
-    return pSolidColor_;
-}

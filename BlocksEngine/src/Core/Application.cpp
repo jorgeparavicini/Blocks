@@ -2,10 +2,13 @@
 #include "BlocksEngine/Application.h"
 
 #include "BlocksEngine/PixelShader.h"
+#include "BlocksEngine/SolidColor.h"
 #include "BlocksEngine/VertexShader.h"
 
 BlocksEngine::Application::Application() : Application{std::make_unique<WindowOptions>()}
 {
+    pMaterial_ = std::make_unique<SolidColor>(pWindow_->Gfx(), DirectX::Colors::RosyBrown);
+    pMesh_ = std::make_unique<Mesh>(pWindow_->Gfx());
 }
 
 BlocksEngine::Application::Application(std::unique_ptr<WindowOptions> options)
@@ -31,8 +34,6 @@ int BlocksEngine::Application::MainLoop() const
         }
 
         Tick();
-        std::shared_ptr<VertexShader> vs = VertexShader::SolidColor(pWindow_->Gfx());
-        std::shared_ptr<PixelShader> ps = PixelShader::SolidColor(pWindow_->Gfx());
     }
 }
 
@@ -49,11 +50,22 @@ void BlocksEngine::Application::ForceExit() noexcept
 void BlocksEngine::Application::Tick() const
 {
     // TODO: Tick & Update
-    pWindow_->Render();
+    Render();
 }
 
 void BlocksEngine::Application::Update()
 {
+}
+
+void BlocksEngine::Application::Render() const
+{
+    pWindow_->Clear();
+
+    pMaterial_->Bind(pWindow_->Gfx());
+    pMesh_->Bind(pWindow_->Gfx());
+    pWindow_->Gfx().GetContext().DrawIndexed(pMesh_->GetCount(), 0, 0);
+
+    pWindow_->Present();
 }
 
 std::optional<int> BlocksEngine::Application::ProcessApplicationMessages() noexcept

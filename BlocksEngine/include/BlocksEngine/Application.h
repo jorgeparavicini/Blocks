@@ -11,6 +11,8 @@
 #pragma once
 
 #include "Game.h"
+#include "Material.h"
+#include "Mesh.h"
 #include "Window.h"
 
 // ReSharper disable CppInconsistentNaming
@@ -43,8 +45,12 @@ private:
     std::unique_ptr<Window> pWindow_;
     std::shared_ptr<Game> pGame_;
 
+    std::unique_ptr<Material> pMaterial_;
+    std::unique_ptr<Mesh> pMesh_;
+
 
     void Tick() const;
     void Update();
+    void Render() const;
     static std::optional<int> ProcessApplicationMessages() noexcept;
 };

@@ -32,7 +32,5 @@ public:
 private:
     std::shared_ptr<VertexShader> pVertexShader_;
     std::shared_ptr<PixelShader> pPixelShader_;
-    // TODO: What templates can be used here?
-    //std::shared_ptr<ConstantBuffer<T>>
     std::shared_ptr<InputLayout> pInputLayout_;
 };

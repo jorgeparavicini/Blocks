@@ -45,6 +45,7 @@
     <ClInclude Include="include\BlocksEngine\Topology.h" />
     <ClInclude Include="include\BlocksEngine\Mesh.h" />
     <ClInclude Include="include\BlocksEngine\SolidColor.h" />
+    <ClInclude Include="include\BlocksEngine\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp" />

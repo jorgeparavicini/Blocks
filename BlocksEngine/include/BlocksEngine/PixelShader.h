@@ -24,11 +24,6 @@ public:
     PixelShader(const Graphics& gfx, const std::wstring& path);
     void Bind(const Graphics& gfx) noexcept override;
 
-    static std::shared_ptr<PixelShader> SolidColor(const Graphics& gfx);
-
 protected:
     Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader_;
-
-private:
-    static std::shared_ptr<PixelShader> pSolidColor_;
 };

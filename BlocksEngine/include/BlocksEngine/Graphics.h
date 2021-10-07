@@ -31,8 +31,10 @@ public:
 
     void CreateDevice();
     void CreateResources();
-    void Render();
     void OnWindowSizeChanged(int width, int height);
+
+    void Clear();
+    void Present();
 
     [[nodiscard]] ID3D11Device& GetDevice() const noexcept;
     [[nodiscard]] ID3D11DeviceContext& GetContext() const noexcept;
@@ -50,9 +52,6 @@ private:
     Microsoft::WRL::ComPtr<IDXGISwapChain1> pSwapChain_;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTarget_;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView_;
-
-    void Clear();
-    void Present();
 
     void OnDeviceLost();
 };

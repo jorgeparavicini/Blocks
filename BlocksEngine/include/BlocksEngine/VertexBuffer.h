@@ -23,7 +23,7 @@ class BlocksEngine::VertexBuffer final : public Bindable
 {
 public:
     template <class T>
-    VertexBuffer(Graphics& gfx, const std::vector<T>& vertices)
+    VertexBuffer(const Graphics& gfx, const std::vector<T>& vertices)
         : stride_{sizeof T}
     {
         HRESULT hr;

@@ -41,7 +41,8 @@ public:
     [[nodiscard]] std::optional<int> ProcessMessages() const noexcept;
     [[nodiscard]] const Graphics& Gfx() const;
 
-    void Render() const;
+    void Clear() const;
+    void Present() const;
     void OnWindowSizeChanged(int width, int height) const;
     void SetMinWindowSize(int minWidth, int minHeight);
     void SetOnSuspending(std::function<void()> function);

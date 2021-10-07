@@ -20,13 +20,16 @@ namespace BlocksEngine
     class Mesh;
 }
 
-class BlocksEngine::Mesh : public Bindable
+class BlocksEngine::Mesh final : public Bindable
 {
 public:
+    Mesh(const Graphics& gfx);
+
     Mesh(std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer,
          std::shared_ptr<Topology> topology = Topology::TriangleList);
 
     void Bind(const Graphics& gfx) noexcept override;
+    UINT GetCount() const noexcept;
 
 private:
     std::shared_ptr<VertexBuffer> pVertexBuffer_;
