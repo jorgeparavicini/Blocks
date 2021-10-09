@@ -1,21 +1,18 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/SolidColor.h"
 
+
 using namespace BlocksEngine;
 
-SolidColor::SolidColor(const Graphics& gfx, DirectX::XMVECTORF32 color)
-    : Material{GetVertexShader(gfx), GetPixelShader(gfx), GetInputLayout(gfx)},
-      pConstantBuffer_{std::make_unique<PixelConstantBuffer<DirectX::XMVECTOR>>(gfx, color.v)}
-{
-}
 
-void SolidColor::Bind(const Graphics& gfx) noexcept
+SolidColor::SolidColor(const Graphics& gfx,
+                       DirectX::XMVECTORF32 color)
+    : Material{GetVertexShader(gfx), GetPixelShader(gfx), GetInputLayout(gfx)}
 {
-    Material::Bind(gfx);
-    pConstantBuffer_->Bind(gfx);
 }
 
 std::shared_ptr<VertexShader> SolidColor::pVertexShader_ = nullptr;
+
 
 std::shared_ptr<VertexShader> SolidColor::GetVertexShader(const Graphics& gfx)
 {

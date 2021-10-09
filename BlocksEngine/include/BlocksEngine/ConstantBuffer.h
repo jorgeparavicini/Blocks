@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "BlocksEngine/Bindable.h"
+#include "BlocksEngine/ConstantBufferBase.h"
 #include "BlocksEngine/DxgiInfoManager.h"
 #include "BlocksEngine/GraphicsException.h"
 
@@ -20,15 +20,15 @@ namespace BlocksEngine
 }
 
 template <typename T>
-class BlocksEngine::ConstantBuffer : public Bindable
+class BlocksEngine::ConstantBuffer : public ConstantBufferBase
 {
 public:
     ConstantBuffer(const Graphics& gfx, const T& constants, const UINT slot = 0u)
-        : slot_{slot}
+        : ConstantBufferBase{slot}
     {
         HRESULT hr;
 
-        D3D11_BUFFER_DESC cbd;
+        D3D11_BUFFER_DESC cbd{};
         cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
         cbd.Usage = D3D11_USAGE_DYNAMIC; // TODO: Constant Buffers should not always be dynamic
         cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -42,11 +42,11 @@ public:
     }
 
     explicit ConstantBuffer(const Graphics& gfx, const UINT slot = 0u)
-        : slot_{slot}
+        : ConstantBufferBase{slot}
     {
         HRESULT hr;
 
-        D3D11_BUFFER_DESC cbd;
+        D3D11_BUFFER_DESC cbd{};
         cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
         cbd.Usage = D3D11_USAGE_DYNAMIC; // TODO: Constant Buffers should not always be dynamic
         cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -62,10 +62,7 @@ public:
         HRESULT hr;
         D3D11_MAPPED_SUBRESOURCE msr;
         GFX_THROW_INFO(gfx.GetContext().Map(pConstantBuffer_.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msr));
+        memcpy(msr.pData, &constants, sizeof constants);
+        gfx.GetContext().Unmap(pConstantBuffer_.Get(), 0u);
     }
-
-
-protected:
-    Microsoft::WRL::ComPtr<ID3D11Buffer> pConstantBuffer_;
-    UINT slot_;
 };

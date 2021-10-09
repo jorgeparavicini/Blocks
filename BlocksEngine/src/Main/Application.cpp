@@ -1,19 +1,15 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Application.h"
 
-#include "BlocksEngine/PixelShader.h"
 #include "BlocksEngine/SolidColor.h"
-#include "BlocksEngine/VertexShader.h"
 
 BlocksEngine::Application::Application() : Application{std::make_unique<WindowOptions>()}
 {
-    pMaterial_ = std::make_unique<SolidColor>(pWindow_->Gfx(), DirectX::Colors::RosyBrown);
-    pMesh_ = std::make_unique<Mesh>(pWindow_->Gfx());
 }
 
 BlocksEngine::Application::Application(std::unique_ptr<WindowOptions> options)
     : pWindow_{std::make_unique<Window>(std::move(options))},
-      pGame_{std::make_shared<Game>()}
+      pGame_{std::make_shared<Game>(*this)}
 {
 }
 
@@ -37,6 +33,16 @@ int BlocksEngine::Application::MainLoop() const
     }
 }
 
+const BlocksEngine::Window& BlocksEngine::Application::GetWindow() const noexcept
+{
+    return *pWindow_;
+}
+
+const BlocksEngine::Graphics& BlocksEngine::Application::GetGraphics() const noexcept
+{
+    return GetWindow().Gfx();
+}
+
 void BlocksEngine::Application::Exit() noexcept
 {
     PostQuitMessage(0);
@@ -53,17 +59,16 @@ void BlocksEngine::Application::Tick() const
     Render();
 }
 
-void BlocksEngine::Application::Update()
+void BlocksEngine::Application::Update() const
 {
+    pGame_->Update();
 }
 
 void BlocksEngine::Application::Render() const
 {
     pWindow_->Clear();
 
-    pMaterial_->Bind(pWindow_->Gfx());
-    pMesh_->Bind(pWindow_->Gfx());
-    pWindow_->Gfx().GetContext().DrawIndexed(pMesh_->GetCount(), 0, 0);
+    pGame_->Render();
 
     pWindow_->Present();
 }

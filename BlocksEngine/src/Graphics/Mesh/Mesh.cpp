@@ -3,9 +3,11 @@
 
 #include "BlocksEngine/Vertex.h"
 
+
 BlocksEngine::Mesh::Mesh(const Graphics& gfx)
 {
-    /*constexpr float side = 1.0f / 2.0f;
+    /*
+    constexpr float side = 1.0f / 2.0f;
 
     std::vector<Vertex> vertices(8);
     vertices[0].pos = {-side, -side, -side};
@@ -25,6 +27,7 @@ BlocksEngine::Mesh::Mesh(const Graphics& gfx)
         0, 4, 2, 2, 4, 6,
         0, 1, 4, 1, 5, 4
     };*/
+
 
     std::vector<Vertex> vertices(3);
     vertices[0].pos = {0.0f, 0.5f, 0.0f};

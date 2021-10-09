@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="include\BlocksEngine\Application.h" />
     <ClInclude Include="include\BlocksEngine\ConstantBuffer.h" />
+    <ClInclude Include="include\BlocksEngine\ConstantBufferBase.h" />
     <ClInclude Include="include\BlocksEngine\Exception.h" />
     <ClInclude Include="include\BlocksEngine\GraphicsException.h" />
     <ClInclude Include="include\BlocksEngine\pch.h" />
@@ -46,12 +47,28 @@
     <ClInclude Include="include\BlocksEngine\Mesh.h" />
     <ClInclude Include="include\BlocksEngine\SolidColor.h" />
     <ClInclude Include="include\BlocksEngine\Vertex.h" />
+    <ClInclude Include="include\BlocksEngine\Transform.h" />
+    <ClInclude Include="include\BlocksEngine\Vector3.h" />
+    <ClInclude Include="include\BlocksEngine\Entity.h" />
+    <ClInclude Include="include\BlocksEngine\Actor.h" />
+    <ClInclude Include="include\BlocksEngine\Camera.h" />
+    <ClInclude Include="include\BlocksEngine\Component.h" />
+    <ClInclude Include="include\BlocksEngine\Renderer.h" />
+    <ClInclude Include="include\BlocksEngine\EngineException.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Actor.cpp" />
+    <ClCompile Include="src\Core\Components\Component.cpp" />
+    <ClCompile Include="src\Core\Components\Renderer.cpp" />
+    <ClCompile Include="src\Core\Entity.cpp" />
+    <ClCompile Include="src\Core\Vector3.cpp" />
+    <ClCompile Include="src\Exceptions\EngineException.cpp" />
+    <ClCompile Include="src\Core\Components\Camera.cpp" />
+    <ClCompile Include="src\Graphics\Material\ConstantBuffer.cpp" />
+    <ClCompile Include="src\Main\Application.cpp" />
     <ClCompile Include="src\Graphics\Graphics.cpp" />
-    <ClCompile Include="src\Core\Window.cpp" />
-    <ClCompile Include="src\Core\WindowClass.cpp" />
+    <ClCompile Include="src\Main\Window.cpp" />
+    <ClCompile Include="src\Main\WindowClass.cpp" />
     <ClCompile Include="src\DebugUtility\DxgiInfoManager.cpp" />
     <ClCompile Include="src\Exceptions\DeviceRemovedException.cpp" />
     <ClCompile Include="src\Exceptions\DxgiInfoException.cpp" />
@@ -79,6 +96,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BlocksEngine/pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="src\Core\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
@@ -186,6 +204,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>BlocksEngine/pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)/BlocksEngine/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -204,6 +223,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>BlocksEngine/pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)/BlocksEngine/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -221,6 +241,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>BlocksEngine/pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/BlocksEngine/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -238,6 +259,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>BlocksEngine/pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/BlocksEngine/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -23,7 +23,7 @@ namespace BlocksEngine
 class BlocksEngine::Mesh final : public Bindable
 {
 public:
-    Mesh(const Graphics& gfx);
+    explicit Mesh(const Graphics& gfx);
 
     Mesh(std::shared_ptr<VertexBuffer> vertexBuffer, std::shared_ptr<IndexBuffer> indexBuffer,
          std::shared_ptr<Topology> topology = Topology::TriangleList);

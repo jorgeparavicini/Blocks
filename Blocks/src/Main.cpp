@@ -4,7 +4,6 @@
 
 #include "BlocksEngine/Application.h"
 #include "BlocksEngine/Exception.h"
-#include "BlocksEngine/PixelShader.h"
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,

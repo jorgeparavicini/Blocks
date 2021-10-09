@@ -38,6 +38,7 @@ public:
 
     [[nodiscard]] ID3D11Device& GetDevice() const noexcept;
     [[nodiscard]] ID3D11DeviceContext& GetContext() const noexcept;
+    [[nodiscard]] float AspectRatio() const noexcept;
 
 private:
     HWND window_;

@@ -167,6 +167,11 @@ ID3D11DeviceContext& BlocksEngine::Graphics::GetContext() const noexcept
     return *pContext_.Get();
 }
 
+float BlocksEngine::Graphics::AspectRatio() const noexcept
+{
+    return static_cast<float>(width_) / static_cast<float>(height_);
+}
+
 void BlocksEngine::Graphics::Clear()
 {
     // Clear the views
