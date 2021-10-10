@@ -21,8 +21,11 @@ class BlocksEngine::Transform
 public:
     explicit Transform(Vector3 position = Vector3::Zero(), Vector3 rotation = Vector3::Zero(),
                        Vector3 scale = Vector3::One());
+
     [[nodiscard]] DirectX::XMMATRIX GetMatrix() const;
+    [[nodiscard]] Vector3 GetPosition() const noexcept;
     void SetPosition(Vector3 position) noexcept;
+
 
 private:
     Vector3 position_;

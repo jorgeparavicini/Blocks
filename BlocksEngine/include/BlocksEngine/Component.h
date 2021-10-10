@@ -8,6 +8,7 @@
 // File: Component.h
 
 #pragma once
+#include "Window.h"
 #include "BlocksEngine/Entity.h"
 
 namespace BlocksEngine
@@ -33,7 +34,8 @@ public:
     /**
      * Gets the actor this component is attached to.
      */
-    [[nodiscard]] const Actor& GetActor() const noexcept;
+    [[nodiscard]] Actor& GetActor() const noexcept;
+    [[nodiscard]] Window& GetWindow() const noexcept;
 
     [[nodiscard]] Transform& GetTransform() const noexcept;
 

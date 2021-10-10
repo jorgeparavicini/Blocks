@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\BlocksEngine\Application.h" />
     <ClInclude Include="include\BlocksEngine\ConstantBuffer.h" />
     <ClInclude Include="include\BlocksEngine\ConstantBufferBase.h" />
     <ClInclude Include="include\BlocksEngine\Exception.h" />
@@ -65,7 +64,6 @@
     <ClCompile Include="src\Exceptions\EngineException.cpp" />
     <ClCompile Include="src\Core\Components\Camera.cpp" />
     <ClCompile Include="src\Graphics\Material\ConstantBuffer.cpp" />
-    <ClCompile Include="src\Main\Application.cpp" />
     <ClCompile Include="src\Graphics\Graphics.cpp" />
     <ClCompile Include="src\Main\Window.cpp" />
     <ClCompile Include="src\Main\WindowClass.cpp" />
@@ -73,7 +71,7 @@
     <ClCompile Include="src\Exceptions\DeviceRemovedException.cpp" />
     <ClCompile Include="src\Exceptions\DxgiInfoException.cpp" />
     <ClCompile Include="src\Exceptions\Exception.cpp" />
-    <ClCompile Include="src\Game\Game.cpp" />
+    <ClCompile Include="src\Main\Game.cpp" />
     <ClCompile Include="src\Exceptions\GraphicsException.cpp" />
     <ClCompile Include="src\Exceptions\WindowException.cpp" />
     <ClCompile Include="src\Graphics\Bindable.cpp" />
@@ -100,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl">
@@ -270,5 +269,13 @@
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\boost.1.77.0.0\build\boost.targets" Condition="Exists('..\packages\boost.1.77.0.0\build\boost.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\boost.1.77.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.77.0.0\build\boost.targets'))" />
+  </Target>
 </Project>

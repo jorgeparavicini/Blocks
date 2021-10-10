@@ -28,7 +28,8 @@ public:
     explicit Actor(Game& game);
 
     [[nodiscard]] Transform& GetTransform() const noexcept;
-    [[nodiscard]] const Game& GetGame() const noexcept;
+    [[nodiscard]] Game& GetGame() const noexcept;
+    [[nodiscard]] Window& GetWindow() const noexcept;
     [[nodiscard]] const Graphics& GetGraphics() const noexcept;
 
     void Update() const;

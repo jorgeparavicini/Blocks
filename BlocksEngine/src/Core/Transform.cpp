@@ -10,11 +10,16 @@ BlocksEngine::Transform::Transform(Vector3 position, Vector3 rotation, Vector3 s
 
 XMMATRIX BlocksEngine::Transform::GetMatrix() const
 {
-    return (XMMatrixTranslation(position_.X(), position_.Y(), position_.Z())
-            + XMMatrixScaling(scale_.X(), scale_.Y(), scale_.Z()))
-        * XMMatrixRotationX(rotation_.X())
-        * XMMatrixRotationY(rotation_.Y())
-        * XMMatrixRotationZ(rotation_.Z());
+    return (XMMatrixTranslation(position_.x, position_.y, position_.z)
+            + XMMatrixScaling(scale_.x, scale_.y, scale_.z))
+        * XMMatrixRotationX(rotation_.x)
+        * XMMatrixRotationY(rotation_.y)
+        * XMMatrixRotationZ(rotation_.z);
+}
+
+BlocksEngine::Vector3 BlocksEngine::Transform::GetPosition() const noexcept
+{
+    return position_;
 }
 
 void BlocksEngine::Transform::SetPosition(const Vector3 position) noexcept

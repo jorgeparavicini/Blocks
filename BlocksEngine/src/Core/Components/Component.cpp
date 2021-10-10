@@ -10,9 +10,14 @@ Component::Component(Actor& actor)
 {
 }
 
-const Actor& Component::GetActor() const noexcept
+Actor& Component::GetActor() const noexcept
 {
     return actor_;
+}
+
+Window& Component::GetWindow() const noexcept
+{
+    return GetActor().GetWindow();
 }
 
 Transform& Component::GetTransform() const noexcept

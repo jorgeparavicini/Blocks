@@ -16,9 +16,14 @@ Transform& Actor::GetTransform() const noexcept
     return *pTransform_;
 }
 
-const Game& Actor::GetGame() const noexcept
+Game& Actor::GetGame() const noexcept
 {
     return game_;
+}
+
+Window& Actor::GetWindow() const noexcept
+{
+    return GetGame().GetWindow();
 }
 
 const Graphics& Actor::GetGraphics() const noexcept

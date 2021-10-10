@@ -8,6 +8,7 @@
 // File: SolidColor.h
 
 #pragma once
+#include "PixelConstantBuffers.h"
 #include "BlocksEngine/ConstantBuffer.h"
 #include "BlocksEngine/Material.h"
 
@@ -26,8 +27,12 @@ public:
     static std::shared_ptr<PixelShader> GetPixelShader(const Graphics& gfx);
     static std::shared_ptr<InputLayout> GetInputLayout(const Graphics& gfx);
 
+    void Bind(const Graphics& gfx) noexcept override;
+
 private:
     static std::shared_ptr<VertexShader> pVertexShader_;
     static std::shared_ptr<PixelShader> pPixelShader_;
     static std::shared_ptr<InputLayout> pInputLayout_;
+
+    std::unique_ptr<PixelConstantBuffer<DirectX::XMVECTOR>> pColorBuffer_;
 };

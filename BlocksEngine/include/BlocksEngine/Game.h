@@ -10,31 +10,41 @@
 #pragma once
 
 #include "Camera.h"
+#include "Window.h"
+#include "WindowOptions.h"
 
 namespace BlocksEngine
 {
-    class Application;
     class Game;
 }
 
 class BlocksEngine::Game
 {
 public:
-    explicit Game(const Application& application);
+    Game();
+    explicit Game(std::unique_ptr<WindowOptions> options);
 
-    void SetActiveCamera(Camera& camera);
+    [[nodiscard]] int MainLoop() const;
+    [[nodiscard]] Window& GetWindow() const noexcept;
+    [[nodiscard]] const Graphics& GetGraphics() const noexcept;
     [[nodiscard]] Camera& GetCamera() const noexcept;
     [[nodiscard]] bool HasCamera() const noexcept;
-    [[nodiscard]] const Application& GetApplication() const noexcept;
-    [[nodiscard]] const Graphics& GetGraphics() const noexcept;
+
+
+    static void Exit() noexcept;
+    void ForceExit() noexcept;
+    void SetActiveCamera(Camera& camera);
 
     Actor& AddActor();
 
+private:
+    bool shutdownForced_{false};
+    std::unique_ptr<Window> pWindow_;
+    void Tick() const;
     void Update() const;
     void Render() const;
+    static std::optional<int> ProcessApplicationMessages() noexcept;
 
-private:
-    const Application& application_;
     Camera* camera_{nullptr};
     std::vector<std::unique_ptr<Actor>> pActors_{};
 };

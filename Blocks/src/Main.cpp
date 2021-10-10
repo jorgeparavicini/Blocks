@@ -1,9 +1,11 @@
 ﻿#include "Blocks/pch.h"
 
 #include <Windows.h>
+#include <boost/signals2.hpp>
 
-#include "BlocksEngine/Application.h"
 #include "BlocksEngine/Exception.h"
+#include "BlocksEngine/Game.h"
+
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,
@@ -16,10 +18,7 @@ int WINAPI WinMain(
 
     try
     {
-        TCHAR NPath[MAX_PATH];
-        GetCurrentDirectory(MAX_PATH, NPath);
-        OutputDebugString(NPath);
-        return BlocksEngine::Application{}.MainLoop();
+        return BlocksEngine::Game{}.MainLoop();
     }
     catch (const BlocksEngine::Exception& e)
     {

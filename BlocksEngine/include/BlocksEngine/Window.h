@@ -47,6 +47,10 @@ public:
     void SetMinWindowSize(int minWidth, int minHeight);
     void SetOnSuspending(std::function<void()> function);
 
+    [[nodiscard]] boost::signals2::connection AddSignalWindowResized(
+        const Graphics::WindowResizedSignal::slot_type& slot) const noexcept;
+
+
 protected:
     LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

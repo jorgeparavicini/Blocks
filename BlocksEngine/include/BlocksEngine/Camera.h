@@ -25,6 +25,12 @@ public:
 
     [[nodiscard]] DirectX::XMMATRIX Projection() const noexcept;
 
+    void OnWindowResized(int width, int height) noexcept;
+
+    void Update() override;
+
 private:
     DirectX::XMMATRIX projection_;
+
+    boost::signals2::connection windowResizedConnection_;
 };

@@ -6,7 +6,6 @@
 
 BlocksEngine::Mesh::Mesh(const Graphics& gfx)
 {
-    /*
     constexpr float side = 1.0f / 2.0f;
 
     std::vector<Vertex> vertices(8);
@@ -26,15 +25,15 @@ BlocksEngine::Mesh::Mesh(const Graphics& gfx)
         4, 5, 7, 4, 7, 6,
         0, 4, 2, 2, 4, 6,
         0, 1, 4, 1, 5, 4
-    };*/
+    };
 
-
+    /*
     std::vector<Vertex> vertices(3);
     vertices[0].pos = {0.0f, 0.5f, 0.0f};
     vertices[1].pos = {0.5f, -0.5f, 0.0f};
     vertices[2].pos = {-0.5f, -0.5f, 0.0f};
 
-    std::vector<unsigned short> indices = {0, 1, 2};
+    std::vector<unsigned short> indices = {0, 1, 2};*/
 
     pVertexBuffer_ = std::make_shared<VertexBuffer>(gfx, vertices);
     pIndexBuffer_ = std::make_shared<IndexBuffer>(gfx, indices);

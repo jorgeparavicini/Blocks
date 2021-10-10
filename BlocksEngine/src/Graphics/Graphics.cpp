@@ -155,6 +155,8 @@ void BlocksEngine::Graphics::OnWindowSizeChanged(const int width, const int heig
     height_ = std::max(height, 1);
 
     CreateResources();
+
+    windowResized_(width_, height_);
 }
 
 ID3D11Device& BlocksEngine::Graphics::GetDevice() const noexcept
@@ -170,6 +172,12 @@ ID3D11DeviceContext& BlocksEngine::Graphics::GetContext() const noexcept
 float BlocksEngine::Graphics::AspectRatio() const noexcept
 {
     return static_cast<float>(width_) / static_cast<float>(height_);
+}
+
+boost::signals2::connection BlocksEngine::Graphics::AddSignalWindowResized(
+    const WindowResizedSignal::slot_type& slot) noexcept
+{
+    return windowResized_.connect(slot);
 }
 
 void BlocksEngine::Graphics::Clear()

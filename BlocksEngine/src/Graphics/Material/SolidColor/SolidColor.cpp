@@ -7,7 +7,8 @@ using namespace BlocksEngine;
 
 SolidColor::SolidColor(const Graphics& gfx,
                        DirectX::XMVECTORF32 color)
-    : Material{GetVertexShader(gfx), GetPixelShader(gfx), GetInputLayout(gfx)}
+    : Material{GetVertexShader(gfx), GetPixelShader(gfx), GetInputLayout(gfx)},
+      pColorBuffer_{std::make_unique<PixelConstantBuffer<DirectX::XMVECTOR>>(gfx, color)}
 {
 }
 
@@ -48,4 +49,10 @@ std::shared_ptr<InputLayout> SolidColor::GetInputLayout(const Graphics& gfx)
     }
 
     return pInputLayout_;
+}
+
+void SolidColor::Bind(const Graphics& gfx) noexcept
+{
+    pColorBuffer_->Bind(gfx);
+    Material::Bind(gfx);
 }

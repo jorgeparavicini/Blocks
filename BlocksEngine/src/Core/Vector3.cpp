@@ -4,23 +4,8 @@
 using BlocksEngine::Vector3;
 
 Vector3::Vector3(const float x, const float y, const float z)
-    : x_{x}, y_{y}, z_{z}
+    : x{x}, y{y}, z{z}
 {
-}
-
-float Vector3::X() const noexcept
-{
-    return x_;
-}
-
-float Vector3::Y() const noexcept
-{
-    return y_;
-}
-
-float Vector3::Z() const noexcept
-{
-    return z_;
 }
 
 float Vector3::Magnitude() const noexcept
@@ -30,22 +15,22 @@ float Vector3::Magnitude() const noexcept
 
 float Vector3::SqrMagnitude() const noexcept
 {
-    return x_ * x_ + y_ * y_ + z_ * z_;
+    return x * x + y * y + z * z;
 }
 
 Vector3 Vector3::Normalized() const noexcept
 {
     const float magnitude = Magnitude();
-    return Vector3(x_ / magnitude, y_ / magnitude, z_ / magnitude);
+    return Vector3(x / magnitude, y / magnitude, z / magnitude);
 }
 
 float Vector3::operator[](const int i) const
 {
     switch (i)
     {
-    case 0: return x_;
-    case 1: return y_;
-    case 2: return z_;
+    case 0: return x;
+    case 1: return y;
+    case 2: return z;
     default: throw std::out_of_range("The index is out of range");
     }
 }

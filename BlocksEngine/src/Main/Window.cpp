@@ -114,10 +114,16 @@ void BlocksEngine::Window::SetMinWindowSize(const int minWidth, const int minHei
     minHeight_ = std::max(minHeight, 1);
 }
 
-// TODO: Find a good signal library (maybe Sevi?)
+// TODO: Find a good signal library (maybe Sevi?) -> boost::signals2
 void BlocksEngine::Window::SetOnSuspending(std::function<void()> function)
 {
     onSuspending_ = std::move(function);
+}
+
+boost::signals2::connection BlocksEngine::Window::AddSignalWindowResized(
+    const Graphics::WindowResizedSignal::slot_type& slot) const noexcept
+{
+    return pGraphics_->AddSignalWindowResized(slot);
 }
 
 /**
@@ -157,7 +163,7 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
         }
         else if (isResizing_)
         {
-            pGraphics_->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
+            //pGraphics_->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
         }
 
     case WM_ENTERSIZEMOVE:
