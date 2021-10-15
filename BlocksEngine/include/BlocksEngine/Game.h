@@ -21,14 +21,15 @@ namespace BlocksEngine
 class BlocksEngine::Game
 {
 public:
-    Game();
-    explicit Game(std::unique_ptr<WindowOptions> options);
+    explicit Game(std::unique_ptr<WindowOptions> options = std::make_unique<WindowOptions>());
 
     [[nodiscard]] int MainLoop() const;
     [[nodiscard]] Window& GetWindow() const noexcept;
     [[nodiscard]] const Graphics& GetGraphics() const noexcept;
     [[nodiscard]] Camera& GetCamera() const noexcept;
     [[nodiscard]] bool HasCamera() const noexcept;
+    [[nodiscard]] const Keyboard& Keyboard() const noexcept;
+    [[nodiscard]] const Mouse& Mouse() const noexcept;
 
 
     static void Exit() noexcept;
@@ -38,8 +39,9 @@ public:
     Actor& AddActor();
 
 private:
+    int actorCount_{0};
     bool shutdownForced_{false};
-    std::unique_ptr<Window> pWindow_;
+    std::unique_ptr<Window> pWindow_{};
     void Tick() const;
     void Update() const;
     void Render() const;

@@ -12,6 +12,7 @@
 #include <DirectXMath.h>
 
 #include "Actor.h"
+#include "Matrix.h"
 
 namespace BlocksEngine
 {
@@ -23,14 +24,26 @@ class BlocksEngine::Camera final : public Component
 public:
     explicit Camera(Actor& actor);
 
-    [[nodiscard]] DirectX::XMMATRIX Projection() const noexcept;
+    [[nodiscard]] Matrix ViewProjection() const noexcept;
+    [[nodiscard]] Matrix View() const noexcept;
+    [[nodiscard]] Matrix Projection() const noexcept;
 
     void OnWindowResized(int width, int height) noexcept;
 
     void Update() override;
 
-private:
-    DirectX::XMMATRIX projection_;
 
+private:
+    float lastX_{0};
+    float lastY_{0};
+    Vector3 rotation_{0, 0, 0};
+
+    float moveSpeed_{0.01f};
+    float x_{0.01f};
+    Matrix projection_;
     boost::signals2::connection windowResizedConnection_;
+
+    float ClampAngle(float angle, float min, float max) const;
+
+    [[nodiscard]] DirectX::XMMATRIX CalculateProjection() const noexcept;
 };

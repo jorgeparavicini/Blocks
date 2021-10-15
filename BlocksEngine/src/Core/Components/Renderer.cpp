@@ -10,7 +10,11 @@
 using namespace BlocksEngine;
 
 Renderer::Renderer(Actor& actor)
-    : Renderer{actor, std::make_shared<SolidColor>(actor.GetGraphics()), std::make_shared<Mesh>(actor.GetGraphics())}
+    : Renderer{
+        actor,
+        std::make_shared<SolidColor>(actor.GetGraphics()),
+        std::make_shared<Mesh>(actor.GetGraphics())
+    }
 {
 }
 
@@ -40,12 +44,9 @@ void Renderer::Draw()
         return;
     }
 
-    pConstantBuffer_->Update(GetActor().GetGraphics(),
-                             XMMatrixTranspose(
-                                 GetTransform().GetMatrix()
-                                 * GetActor().GetGame().GetCamera().GetTransform().GetMatrix()
-                                 * GetActor().GetGame().GetCamera().Projection()
-                             ));
+    const auto wvp = GetActor().GetTransform().GetMatrix() * GetActor().GetGame().GetCamera().ViewProjection();
+
+    pConstantBuffer_->Update(GetActor().GetGraphics(), XMMatrixTranspose(wvp));
 
     pMaterial_->Bind(GetActor().GetGraphics());
     pMesh_->Bind(GetActor().GetGraphics());

@@ -7,22 +7,32 @@
 
 using namespace BlocksEngine;
 
-
-Game::Game()
-    : Game{std::make_unique<WindowOptions>()}
-{
-}
-
 Game::Game(std::unique_ptr<WindowOptions> options)
     : pWindow_{std::make_unique<Window>(std::move(options))}
 {
     Actor& cameraActor = AddActor();
     Camera& camera = cameraActor.AddComponent<Camera>();
-    camera.GetTransform().SetPosition(Vector3(0, 0, 20));
+    camera.GetTransform().SetPosition(Vector3(03, 03, -10));
+    const Quaternion rot = Quaternion::Euler(20, -30, 0);
+    camera.GetTransform().SetRotation(rot);
     SetActiveCamera(camera);
 
     Actor& blockActor = AddActor();
     blockActor.AddComponent<Renderer>();
+
+    Actor& block2 = AddActor();
+    Vector3 pos = block2.GetTransform().GetPosition();
+    pos.y += 1;
+    pos.x += 1;
+    block2.GetTransform().SetPosition(pos);
+    block2.AddComponent<Renderer>();
+
+    Actor& block3 = AddActor();
+    Vector3 pos2 = block3.GetTransform().GetPosition();
+    pos2.y += 6;
+    pos2.x += 4;
+    block3.GetTransform().SetPosition(pos2);
+    block3.AddComponent<Renderer>();
 }
 
 int Game::MainLoop() const
@@ -80,9 +90,20 @@ bool Game::HasCamera() const noexcept
     return camera_ != nullptr;
 }
 
+const Keyboard& Game::Keyboard() const noexcept
+{
+    return GetWindow().GetKeyboard();
+}
+
+const Mouse& Game::Mouse() const noexcept
+{
+    return GetWindow().GetMouse();
+}
+
 Actor& Game::AddActor()
 {
-    auto actor = std::make_unique<Actor>(*this);
+    std::string name = "Actor " + std::to_string(actorCount_++);
+    auto actor = std::make_unique<Actor>(*this, std::move(name));
     Actor& a = *actor;
     pActors_.push_back(std::move(actor));
     return a;

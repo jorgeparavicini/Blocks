@@ -43,6 +43,8 @@ public:
     [[nodiscard]] ID3D11Device& GetDevice() const noexcept;
     [[nodiscard]] ID3D11DeviceContext& GetContext() const noexcept;
     [[nodiscard]] float AspectRatio() const noexcept;
+    [[nodiscard]] float Width() const noexcept;
+    [[nodiscard]] float Height() const noexcept;
 
     boost::signals2::connection AddSignalWindowResized(const WindowResizedSignal::slot_type& slot) noexcept;
 

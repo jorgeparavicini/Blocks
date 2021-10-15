@@ -5,8 +5,9 @@
 
 using namespace BlocksEngine;
 
-Actor::Actor(Game& game)
+Actor::Actor(Game& game, std::string name)
     : game_{game},
+      name_{std::move(name)},
       pTransform_{std::make_unique<Transform>()}
 {
 }
@@ -33,6 +34,8 @@ const Graphics& Actor::GetGraphics() const noexcept
 
 void Actor::Update() const
 {
+    pTransform_->UpdateMatrix();
+
     for (auto& pComponent : pComponents_)
     {
         pComponent->Update();

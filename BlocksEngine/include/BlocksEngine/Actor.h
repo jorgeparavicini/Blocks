@@ -25,7 +25,7 @@ namespace BlocksEngine
 class BlocksEngine::Actor final : public Entity
 {
 public:
-    explicit Actor(Game& game);
+    explicit Actor(Game& game, std::string name);
 
     [[nodiscard]] Transform& GetTransform() const noexcept;
     [[nodiscard]] Game& GetGame() const noexcept;
@@ -49,6 +49,7 @@ public:
 
 private:
     Game& game_;
+    std::string name_;
     std::unique_ptr<Transform> pTransform_{};
     std::unordered_set<std::unique_ptr<Component>> pComponents_{};
 };

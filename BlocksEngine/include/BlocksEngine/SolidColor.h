@@ -20,8 +20,7 @@ namespace BlocksEngine
 class BlocksEngine::SolidColor final : public Material
 {
 public:
-    explicit SolidColor(const Graphics& gfx,
-                        DirectX::XMVECTORF32 color = DirectX::Colors::Gray);
+    explicit SolidColor(const Graphics& gfx);
 
     static std::shared_ptr<VertexShader> GetVertexShader(const Graphics& gfx);
     static std::shared_ptr<PixelShader> GetPixelShader(const Graphics& gfx);
@@ -34,5 +33,5 @@ private:
     static std::shared_ptr<PixelShader> pPixelShader_;
     static std::shared_ptr<InputLayout> pInputLayout_;
 
-    std::unique_ptr<PixelConstantBuffer<DirectX::XMVECTOR>> pColorBuffer_;
+    std::unique_ptr<PixelConstantBuffer<DirectX::XMVECTORF32[6]>> pColorBuffer_;
 };

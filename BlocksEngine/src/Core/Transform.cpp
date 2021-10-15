@@ -2,27 +2,58 @@
 #include "BlocksEngine/Transform.h"
 
 using namespace DirectX;
+using namespace BlocksEngine;
 
-BlocksEngine::Transform::Transform(Vector3 position, Vector3 rotation, Vector3 scale)
-    : position_{position}, rotation_{rotation}, scale_{scale}
+
+Transform::Transform(Vector3 position, Quaternion rotation, Vector3 scale)
+    : position_{std::move(position)},
+      rotation_{std::move(rotation)},
+      scale_{std::move(scale)}
 {
+    UpdateMatrix();
 }
 
-XMMATRIX BlocksEngine::Transform::GetMatrix() const
+const Matrix& Transform::GetMatrix() const noexcept
 {
-    return (XMMatrixTranslation(position_.x, position_.y, position_.z)
-            + XMMatrixScaling(scale_.x, scale_.y, scale_.z))
-        * XMMatrixRotationX(rotation_.x)
-        * XMMatrixRotationY(rotation_.y)
-        * XMMatrixRotationZ(rotation_.z);
+    return matrix_;
 }
 
-BlocksEngine::Vector3 BlocksEngine::Transform::GetPosition() const noexcept
+Vector3& Transform::GetPosition() noexcept
 {
     return position_;
 }
 
-void BlocksEngine::Transform::SetPosition(const Vector3 position) noexcept
+Quaternion& Transform::GetRotation() noexcept
 {
-    position_ = position;
+    return rotation_;
+}
+
+Vector3& Transform::GetScale() noexcept
+{
+    return scale_;
+}
+
+void Transform::SetPosition(Vector3 position) noexcept
+{
+    position_ = std::move(position);
+}
+
+void Transform::SetRotation(Quaternion rotation) noexcept
+{
+    rotation_ = std::move(rotation);
+}
+
+void Transform::SetScale(const Vector3 scale) noexcept
+{
+    scale_ = scale;
+}
+
+void Transform::UpdateMatrix() noexcept
+{
+    matrix_ = Matrix::CreateTranslation(position_)
+        * Matrix::CreateFromQuaternion(rotation_)
+        * Matrix::CreateScale(scale_);
+
+    position_.ConsumeIsDirty();
+    scale_.ConsumeIsDirty();
 }

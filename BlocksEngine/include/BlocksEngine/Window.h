@@ -13,6 +13,8 @@
 #include <unordered_map>
 
 #include "Graphics.h"
+#include "Keyboard.h"
+#include "Mouse.h"
 #include "BlocksEngine/WindowClass.h"
 #include "BlocksEngine/WindowOptions.h"
 
@@ -50,6 +52,9 @@ public:
     [[nodiscard]] boost::signals2::connection AddSignalWindowResized(
         const Graphics::WindowResizedSignal::slot_type& slot) const noexcept;
 
+    [[nodiscard]] const Mouse& GetMouse() const noexcept;
+    [[nodiscard]] const Keyboard& GetKeyboard() const noexcept;
+
 
 protected:
     LRESULT WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -76,4 +81,7 @@ private:
     // Events
     std::function<void()> onSuspending_;
     std::function<void()> onResuming_;
+
+    std::unique_ptr<Mouse> pMouse_{std::make_unique<Mouse>()};
+    std::unique_ptr<Keyboard> pKeyboard_{std::make_unique<Keyboard>()};
 };

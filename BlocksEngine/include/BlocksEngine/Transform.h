@@ -8,7 +8,9 @@
 // File: Transform.h
 
 #pragma once
-#include "DirectXMath.h"
+
+#include "Matrix.h"
+#include "Quaternion.h"
 #include "Vector3.h"
 
 namespace BlocksEngine
@@ -19,16 +21,25 @@ namespace BlocksEngine
 class BlocksEngine::Transform
 {
 public:
-    explicit Transform(Vector3 position = Vector3::Zero(), Vector3 rotation = Vector3::Zero(),
-                       Vector3 scale = Vector3::One());
+    explicit Transform(Vector3 position = Vector3::Zero,
+                       Quaternion rotation = Quaternion::Identity,
+                       Vector3 scale = Vector3::One);
 
-    [[nodiscard]] DirectX::XMMATRIX GetMatrix() const;
-    [[nodiscard]] Vector3 GetPosition() const noexcept;
+    [[nodiscard]] const Matrix& GetMatrix() const noexcept;
+    [[nodiscard]] Vector3& GetPosition() noexcept;
+    [[nodiscard]] Quaternion& GetRotation() noexcept;
+    [[nodiscard]] Vector3& GetScale() noexcept;
+
     void SetPosition(Vector3 position) noexcept;
+    void SetRotation(Quaternion rotation) noexcept;
+    void SetScale(Vector3 scale) noexcept;
 
+    void UpdateMatrix() noexcept;
 
 private:
     Vector3 position_;
-    Vector3 rotation_;
+    Quaternion rotation_;
     Vector3 scale_;
+
+    Matrix matrix_;
 };

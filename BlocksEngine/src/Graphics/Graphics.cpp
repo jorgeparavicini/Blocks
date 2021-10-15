@@ -174,6 +174,16 @@ float BlocksEngine::Graphics::AspectRatio() const noexcept
     return static_cast<float>(width_) / static_cast<float>(height_);
 }
 
+float BlocksEngine::Graphics::Width() const noexcept
+{
+    return static_cast<float>(width_);
+}
+
+float BlocksEngine::Graphics::Height() const noexcept
+{
+    return static_cast<float>(height_);
+}
+
 boost::signals2::connection BlocksEngine::Graphics::AddSignalWindowResized(
     const WindowResizedSignal::slot_type& slot) noexcept
 {

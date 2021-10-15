@@ -4,11 +4,28 @@
 
 using namespace BlocksEngine;
 
+std::vector<DirectX::XMVECTORF32> colors = {
+    DirectX::Colors::Red,
+    DirectX::Colors::Blue,
+    DirectX::Colors::Cyan,
+    DirectX::Colors::Green,
+    DirectX::Colors::Yellow,
+    DirectX::Colors::Magenta
+};
 
-SolidColor::SolidColor(const Graphics& gfx,
-                       DirectX::XMVECTORF32 color)
+DirectX::XMVECTORF32 colors2[6] = {
+    DirectX::Colors::Red,
+    DirectX::Colors::Blue,
+    DirectX::Colors::Cyan,
+    DirectX::Colors::Green,
+    DirectX::Colors::Yellow,
+    DirectX::Colors::Magenta
+};
+
+
+SolidColor::SolidColor(const Graphics& gfx)
     : Material{GetVertexShader(gfx), GetPixelShader(gfx), GetInputLayout(gfx)},
-      pColorBuffer_{std::make_unique<PixelConstantBuffer<DirectX::XMVECTOR>>(gfx, color)}
+      pColorBuffer_{std::make_unique<PixelConstantBuffer<DirectX::XMVECTORF32[6]>>(gfx, colors2)}
 {
 }
 
