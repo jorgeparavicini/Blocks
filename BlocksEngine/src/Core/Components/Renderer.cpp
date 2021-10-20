@@ -44,7 +44,7 @@ void Renderer::Draw()
         return;
     }
 
-    const auto wvp = GetActor().GetTransform().GetMatrix() * GetActor().GetGame().GetCamera().ViewProjection();
+    const auto wvp = GetActor().GetTransform().GetMatrix() * GetActor().GetGame().MainCamera().ViewProjection();
 
     pConstantBuffer_->Update(GetActor().GetGraphics(), XMMatrixTranspose(wvp));
 

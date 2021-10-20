@@ -8,7 +8,7 @@
 using namespace BlocksEngine;
 
 Game::Game(std::unique_ptr<WindowOptions> options)
-    : pWindow_{std::make_unique<Window>(std::move(options))}
+    : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))}
 {
     Actor& cameraActor = AddActor();
     Camera& camera = cameraActor.AddComponent<Camera>();
@@ -55,14 +55,14 @@ int Game::MainLoop() const
     }
 }
 
-Window& Game::GetWindow() const noexcept
+Window& Game::Window() const noexcept
 {
     return *pWindow_;
 }
 
-const Graphics& Game::GetGraphics() const noexcept
+const Graphics& Game::Graphics() const noexcept
 {
-    return GetWindow().Gfx();
+    return Window().Gfx();
 }
 
 void Game::Exit() noexcept
@@ -80,7 +80,7 @@ void Game::SetActiveCamera(Camera& camera)
     camera_ = &camera;
 }
 
-Camera& Game::GetCamera() const noexcept
+Camera& Game::MainCamera() const noexcept
 {
     return *camera_;
 }
@@ -92,17 +92,17 @@ bool Game::HasCamera() const noexcept
 
 const Keyboard& Game::Keyboard() const noexcept
 {
-    return GetWindow().GetKeyboard();
+    return Window().Keyboard();
 }
 
 const Mouse& Game::Mouse() const noexcept
 {
-    return GetWindow().GetMouse();
+    return Window().Mouse();
 }
 
 Actor& Game::AddActor()
 {
-    std::string name = "Actor " + std::to_string(actorCount_++);
+    std::string name = "Actor " + std::to_string(totalActorCount_++);
     auto actor = std::make_unique<Actor>(*this, std::move(name));
     Actor& a = *actor;
     pActors_.push_back(std::move(actor));

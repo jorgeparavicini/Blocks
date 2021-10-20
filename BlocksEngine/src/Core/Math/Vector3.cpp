@@ -34,20 +34,6 @@ Vector3::Vector3(const XMVECTORF32& v) noexcept
 }
 
 //------------------------------------------------------------------------------
-// State manipulation
-//------------------------------------------------------------------------------
-
-bool Vector3::IsDirty() const noexcept
-{
-    return isDirty_;
-}
-
-void Vector3::ConsumeIsDirty() noexcept
-{
-    isDirty_ = false;
-}
-
-//------------------------------------------------------------------------------
 // Converter operators
 //------------------------------------------------------------------------------
 
@@ -84,8 +70,6 @@ Vector3& Vector3::operator=(const XMVECTORF32& v) noexcept
     y = v.f[1];
     z = v.f[2];
 
-    isDirty_ = true;
-
     return *this;
 }
 
@@ -95,8 +79,6 @@ Vector3& Vector3::operator+=(const Vector3& v) noexcept
     const XMVECTOR v2 = XMLoadFloat3(&v);
     const XMVECTOR x = XMVectorAdd(v1, v2);
     XMStoreFloat3(this, x);
-
-    isDirty_ = true;
 
     return *this;
 }
@@ -108,8 +90,6 @@ Vector3& Vector3::operator-=(const Vector3& v) noexcept
     const XMVECTOR x = XMVectorSubtract(v1, v2);
     XMStoreFloat3(this, x);
 
-    isDirty_ = true;
-
     return *this;
 }
 
@@ -120,8 +100,6 @@ Vector3& Vector3::operator*=(const Vector3& v) noexcept
     const XMVECTOR x = XMVectorMultiply(v1, v2);
     XMStoreFloat3(this, x);
 
-    isDirty_ = true;
-
     return *this;
 }
 
@@ -131,8 +109,6 @@ Vector3& Vector3::operator*=(const float s) noexcept
     const XMVECTOR x = XMVectorScale(v1, s);
     XMStoreFloat3(this, x);
 
-    isDirty_ = true;
-
     return *this;
 }
 
@@ -141,8 +117,6 @@ Vector3& Vector3::operator/=(const float s) noexcept
     const XMVECTOR v1 = XMLoadFloat3(this);
     const XMVECTOR x = XMVectorScale(v1, 1.0f / s);
     XMStoreFloat3(this, x);
-
-    isDirty_ = true;
 
     return *this;
 }
@@ -222,8 +196,6 @@ void Vector3::Normalize() noexcept
     const XMVECTOR v1 = XMLoadFloat3(this);
     const XMVECTOR x = XMVector3Normalize(v1);
     XMStoreFloat3(this, x);
-
-    isDirty_ = true;
 }
 
 void Vector3::Normalize(Vector3& result) const noexcept
@@ -240,8 +212,6 @@ void Vector3::Clamp(const Vector3& vMin, const Vector3& vMax) noexcept
     const XMVECTOR v3 = XMLoadFloat3(&vMax);
     const XMVECTOR x = XMVectorClamp(v1, v2, v3);
     XMStoreFloat3(this, x);
-
-    isDirty_ = true;
 }
 
 void Vector3::Clamp(const Vector3& vMin, const Vector3& vMax, Vector3& result) const noexcept

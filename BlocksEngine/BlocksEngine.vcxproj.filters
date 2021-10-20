@@ -269,4 +269,7 @@
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl" />
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorVS.hlsl" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
 </Project>

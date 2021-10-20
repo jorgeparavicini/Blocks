@@ -24,12 +24,12 @@ Game& Actor::GetGame() const noexcept
 
 Window& Actor::GetWindow() const noexcept
 {
-    return GetGame().GetWindow();
+    return GetGame().Window();
 }
 
 const Graphics& Actor::GetGraphics() const noexcept
 {
-    return GetGame().GetGraphics();
+    return GetGame().Graphics();
 }
 
 void Actor::Update() const

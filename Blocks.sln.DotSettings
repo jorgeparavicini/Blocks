@@ -114,6 +114,17 @@ namespace Blocks {&#xD;
 &#xD;
 class Blocks::$CLASS$ {public:$END$};&#xD;
 </s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/Description/@EntryValue">Comment Section</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/Scope/=F6696F8185506F41B9C4252540BE9C18/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/Scope/=F6696F8185506F41B9C4252540BE9C18/Type/@EntryValue">InCppFile</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/Shortcut/@EntryValue">section</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=9C813C6A1FD504499F27A6739C75B709/Text/@EntryValue">//------------------------------------------------------------------------------&#xD;
+// $END$&#xD;
+//------------------------------------------------------------------------------</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=DB6E970BDD0D344F949052D64C86F372/CustomProperties/=Extension/@EntryIndexedValue">h</s:String>

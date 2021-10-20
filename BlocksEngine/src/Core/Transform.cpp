@@ -53,7 +53,4 @@ void Transform::UpdateMatrix() noexcept
     matrix_ = Matrix::CreateTranslation(position_)
         * Matrix::CreateFromQuaternion(rotation_)
         * Matrix::CreateScale(scale_);
-
-    position_.ConsumeIsDirty();
-    scale_.ConsumeIsDirty();
 }

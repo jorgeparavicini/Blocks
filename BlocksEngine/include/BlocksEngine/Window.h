@@ -26,6 +26,19 @@ namespace BlocksEngine
 class BlocksEngine::Window
 {
 public:
+    //------------------------------------------------------------------------------
+    // Constructors
+    //------------------------------------------------------------------------------
+
+    /**
+     * \brief Creates a new window which contains the graphic context attached to it.
+     * \param options The window options to pass to the system window creation. See https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createwindowexa for more info.
+     * \param name The title of the window.
+     * \param x The initial x position of the window from the left of the screen.
+     * \param y The initial y position of the window from the top of the screen.
+     * \param width The initial width of the window.
+     * \param height The initial height of the window.
+     */
     explicit Window(std::unique_ptr<WindowOptions> options = std::make_unique<WindowOptions>(),
                     std::wstring name = L"Default Window",
                     int x = CW_USEDEFAULT,
@@ -34,26 +47,91 @@ public:
                     int height = CW_USEDEFAULT
     );
 
-    ~Window() = default;
+
+    /**
+     * \brief Disable the duplication of a window.
+     */
     Window(const Window&) = delete;
+
+    /**
+     * \brief Disable the duplication of a window.
+     */
     Window& operator=(const Window&) = delete;
+
+    /**
+     * \brief Disable the duplication of a window.
+     */
     Window(Window&&) = delete;
+
+    /**
+     * \brief Disable the duplication of a window.
+     */
     Window& operator=(Window&&) = delete;
 
-    [[nodiscard]] std::optional<int> ProcessMessages() const noexcept;
-    [[nodiscard]] const Graphics& Gfx() const;
+    ~Window() = default;
 
+    //------------------------------------------------------------------------------
+    // Properties
+    //------------------------------------------------------------------------------
+
+
+    /**
+     * \brief Get the graphics context attached to this window.
+     * \return The reference to the graphics context.
+     */
+    [[nodiscard]] const Graphics& Gfx() const noexcept;
+
+    /**
+     * \brief Get the mouse input handler.
+     * \return The mouse input handler
+     */
+    [[nodiscard]] const Mouse& Mouse() const noexcept;
+
+    /**
+     * \brief Get the keyboard input handler.
+     * \return The keyboard input handler
+     */
+    [[nodiscard]] const Keyboard& Keyboard() const noexcept;
+
+
+    /**
+     * \brief Process all system messages connected to this window
+     * \return An optional value containing the error code if the window has been closed.
+     * If the window is still alive the return value will be an empty optional.
+     */
+    [[nodiscard]] std::optional<int> ProcessMessages() const noexcept;
+
+
+    /**
+     * \brief Clears the back buffer with the default color.
+     */
     void Clear() const;
+
+    /**
+     * \brief Presents the rendering calls to the display and swaps buffers.
+     */
     void Present() const;
-    void OnWindowSizeChanged(int width, int height) const;
+
+    /**
+     * \brief Set the minimum window size. The window will not be able to be resized below this size.
+     */
     void SetMinWindowSize(int minWidth, int minHeight);
+
+
+    //------------------------------------------------------------------------------
+    // Signals
+    //------------------------------------------------------------------------------
+
+    // TODO: Convert to signal
     void SetOnSuspending(std::function<void()> function);
 
+    /**
+     * \brief Add a listener to be notified when the window has been resized.
+     * \param slot The listener slot to be added.
+     * \return The signal connection that can be used to stop listening to the signal.
+     */
     [[nodiscard]] boost::signals2::connection AddSignalWindowResized(
         const Graphics::WindowResizedSignal::slot_type& slot) const noexcept;
-
-    [[nodiscard]] const Mouse& GetMouse() const noexcept;
-    [[nodiscard]] const Keyboard& GetKeyboard() const noexcept;
 
 
 protected:
@@ -82,6 +160,6 @@ private:
     std::function<void()> onSuspending_;
     std::function<void()> onResuming_;
 
-    std::unique_ptr<Mouse> pMouse_{std::make_unique<Mouse>()};
-    std::unique_ptr<Keyboard> pKeyboard_{std::make_unique<Keyboard>()};
+    std::unique_ptr<BlocksEngine::Mouse> pMouse_{std::make_unique<BlocksEngine::Mouse>()};
+    std::unique_ptr<BlocksEngine::Keyboard> pKeyboard_{std::make_unique<BlocksEngine::Keyboard>()};
 };

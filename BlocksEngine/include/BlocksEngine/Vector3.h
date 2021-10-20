@@ -12,8 +12,6 @@
 #include <DirectXMath.h>
 
 #include "BlocksEngine/Matrix.h"
-#include "BlocksEngine/Quaternion.h"
-#include "BlocksEngine/Vector4.h"
 
 // This file is based on the DirectXTK SimpleMath header and extended for engine uses.
 
@@ -50,10 +48,6 @@ struct BlocksEngine::Vector3 : DirectX::XMFLOAT3
     ~Vector3() = default;
 
     operator DirectX::XMVECTOR() const noexcept;
-
-    // State getters
-    [[nodiscard]] bool IsDirty() const noexcept;
-    void ConsumeIsDirty() noexcept;
 
     // Comparison operators
     bool operator==(const Vector3& v) const noexcept;
@@ -152,9 +146,6 @@ struct BlocksEngine::Vector3 : DirectX::XMFLOAT3
     static const Vector3 Left;
     static const Vector3 Forward;
     static const Vector3 Backward;
-
-private:
-    bool isDirty_{true};
 };
 
 // Binary operators

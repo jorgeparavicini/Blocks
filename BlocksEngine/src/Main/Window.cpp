@@ -91,7 +91,7 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
     return {};
 }
 
-const BlocksEngine::Graphics& BlocksEngine::Window::Gfx() const
+const BlocksEngine::Graphics& BlocksEngine::Window::Gfx() const noexcept
 {
     return *pGraphics_;
 }
@@ -104,11 +104,6 @@ void BlocksEngine::Window::Clear() const
 void BlocksEngine::Window::Present() const
 {
     pGraphics_->Present();
-}
-
-void BlocksEngine::Window::OnWindowSizeChanged(const int width, const int height) const
-{
-    pGraphics_->OnWindowSizeChanged(width, height);
 }
 
 void BlocksEngine::Window::SetMinWindowSize(const int minWidth, const int minHeight)
@@ -129,12 +124,12 @@ boost::signals2::connection BlocksEngine::Window::AddSignalWindowResized(
     return pGraphics_->AddSignalWindowResized(slot);
 }
 
-const BlocksEngine::Mouse& BlocksEngine::Window::GetMouse() const noexcept
+const BlocksEngine::Mouse& BlocksEngine::Window::Mouse() const noexcept
 {
     return *pMouse_;
 }
 
-const BlocksEngine::Keyboard& BlocksEngine::Window::GetKeyboard() const noexcept
+const BlocksEngine::Keyboard& BlocksEngine::Window::Keyboard() const noexcept
 {
     return *pKeyboard_;
 }
