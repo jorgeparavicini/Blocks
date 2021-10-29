@@ -24,7 +24,7 @@ class Blocks::Chunk final : public BlocksEngine::Component
 public:
     static constexpr int Width = 16;
     static constexpr int Depth = 16;
-    static constexpr int Height = 16;
+    static constexpr int Height = 256;
 
     Chunk(BlocksEngine::Actor& actor);
     Chunk(BlocksEngine::Actor& actor, BlocksEngine::Vector2 center);

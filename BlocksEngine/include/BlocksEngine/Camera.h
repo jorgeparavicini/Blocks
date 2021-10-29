@@ -25,7 +25,7 @@ public:
     explicit Camera(Actor& actor);
 
     [[nodiscard]] Matrix ViewProjection() const noexcept;
-    [[nodiscard]] Matrix View() const noexcept;
+    [[nodiscard]] Matrix WorldView() const noexcept;
     [[nodiscard]] Matrix Projection() const noexcept;
 
     void OnWindowResized(int width, int height) noexcept;

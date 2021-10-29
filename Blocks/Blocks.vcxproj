@@ -175,6 +175,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <ClInclude Include="include\Blocks\Chunk.h" />
     <ClInclude Include="include\Blocks\pch.h" />
     <ClInclude Include="include\Blocks\Block.h" />
+    <ClInclude Include="include\Blocks\WorldGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\World\Chunk.cpp" />
@@ -186,6 +187,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\World\WorldGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlocksEngine\BlocksEngine.vcxproj">
@@ -207,6 +209,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </Image>
+    <Image Include="resources\images\block-atlas.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

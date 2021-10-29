@@ -4,7 +4,6 @@
 #include "BlocksEngine/Albedo.h"
 #include "BlocksEngine/Game.h"
 #include "BlocksEngine/Renderer.h"
-#include "BlocksEngine/SolidColor.h"
 #include "BlocksEngine/Vector3.h"
 
 Blocks::Chunk::Chunk(BlocksEngine::Actor& actor)
@@ -57,137 +56,187 @@ void Blocks::Chunk::RegenerateMesh() const
                 const int vertexBase = blockNr * 24;
                 const int indexBase = blockNr * 36;
 
+                const Block& block = Block::Dirt;
+
                 // Front
 
                 vertices[vertexBase + 0].pos = {
                     static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)
                 };
-                vertices[vertexBase + 0].tex = {0, 1};
+                vertices[vertexBase + 0].tex = {
+                    block.GetTextures()[0][0] / 16.0f, (block.GetTextures()[0][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 1].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z)
                 };
-                vertices[vertexBase + 1].tex = {1, 1};
+                vertices[vertexBase + 1].tex = {
+                    (block.GetTextures()[0][0] + 1.0f) / 16.0f, (block.GetTextures()[0][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 2].pos = {
                     static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z)
                 };
-                vertices[vertexBase + 2].tex = {0, 0};
+                vertices[vertexBase + 2].tex = {
+                    block.GetTextures()[0][0] / 16.0f, block.GetTextures()[0][1] / 16.0f
+                };
 
                 vertices[vertexBase + 3].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z)
                 };
-                vertices[vertexBase + 3].tex = {1, 0};
+                vertices[vertexBase + 3].tex = {
+                    (block.GetTextures()[0][0] + 1.0f) / 16.0f, block.GetTextures()[0][1] / 16.0f
+                };
 
                 // Right
 
                 vertices[vertexBase + 4].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z)
                 };
-                vertices[vertexBase + 4].tex = {0, 1};
+                vertices[vertexBase + 4].tex = {
+                    block.GetTextures()[1][0] / 16.0f, (block.GetTextures()[1][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 5].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 5].tex = {1, 1};
+                vertices[vertexBase + 5].tex = {
+                    (block.GetTextures()[1][0] + 1.0f) / 16.0f, (block.GetTextures()[1][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 6].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z)
                 };
-                vertices[vertexBase + 6].tex = {0, 0};
+                vertices[vertexBase + 6].tex = {
+                    block.GetTextures()[1][0] / 16.0f, block.GetTextures()[1][1] / 16.0f
+                };
 
                 vertices[vertexBase + 7].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 7].tex = {1, 0};
+                vertices[vertexBase + 7].tex = {
+                    (block.GetTextures()[1][0] + 1.0f) / 16.0f, block.GetTextures()[1][1] / 16.0f
+                };
 
                 // Back
 
                 vertices[vertexBase + 8].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 8].tex = {0, 1};
+                vertices[vertexBase + 8].tex = {
+                    block.GetTextures()[2][0] / 16.0f, (block.GetTextures()[2][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 9].pos = {
                     static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 9].tex = {1, 1};
+                vertices[vertexBase + 9].tex = {
+                    (block.GetTextures()[2][0] + 1.0f) / 16.0f, (block.GetTextures()[2][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 10].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 10].tex = {0, 0};
+                vertices[vertexBase + 10].tex = {
+                    block.GetTextures()[2][0] / 16.0f, block.GetTextures()[2][1] / 16.0f
+                };
 
                 vertices[vertexBase + 11].pos = {
                     static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 11].tex = {1, 0};
+                vertices[vertexBase + 11].tex = {
+                    (block.GetTextures()[2][0] + 1.0f) / 16.0f, block.GetTextures()[2][1] / 16.0f
+                };
 
                 // Left
 
                 vertices[vertexBase + 12].pos = {
                     static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 12].tex = {0, 1};
+                vertices[vertexBase + 12].tex = {
+                    block.GetTextures()[3][0] / 16.0f, (block.GetTextures()[3][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 13].pos = {
                     static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)
                 };
-                vertices[vertexBase + 13].tex = {1, 1};
+                vertices[vertexBase + 13].tex = {
+                    (block.GetTextures()[3][0] + 1.0f) / 16.0f, (block.GetTextures()[3][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 14].pos = {
                     static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 14].tex = {0, 0};
+                vertices[vertexBase + 14].tex = {
+                    block.GetTextures()[3][0] / 16.0f, block.GetTextures()[3][1] / 16.0f
+                };
 
                 vertices[vertexBase + 15].pos = {
                     static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z)
                 };
-                vertices[vertexBase + 15].tex = {1, 0};
+                vertices[vertexBase + 15].tex = {
+                    (block.GetTextures()[3][0] + 1.0f) / 16.0f, block.GetTextures()[3][1] / 16.0f
+                };
 
                 // Top
 
                 vertices[vertexBase + 16].pos = {
                     static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z)
                 };
-                vertices[vertexBase + 16].tex = {0, 1};
+                vertices[vertexBase + 16].tex = {
+                    block.GetTextures()[4][0] / 16.0f, (block.GetTextures()[4][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 17].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z)
                 };
-                vertices[vertexBase + 17].tex = {1, 1};
+                vertices[vertexBase + 17].tex = {
+                    (block.GetTextures()[4][0] + 1.0f) / 16.0f, (block.GetTextures()[4][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 18].pos = {
                     static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 18].tex = {0, 0};
+                vertices[vertexBase + 18].tex = {
+                    block.GetTextures()[4][0] / 16.0f, block.GetTextures()[4][1] / 16.0f
+                };
 
                 vertices[vertexBase + 19].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 19].tex = {1, 0};
+                vertices[vertexBase + 19].tex = {
+                    (block.GetTextures()[4][0] + 1.0f) / 16.0f, block.GetTextures()[4][1] / 16.0f
+                };
 
                 // Bottom
 
                 vertices[vertexBase + 20].pos = {
                     static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 20].tex = {0, 1};
+                vertices[vertexBase + 20].tex = {
+                    block.GetTextures()[5][0] / 16.0f, (block.GetTextures()[5][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 21].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z) + 1.0f
                 };
-                vertices[vertexBase + 21].tex = {1, 1};
+                vertices[vertexBase + 21].tex = {
+                    (block.GetTextures()[5][0] + 1.0f) / 16.0f, (block.GetTextures()[5][1] + 1.0f) / 16.0f
+                };
 
                 vertices[vertexBase + 22].pos = {
                     static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)
                 };
-                vertices[vertexBase + 22].tex = {0, 0};
+                vertices[vertexBase + 22].tex = {
+                    block.GetTextures()[5][0] / 16.0f, block.GetTextures()[5][1] / 16.0f
+                };
 
                 vertices[vertexBase + 23].pos = {
                     static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z)
                 };
-                vertices[vertexBase + 23].tex = {1, 0};
+                vertices[vertexBase + 23].tex = {
+                    (block.GetTextures()[5][0] + 1.0f) / 16.0f, block.GetTextures()[5][1] / 16.0f
+                };
 
 
                 indices[indexBase + 0] = vertexBase + 0;
@@ -246,6 +295,6 @@ void Blocks::Chunk::RegenerateMesh() const
     auto mesh = std::make_shared<BlocksEngine::Mesh>(std::make_shared<BlocksEngine::VertexBuffer>(gfx, vertices),
                                                      std::make_shared<BlocksEngine::IndexBuffer>(gfx, indices));
     GetActor().AddComponent<BlocksEngine::Renderer>(
-        std::make_shared<BlocksEngine::Albedo>(GetActor().GetGame().Graphics(), L"resources/images/dirt.png"),
+        std::make_shared<BlocksEngine::Albedo>(GetActor().GetGame().Graphics(), L"resources/images/block-atlas.png"),
         std::move(mesh));
 }

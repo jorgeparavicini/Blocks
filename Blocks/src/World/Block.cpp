@@ -31,12 +31,18 @@ const Blocks::Block Blocks::Block::Dirt = {
     1,
     {
         {
-            {1.0f, 0.0f},
-            {1.0f, 0.0f},
-            {1.0f, 0.0f},
-            {1.0f, 0.0f},
-            {1.0f, 0.0f},
-            {1.0f, 0.0f}
+            // Front
+            {3.0f, 0.0f},
+            // Left
+            {3.0f, 0.0f},
+            // Back
+            {3.0f, 0.0f},
+            // Right
+            {3.0f, 0.0f},
+            // Top
+            {0.0f, 0.0f},
+            // Bottom
+            {2.0f, 0.0f}
         }
     },
     false

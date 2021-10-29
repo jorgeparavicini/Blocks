@@ -19,10 +19,10 @@ Camera::Camera(Actor& actor)
 
 Matrix Camera::ViewProjection() const noexcept
 {
-    return View() * Projection();
+    return WorldView() * Projection();
 }
 
-Matrix Camera::View() const noexcept
+Matrix Camera::WorldView() const noexcept
 {
     const Vector3 position = GetTransform().GetPosition();
     const Matrix rotation = Matrix::CreateFromQuaternion(GetTransform().GetRotation());
@@ -117,5 +117,5 @@ float Camera::ClampAngle(float angle, const float min, const float max) const
 
 DirectX::XMMATRIX Camera::CalculateProjection() const noexcept
 {
-    return DirectX::XMMatrixPerspectiveFovLH(1.6f, GetGame().Graphics().AspectRatio(), 0.3f, 1000.0f);
+    return DirectX::XMMatrixPerspectiveFovLH(1.0f, GetGame().Graphics().AspectRatio(), 0.3f, 1000.0f);
 }

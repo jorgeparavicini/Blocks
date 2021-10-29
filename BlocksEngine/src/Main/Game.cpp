@@ -10,12 +10,13 @@ using namespace BlocksEngine;
 Game::Game(std::unique_ptr<WindowOptions> options)
     : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))}
 {
+    // TODO: Catch potential error
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
     Actor& cameraActor = AddActor();
     Camera& camera = cameraActor.AddComponent<Camera>();
-    camera.GetTransform().SetPosition(Vector3(03, 03, -10));
-    const Quaternion rot = Quaternion::Euler(20, -30, 0);
+    camera.GetTransform().SetPosition(Vector3(0, 0, -10));
+    const Quaternion rot = Quaternion::Euler(0, 180, 0);
     camera.GetTransform().SetRotation(rot);
     SetActiveCamera(camera);
 
