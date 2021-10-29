@@ -38,9 +38,6 @@ void BlocksEngine::Graphics::CreateDevice()
         D3D_FEATURE_LEVEL_10_0
     };
 
-    ComPtr<ID3D11Device> device;
-    ComPtr<ID3D11DeviceContext> context;
-
     GFX_THROW_INFO(D3D11CreateDevice(
         nullptr, // Default adapter
         D3D_DRIVER_TYPE_HARDWARE,
@@ -49,13 +46,10 @@ void BlocksEngine::Graphics::CreateDevice()
         FeatureLevels,
         static_cast<UINT>(std::size(FeatureLevels)),
         D3D11_SDK_VERSION,
-        device.ReleaseAndGetAddressOf(),
+        pDevice_.ReleaseAndGetAddressOf(),
         &featureLevel_,
-        context.ReleaseAndGetAddressOf()
+        pContext_.ReleaseAndGetAddressOf()
     ));
-
-    GFX_THROW_INFO(device.As(&pDevice_));
-    GFX_THROW_INFO(context.As(&pContext_));
 }
 
 void BlocksEngine::Graphics::CreateResources()
@@ -155,21 +149,45 @@ void BlocksEngine::Graphics::CreateResources()
             ReleaseAndGetAddressOf()));
 }
 
-void BlocksEngine::Graphics::Render()
-{
-    Clear();
-
-    // TODO: Rendering calls
-
-    Present();
-}
-
 void BlocksEngine::Graphics::OnWindowSizeChanged(const int width, const int height)
 {
     width_ = std::max(width, 1);
     height_ = std::max(height, 1);
 
     CreateResources();
+
+    windowResized_(width_, height_);
+}
+
+ID3D11Device& BlocksEngine::Graphics::GetDevice() const noexcept
+{
+    return *pDevice_.Get();
+}
+
+ID3D11DeviceContext& BlocksEngine::Graphics::GetContext() const noexcept
+{
+    return *pContext_.Get();
+}
+
+float BlocksEngine::Graphics::AspectRatio() const noexcept
+{
+    return static_cast<float>(width_) / static_cast<float>(height_);
+}
+
+float BlocksEngine::Graphics::Width() const noexcept
+{
+    return static_cast<float>(width_);
+}
+
+float BlocksEngine::Graphics::Height() const noexcept
+{
+    return static_cast<float>(height_);
+}
+
+boost::signals2::connection BlocksEngine::Graphics::AddSignalWindowResized(
+    const WindowResizedSignal::slot_type& slot) noexcept
+{
+    return windowResized_.connect(slot);
 }
 
 void BlocksEngine::Graphics::Clear()

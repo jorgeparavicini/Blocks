@@ -1,6 +1,9 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Window.h"
 
+#include <Windows.h>
+#include <wingdi.h>
+
 #include "BlocksEngine/WindowException.h"
 
 BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
@@ -88,14 +91,24 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
     return {};
 }
 
-void BlocksEngine::Window::Render() const
+HWND BlocksEngine::Window::HWnd() const noexcept
 {
-    pGraphics_->Render();
+    return hWnd_;
 }
 
-void BlocksEngine::Window::OnWindowSizeChanged(const int width, const int height) const
+const BlocksEngine::Graphics& BlocksEngine::Window::Gfx() const noexcept
 {
-    pGraphics_->OnWindowSizeChanged(width, height);
+    return *pGraphics_;
+}
+
+void BlocksEngine::Window::Clear() const
+{
+    pGraphics_->Clear();
+}
+
+void BlocksEngine::Window::Present() const
+{
+    pGraphics_->Present();
 }
 
 void BlocksEngine::Window::SetMinWindowSize(const int minWidth, const int minHeight)
@@ -104,10 +117,26 @@ void BlocksEngine::Window::SetMinWindowSize(const int minWidth, const int minHei
     minHeight_ = std::max(minHeight, 1);
 }
 
-// TODO: Find a good signal library (maybe Sevi?)
+// TODO: Find a good signal library (maybe Sevi?) -> boost::signals2
 void BlocksEngine::Window::SetOnSuspending(std::function<void()> function)
 {
     onSuspending_ = std::move(function);
+}
+
+boost::signals2::connection BlocksEngine::Window::AddSignalWindowResized(
+    const Graphics::WindowResizedSignal::slot_type& slot) const noexcept
+{
+    return pGraphics_->AddSignalWindowResized(slot);
+}
+
+const BlocksEngine::Mouse& BlocksEngine::Window::Mouse() const noexcept
+{
+    return *pMouse_;
+}
+
+const BlocksEngine::Keyboard& BlocksEngine::Window::Keyboard() const noexcept
+{
+    return *pKeyboard_;
 }
 
 /**
@@ -119,6 +148,139 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
 {
     switch (uMsg)
     {
+        /************* Mouse Messages **************/
+
+    case WM_MOUSEMOVE:
+        {
+            const auto [x, y] = MAKEPOINTS(lParam);
+            if (x >= 0 && x < Gfx().Width() && y >= 0 && y < Gfx().Height())
+            {
+                pMouse_->OnMouseMove(x, y);
+                if (!pMouse_->IsInWindow())
+                {
+                    SetCapture(hWnd);
+                    pMouse_->OnMouseEnter();
+                }
+            }
+            else
+            {
+                if (wParam & (MK_LBUTTON | MK_RBUTTON))
+                {
+                    pMouse_->OnMouseMove(x, y);
+                }
+                else
+                {
+                    ReleaseCapture();
+                    pMouse_->OnMouseLeave();
+                }
+            }
+            break;
+        }
+
+    case WM_LBUTTONDOWN:
+        {
+            const auto [x, y] = MAKEPOINTS(lParam);
+            pMouse_->OnLeftPressed(x, y);
+            SetForegroundWindow(hWnd);
+            break;
+        }
+
+    case WM_LBUTTONUP:
+        {
+            const auto [x, y] = MAKEPOINTS(lParam);
+            pMouse_->OnLeftReleased(x, y);
+
+            if (x < 0 || x >= Gfx().Width() || y < 0 || y >= Gfx().Height())
+            {
+                ReleaseCapture();
+                pMouse_->OnMouseLeave();
+            }
+            break;
+        }
+
+    case WM_RBUTTONDOWN:
+        {
+            const auto [x, y] = MAKEPOINTS(lParam);
+            pMouse_->OnRightPressed(x, y);
+            break;
+        }
+
+    case WM_RBUTTONUP:
+        {
+            const auto [x, y] = MAKEPOINTS(lParam);
+            pMouse_->OnRightReleased(x, y);
+
+            if (x < 0 || x >= Gfx().Width() || y < 0 || y >= Gfx().Height())
+            {
+                ReleaseCapture();
+                pMouse_->OnMouseLeave();
+            }
+            break;
+        }
+
+    case WM_MOUSEWHEEL:
+        {
+            const auto [x, y] = MAKEPOINTS(lParam);
+            const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+            pMouse_->OnWheelDelta(x, y, delta);
+            break;
+        }
+
+        /*********** End Mouse Messages ************/
+
+        /************ Keyboard Messages ************/
+
+    case WM_KEYDOWN:
+        if (!(lParam & 0x40000000) || pKeyboard_->IsAutorepeatEnabled())
+        {
+            pKeyboard_->OnKeyPressed(static_cast<unsigned char>(wParam));
+        }
+        break;
+
+    case WM_SYSKEYDOWN:
+        // Alt + Enter
+        if (wParam == VK_RETURN && (lParam & 0x60000000) == 0x20000000)
+        {
+            if (isFullscreen_)
+            {
+                SetWindowLongPtr(hWnd_, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+                SetWindowLongPtr(hWnd_, GWL_EXSTYLE, 0);
+
+                ShowWindow(hWnd, SW_SHOWNORMAL);
+                SetWindowPos(hWnd, HWND_TOP, 0, 0, defaultWidth_, defaultHeight_,
+                             SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+            }
+            else
+            {
+                SetWindowLongPtr(hWnd_, GWL_STYLE, WS_POPUP);
+                SetWindowLongPtr(hWnd_, GWL_EXSTYLE, WS_EX_TOPMOST);
+
+                SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                ShowWindow(hWnd_, SW_SHOWMAXIMIZED);
+            }
+
+            isFullscreen_ = !isFullscreen_;
+        }
+        else
+        {
+            if (!(lParam & 0x40000000) || pKeyboard_->IsAutorepeatEnabled())
+            {
+                pKeyboard_->OnKeyPressed(static_cast<unsigned char>(wParam));
+            }
+        }
+        break;
+
+    case WM_KEYUP:
+    case WM_SYSKEYUP:
+        pKeyboard_->OnKeyReleased(static_cast<unsigned char>(wParam));
+        break;
+
+    case WM_CHAR:
+        pKeyboard_->OnChar(static_cast<char>(wParam));
+        break;
+
+        /********** End Keyboard Messages **********/
+
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
@@ -147,7 +309,7 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
         }
         else if (isResizing_)
         {
-            pGraphics_->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
+            //pGraphics_->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
         }
 
     case WM_ENTERSIZEMOVE:
@@ -170,31 +332,6 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
             info->ptMinTrackSize.y = minHeight_;
         }
         break;
-
-    case WM_SYSKEYDOWN:
-        // Alt + Enter
-        if (wParam == VK_RETURN && (lParam & 0x60000000) == 0x20000000)
-        {
-            if (isFullscreen_)
-            {
-                SetWindowLongPtr(hWnd_, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-                SetWindowLongPtr(hWnd_, GWL_EXSTYLE, 0);
-
-                ShowWindow(hWnd, SW_SHOWNORMAL);
-                SetWindowPos(hWnd, HWND_TOP, 0, 0, defaultWidth_, defaultHeight_,
-                             SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
-            }
-            else
-            {
-                SetWindowLongPtr(hWnd_, GWL_STYLE, WS_POPUP);
-                SetWindowLongPtr(hWnd_, GWL_EXSTYLE, WS_EX_TOPMOST);
-
-                SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-                ShowWindow(hWnd_, SW_SHOWMAXIMIZED);
-            }
-
-            isFullscreen_ = !isFullscreen_;
-        }
 
 
     default: break;

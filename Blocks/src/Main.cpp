@@ -1,9 +1,15 @@
 ﻿#include "Blocks/pch.h"
 
 #include <Windows.h>
+#include <boost/signals2.hpp>
+#include <boost/functional/hash.hpp>
 
-#include "BlocksEngine/Application.h"
+#include "Blocks/Block.h"
+#include "Blocks/Chunk.h"
 #include "BlocksEngine/Exception.h"
+#include "BlocksEngine/Game.h"
+#include "BlocksEngine/Renderer.h"
+
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,
@@ -14,9 +20,24 @@ int WINAPI WinMain(
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    auto game = BlocksEngine::Game{};
+
+    game.AddSignalGameStart([&game]
+    {
+        BlocksEngine::Actor& chunkActor = game.AddActor();
+
+        Blocks::Chunk& chunk = chunkActor.AddComponent<Blocks::Chunk>(BlocksEngine::Vector2{0, 0});
+        chunk.RegenerateMesh();
+
+        BlocksEngine::Actor& chunkActor2 = game.AddActor();
+        chunkActor2.GetTransform().SetPosition({16.0f, 0.0f, 0.0f});
+        Blocks::Chunk& chunk2 = chunkActor2.AddComponent<Blocks::Chunk>(BlocksEngine::Vector2{0, 0});
+        chunk2.RegenerateMesh();
+    });
+
     try
     {
-        return BlocksEngine::Application{}.MainLoop();
+        return game.Start();
     }
     catch (const BlocksEngine::Exception& e)
     {

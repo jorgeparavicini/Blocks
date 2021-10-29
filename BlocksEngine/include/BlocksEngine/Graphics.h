@@ -13,6 +13,7 @@
 #include <d3dcommon.h>
 #include <Windows.h>
 #include <wrl.h>
+#include <boost/signals2.hpp>
 
 namespace BlocksEngine
 {
@@ -22,6 +23,9 @@ namespace BlocksEngine
 class BlocksEngine::Graphics
 {
 public:
+    using WindowResizedSignal = boost::signals2::signal<void(int, int)>;
+
+
     explicit Graphics(HWND hWnd, int width, int height);
     ~Graphics() = default;
     Graphics(const Graphics&) = delete;
@@ -31,8 +35,18 @@ public:
 
     void CreateDevice();
     void CreateResources();
-    void Render();
     void OnWindowSizeChanged(int width, int height);
+
+    void Clear();
+    void Present();
+
+    [[nodiscard]] ID3D11Device& GetDevice() const noexcept;
+    [[nodiscard]] ID3D11DeviceContext& GetContext() const noexcept;
+    [[nodiscard]] float AspectRatio() const noexcept;
+    [[nodiscard]] float Width() const noexcept;
+    [[nodiscard]] float Height() const noexcept;
+
+    boost::signals2::connection AddSignalWindowResized(const WindowResizedSignal::slot_type& slot) noexcept;
 
 private:
     HWND window_;
@@ -41,15 +55,15 @@ private:
 
     D3D_FEATURE_LEVEL featureLevel_;
 
-    Microsoft::WRL::ComPtr<ID3D11Device1> pDevice_;
-    Microsoft::WRL::ComPtr<ID3D11DeviceContext1> pContext_;
+    Microsoft::WRL::ComPtr<ID3D11Device> pDevice_;
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext_;
 
     Microsoft::WRL::ComPtr<IDXGISwapChain1> pSwapChain_;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTarget_;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView_;
 
-    void Clear();
-    void Present();
-
     void OnDeviceLost();
+
+    // Signals
+    WindowResizedSignal windowResized_;
 };

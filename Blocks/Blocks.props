@@ -10,8 +10,15 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Blocks/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/BlocksEngine/include;$(SolutionDir)/Blocks/include;$(SolutionDir)/Blocks/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/Dependencies/boost/include;$(SolutionDir)/BlocksEngine/include;$(SolutionDir)/Blocks/include;$(SolutionDir)/Blocks/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <FxCompile>
+      <ShaderModel>4.0</ShaderModel>
+    </FxCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
+xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
