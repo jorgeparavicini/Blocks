@@ -10,6 +10,7 @@
 #pragma once
 #include <memory>
 
+#include "Vertex.h"
 #include "BlocksEngine/Bindable.h"
 #include "BlocksEngine/IndexBuffer.h"
 #include "BlocksEngine/Topology.h"
@@ -29,7 +30,7 @@ public:
          std::shared_ptr<Topology> topology = Topology::TriangleList);
 
     void Bind(const Graphics& gfx) noexcept override;
-    UINT GetCount() const noexcept;
+    [[nodiscard]] UINT GetCount() const noexcept;
 
 private:
     std::shared_ptr<VertexBuffer> pVertexBuffer_;

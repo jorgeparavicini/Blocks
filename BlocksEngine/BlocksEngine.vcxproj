@@ -26,6 +26,7 @@
     <ClInclude Include="include\BlocksEngine\pch.h" />
     <ClInclude Include="include\BlocksEngine\PixelConstantBuffers.h" />
     <ClInclude Include="include\BlocksEngine\VertexConstantBuffer.h" />
+    <ClInclude Include="include\BlocksEngine\WICTextureLoader.h" />
     <ClInclude Include="include\BlocksEngine\Window.h" />
     <ClInclude Include="include\BlocksEngine\WindowClass.h" />
     <ClInclude Include="include\BlocksEngine\WindowException.h" />
@@ -62,6 +63,11 @@
     <ClInclude Include="include\BlocksEngine\Vector2.h" />
     <ClInclude Include="include\BlocksEngine\Plane.h" />
     <ClInclude Include="include\BlocksEngine\Math.h" />
+    <ClInclude Include="include\BlocksEngine\Time.h" />
+    <ClInclude Include="include\BlocksEngine\BufferException.h" />
+    <ClInclude Include="include\BlocksEngine\Texture2D.h" />
+    <ClInclude Include="include\BlocksEngine\Albedo.h" />
+    <ClInclude Include="include\BlocksEngine\Sampler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Actor.cpp" />
@@ -77,10 +83,16 @@
     <ClCompile Include="src\Core\Math\Vector2.cpp" />
     <ClCompile Include="src\Core\Math\Vector3.cpp" />
     <ClCompile Include="src\Core\Math\Vector4.cpp" />
+    <ClCompile Include="src\Core\Time.cpp" />
+    <ClCompile Include="src\Exceptions\BufferException.cpp" />
     <ClCompile Include="src\Exceptions\EngineException.cpp" />
     <ClCompile Include="src\Core\Components\Camera.cpp" />
+    <ClCompile Include="src\Graphics\Material\Albedo\Albedo.cpp" />
     <ClCompile Include="src\Graphics\Material\ConstantBuffer.cpp" />
     <ClCompile Include="src\Graphics\Graphics.cpp" />
+    <ClCompile Include="src\Graphics\Material\Sampler.cpp" />
+    <ClCompile Include="src\Graphics\Material\Texture2D.cpp" />
+    <ClCompile Include="src\Graphics\WICTextureLoader.cpp" />
     <ClCompile Include="src\Main\Window.cpp" />
     <ClCompile Include="src\Main\WindowClass.cpp" />
     <ClCompile Include="src\DebugUtility\DxgiInfoManager.cpp" />
@@ -117,6 +129,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="src\Graphics\Material\Albedo\AlbedoPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Graphics\Material\Albedo\AlbedoVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

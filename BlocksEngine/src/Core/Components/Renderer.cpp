@@ -12,8 +12,8 @@ using namespace BlocksEngine;
 Renderer::Renderer(Actor& actor)
     : Renderer{
         actor,
-        std::make_shared<SolidColor>(actor.GetGraphics()),
-        std::make_shared<Mesh>(actor.GetGraphics())
+        std::make_shared<SolidColor>(actor.GetGame().Graphics()),
+        std::make_shared<Mesh>(actor.GetGame().Graphics())
     }
 {
 }
@@ -22,7 +22,7 @@ Renderer::Renderer(Actor& actor, std::shared_ptr<Material> pMaterial, std::share
     : Component{actor},
       pMaterial_{std::move(pMaterial)},
       pMesh_{std::move(pMesh)},
-      pConstantBuffer_{std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(actor.GetGraphics())}
+      pConstantBuffer_{std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(actor.GetGame().Graphics())}
 {
     pMaterial_->AddConstantBuffer(pConstantBuffer_);
 }
@@ -44,11 +44,13 @@ void Renderer::Draw()
         return;
     }
 
-    const auto wvp = GetActor().GetTransform().GetMatrix() * GetActor().GetGame().MainCamera().ViewProjection();
+    const auto wvp = GetActor().GetTransform().GetMatrix() * GetGame().MainCamera().ViewProjection();
 
-    pConstantBuffer_->Update(GetActor().GetGraphics(), XMMatrixTranspose(wvp));
+    const Graphics& gfx = GetGame().Graphics();
 
-    pMaterial_->Bind(GetActor().GetGraphics());
-    pMesh_->Bind(GetActor().GetGraphics());
-    GetActor().GetGraphics().GetContext().DrawIndexed(pMesh_->GetCount(), 0, 0);
+    pConstantBuffer_->Update(gfx, XMMatrixTranspose(wvp));
+
+    pMaterial_->Bind(gfx);
+    pMesh_->Bind(gfx);
+    gfx.GetContext().DrawIndexed(pMesh_->GetCount(), 0, 0);
 }

@@ -91,6 +91,11 @@ std::optional<int> BlocksEngine::Window::ProcessMessages() const noexcept
     return {};
 }
 
+HWND BlocksEngine::Window::HWnd() const noexcept
+{
+    return hWnd_;
+}
+
 const BlocksEngine::Graphics& BlocksEngine::Window::Gfx() const noexcept
 {
     return *pGraphics_;

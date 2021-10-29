@@ -11,7 +11,7 @@ Camera::Camera(Actor& actor)
     : Component{actor},
       projection_{std::move(CalculateProjection())},
       windowResizedConnection_{
-          GetWindow().AddSignalWindowResized(
+          GetGame().Window().AddSignalWindowResized(
               bind(&Camera::OnWindowResized, this, _1, _2))
       }
 {
@@ -45,36 +45,66 @@ void Camera::OnWindowResized(const int width, const int height) noexcept
 
 void Camera::Update()
 {
-    x_ += 0.01;
+    const float deltaTime = static_cast<float>(GetGame().Time().DeltaTime());
+    x_ += 0.01f;
+    const Keyboard& keyboard = GetActor().GetGame().Keyboard();
     //GetTransform().SetRotation(Quaternion::CreateFromYawPitchRoll(0, 1, x_));
-    if (GetActor().GetGame().Keyboard().KeyIsPressed('W'))
+    if (keyboard.KeyIsPressed('W'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Forward * moveSpeed_;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Forward * moveSpeed_ * deltaTime;
     }
 
-    if (GetActor().GetGame().Keyboard().KeyIsPressed('S'))
+    if (keyboard.KeyIsPressed('S'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Backward * moveSpeed_;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Backward * moveSpeed_ * deltaTime;
     }
 
-    if (GetActor().GetGame().Keyboard().KeyIsPressed('A'))
+    if (keyboard.KeyIsPressed('A'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Left * moveSpeed_;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Left * moveSpeed_ * deltaTime;
     }
 
-    if (GetActor().GetGame().Keyboard().KeyIsPressed('D'))
+    if (keyboard.KeyIsPressed('D'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Right * moveSpeed_;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Right * moveSpeed_ * deltaTime;
+    }
+
+    if (keyboard.KeyIsPressed('Q'))
+    {
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Up * moveSpeed_ * deltaTime;
+    }
+
+    if (keyboard.KeyIsPressed('E'))
+    {
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Down * moveSpeed_ * deltaTime;
     }
 
     const Mouse& mouse = GetActor().GetGame().Mouse();
     float deltaX = mouse.GetPosX() - lastX_;
     float deltaY = mouse.GetPosY() - lastY_;
-    lastX_ = mouse.GetPosX();
-    lastY_ = mouse.GetPosY();
 
-    rotation_.x = ClampAngle(rotation_.x + deltaY, -85.0f, 85.0f);
-    rotation_.y += deltaX;
+    if (keyboard.KeyIsPressed(VK_LEFT))
+    {
+        deltaX -= keyboardRotationSpeed_;
+    }
+    if (keyboard.KeyIsPressed(VK_RIGHT))
+    {
+        deltaX += keyboardRotationSpeed_;
+    }
+    if (keyboard.KeyIsPressed(VK_UP))
+    {
+        deltaY -= keyboardRotationSpeed_;
+    }
+    if (keyboard.KeyIsPressed(VK_DOWN))
+    {
+        deltaY += keyboardRotationSpeed_;
+    }
+
+    lastX_ = static_cast<float>(mouse.GetPosX());
+    lastY_ = static_cast<float>(mouse.GetPosY());
+
+    rotation_.x = ClampAngle(rotation_.x + deltaY * rotationSpeed_ * deltaTime, -85.0f, 85.0f);
+    rotation_.y += deltaX * rotationSpeed_ * deltaTime;
     GetTransform().SetRotation(Quaternion::Euler(rotation_));
 }
 
@@ -87,5 +117,5 @@ float Camera::ClampAngle(float angle, const float min, const float max) const
 
 DirectX::XMMATRIX Camera::CalculateProjection() const noexcept
 {
-    return DirectX::XMMatrixPerspectiveFovLH(1.6f, GetActor().GetGraphics().AspectRatio(), 0.3f, 1000.0f);
+    return DirectX::XMMatrixPerspectiveFovLH(1.6f, GetGame().Graphics().AspectRatio(), 0.3f, 1000.0f);
 }

@@ -8,6 +8,7 @@
 // File: IndexBuffer.h
 
 #pragma once
+#include <optional>
 #include <vector>
 
 #include "BlocksEngine/Bindable.h"
@@ -21,11 +22,26 @@ namespace BlocksEngine
 class BlocksEngine::IndexBuffer final : public Bindable
 {
 public:
-    IndexBuffer(const Graphics& gfx, const std::vector<unsigned short>& indices);
+    IndexBuffer(const Graphics& gfx, UINT allocationSize, bool isStatic = true);
+    IndexBuffer(const Graphics& gfx, const std::vector<int>& indices, UINT allocationSize = 0u,
+                bool isStatic = true);
+
     void Bind(const Graphics& gfx) noexcept override;
+
     [[nodiscard]] UINT GetCount() const noexcept;
+    [[nodiscard]] UINT GetSize() const noexcept;
+
+    void Update(const Graphics& gfx, const std::vector<int>& indices) const;
 
 protected:
+    // Number of indices
     UINT count_;
+
+    // Allocated size
+    UINT size_;
+    bool isStatic_;
+
     Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer_;
+
+    void CreateBuffer(const Graphics& gfx, const std::vector<int>* indices = nullptr);
 };

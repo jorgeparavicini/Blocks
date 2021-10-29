@@ -3,6 +3,11 @@
 
 using namespace BlocksEngine;
 
+Mouse::Mouse()
+{
+    //ShowCursor(FALSE);
+}
+
 std::pair<int, int> Mouse::GetPos() const noexcept
 {
     return {x, y};

@@ -10,6 +10,8 @@ using namespace BlocksEngine;
 Game::Game(std::unique_ptr<WindowOptions> options)
     : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))}
 {
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
     Actor& cameraActor = AddActor();
     Camera& camera = cameraActor.AddComponent<Camera>();
     camera.GetTransform().SetPosition(Vector3(03, 03, -10));
@@ -17,7 +19,7 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     camera.GetTransform().SetRotation(rot);
     SetActiveCamera(camera);
 
-    Actor& blockActor = AddActor();
+    /*Actor& blockActor = AddActor();
     blockActor.AddComponent<Renderer>();
 
     Actor& block2 = AddActor();
@@ -33,10 +35,32 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     pos2.x += 4;
     block3.GetTransform().SetPosition(pos2);
     block3.AddComponent<Renderer>();
+
+    Actor& floor = AddActor();
+    floor.GetTransform().SetScale({100, 1, 100});
+    floor.AddComponent<Renderer>();*/
+
+    RECT clientRect;
+    GetClientRect(Window().HWnd(), &clientRect);
+    auto clientOrigin = POINT{clientRect.left, clientRect.top};
+    ClientToScreen(Window().HWnd(), &clientOrigin);
+    clientRect.right += clientOrigin.x;
+    clientRect.left += clientOrigin.x;
+    clientRect.top += clientOrigin.y;
+    clientRect.bottom += clientOrigin.y;
+
+    ClipCursor(&clientRect);
 }
 
-int Game::MainLoop() const
+Game::~Game()
 {
+    CoUninitialize();
+}
+
+int Game::Start()
+{
+    gameStarted_();
+
     while (true)
     {
         if (shutdownForced_) return 0;
@@ -100,19 +124,31 @@ const Mouse& Game::Mouse() const noexcept
     return Window().Mouse();
 }
 
+const Time& Game::Time() const noexcept
+{
+    return time_;
+}
+
 Actor& Game::AddActor()
 {
-    std::string name = "Actor " + std::to_string(totalActorCount_++);
+    std::string name = "GetActor " + std::to_string(totalActorCount_++);
     auto actor = std::make_unique<Actor>(*this, std::move(name));
     Actor& a = *actor;
     pActors_.push_back(std::move(actor));
     return a;
 }
 
-void Game::Tick() const
+boost::signals2::connection Game::AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept
 {
-    // TODO: Tick & Update
-    Update();
+    return gameStarted_.connect(slot);
+}
+
+void Game::Tick() noexcept
+{
+    time_.Tick([&]
+    {
+        Update();
+    });
     Render();
 }
 

@@ -101,6 +101,8 @@ public:
      */
     [[nodiscard]] std::optional<int> ProcessMessages() const noexcept;
 
+    [[nodiscard]] HWND HWnd() const noexcept;
+
 
     /**
      * \brief Clears the back buffer with the default color.

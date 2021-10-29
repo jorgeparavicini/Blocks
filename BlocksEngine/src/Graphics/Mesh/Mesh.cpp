@@ -18,7 +18,7 @@ BlocksEngine::Mesh::Mesh(const Graphics& gfx)
     vertices[6].pos = {-side, side, side};
     vertices[7].pos = {side, side, side};
 
-    std::vector<unsigned short> indices = {
+    std::vector<int> indices = {
         0, 2, 1, 2, 3, 1,
         1, 3, 5, 3, 7, 5,
         2, 6, 3, 3, 6, 7,
@@ -26,14 +26,6 @@ BlocksEngine::Mesh::Mesh(const Graphics& gfx)
         0, 4, 2, 2, 4, 6,
         0, 1, 4, 1, 5, 4
     };
-
-    /*
-    std::vector<Vertex> vertices(3);
-    vertices[0].pos = {0.0f, 0.5f, 0.0f};
-    vertices[1].pos = {0.5f, -0.5f, 0.0f};
-    vertices[2].pos = {-0.5f, -0.5f, 0.0f};
-
-    std::vector<unsigned short> indices = {0, 1, 2};*/
 
     pVertexBuffer_ = std::make_shared<VertexBuffer>(gfx, vertices);
     pIndexBuffer_ = std::make_shared<IndexBuffer>(gfx, indices);

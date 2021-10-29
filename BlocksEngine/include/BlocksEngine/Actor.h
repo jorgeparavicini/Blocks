@@ -29,8 +29,6 @@ public:
 
     [[nodiscard]] Transform& GetTransform() const noexcept;
     [[nodiscard]] Game& GetGame() const noexcept;
-    [[nodiscard]] Window& GetWindow() const noexcept;
-    [[nodiscard]] const Graphics& GetGraphics() const noexcept;
 
     void Update() const;
     void Render() const;

@@ -22,16 +22,6 @@ Game& Actor::GetGame() const noexcept
     return game_;
 }
 
-Window& Actor::GetWindow() const noexcept
-{
-    return GetGame().Window();
-}
-
-const Graphics& Actor::GetGraphics() const noexcept
-{
-    return GetGame().Graphics();
-}
-
 void Actor::Update() const
 {
     pTransform_->UpdateMatrix();

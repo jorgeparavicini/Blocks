@@ -65,6 +65,9 @@ struct BlocksEngine::Vector3 : DirectX::XMFLOAT3
     Vector3 operator+() const noexcept;
     Vector3 operator-() const noexcept;
 
+    // Hashing
+    friend std::size_t hash_value(const Vector3& v);
+
     // Vector operations
     [[nodiscard]] bool InBounds(const Vector3& bounds) const noexcept;
 

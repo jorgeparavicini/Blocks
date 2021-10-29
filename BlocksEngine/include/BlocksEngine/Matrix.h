@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <DirectXMath.h>
+
 namespace BlocksEngine
 {
     struct Plane;

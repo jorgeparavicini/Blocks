@@ -3,4 +3,4 @@
 
 using namespace BlocksEngine;
 
-constexpr float Math::DegToRad = 0.0174533;
+constexpr float Math::DegToRad = 0.0174533f;

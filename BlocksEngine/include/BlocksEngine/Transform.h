@@ -5,7 +5,7 @@
 // This source code is licensed under the MIT-style license found in LICENSE file in the root directory of this source tree.
 // 
 // Author: Jorge Paravicini
-// File: Transform.h
+// File: GetTransform.h
 
 #pragma once
 

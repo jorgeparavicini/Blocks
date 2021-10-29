@@ -38,12 +38,14 @@ private:
     float lastY_{0};
     Vector3 rotation_{0, 0, 0};
 
-    float moveSpeed_{0.01f};
-    float x_{0.01f};
+    float moveSpeed_{10.0f};
+    float rotationSpeed_{10.0f};
+    float keyboardRotationSpeed_{10.0f};
+    float x_{0.1f};
     Matrix projection_;
     boost::signals2::connection windowResizedConnection_;
 
-    float ClampAngle(float angle, float min, float max) const;
+    [[nodiscard]] float ClampAngle(float angle, float min, float max) const;
 
     [[nodiscard]] DirectX::XMMATRIX CalculateProjection() const noexcept;
 };

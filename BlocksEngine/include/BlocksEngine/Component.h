@@ -8,13 +8,13 @@
 // File: Component.h
 
 #pragma once
-#include "Window.h"
 #include "BlocksEngine/Entity.h"
 
 namespace BlocksEngine
 {
     class Transform;
     class Actor;
+    class Game;
     class Component;
 }
 
@@ -22,7 +22,7 @@ class BlocksEngine::Component : public Entity
 {
 public:
     /**
-     * Subclasses need to put Actor& as first parameter.
+     * Subclasses need to put GetActor& as first parameter.
      */
     explicit Component(Actor& actor);
     virtual ~Component() = default;
@@ -35,8 +35,7 @@ public:
      * Gets the actor this component is attached to.
      */
     [[nodiscard]] Actor& GetActor() const noexcept;
-    [[nodiscard]] Window& GetWindow() const noexcept;
-
+    [[nodiscard]] Game& GetGame() const noexcept;
     [[nodiscard]] Transform& GetTransform() const noexcept;
 
     // Events

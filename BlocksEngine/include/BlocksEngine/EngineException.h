@@ -18,7 +18,7 @@ namespace BlocksEngine
     class EngineException;
 }
 
-class BlocksEngine::EngineException final : public Exception
+class BlocksEngine::EngineException : public Exception
 {
 public:
     EngineException(int line, std::string file, std::string msg) noexcept;

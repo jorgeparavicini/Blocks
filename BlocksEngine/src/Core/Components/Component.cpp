@@ -15,9 +15,9 @@ Actor& Component::GetActor() const noexcept
     return actor_;
 }
 
-Window& Component::GetWindow() const noexcept
+Game& Component::GetGame() const noexcept
 {
-    return GetActor().GetWindow();
+    return actor_.GetGame();
 }
 
 Transform& Component::GetTransform() const noexcept

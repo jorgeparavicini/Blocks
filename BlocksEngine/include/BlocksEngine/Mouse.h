@@ -91,7 +91,7 @@ public:
     };
 
 public:
-    Mouse() = default;
+    Mouse();
     Mouse(const Mouse&) = delete;
     Mouse& operator =(const Mouse&) = delete;
     [[nodiscard]] std::pair<int, int> GetPos() const noexcept;
