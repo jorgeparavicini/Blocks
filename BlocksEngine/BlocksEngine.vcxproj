@@ -68,6 +68,8 @@
     <ClInclude Include="include\BlocksEngine\Texture2D.h" />
     <ClInclude Include="include\BlocksEngine\Albedo.h" />
     <ClInclude Include="include\BlocksEngine\Sampler.h" />
+    <ClInclude Include="include\BlocksEngine\Terrain.h" />
+    <ClInclude Include="include\BlocksEngine\Texture2DArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Actor.cpp" />
@@ -91,7 +93,9 @@
     <ClCompile Include="src\Graphics\Material\ConstantBuffer.cpp" />
     <ClCompile Include="src\Graphics\Graphics.cpp" />
     <ClCompile Include="src\Graphics\Material\Sampler.cpp" />
+    <ClCompile Include="src\Graphics\Material\Terrain\Terrain.cpp" />
     <ClCompile Include="src\Graphics\Material\Texture2D.cpp" />
+    <ClCompile Include="src\Graphics\Material\Texture2DArray.cpp" />
     <ClCompile Include="src\Graphics\WICTextureLoader.cpp" />
     <ClCompile Include="src\Main\Window.cpp" />
     <ClCompile Include="src\Main\WindowClass.cpp" />
@@ -164,6 +168,22 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

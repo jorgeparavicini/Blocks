@@ -51,6 +51,17 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     clientRect.bottom += clientOrigin.y;
 
     ClipCursor(&clientRect);
+
+
+    Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizer;
+
+    D3D11_RASTERIZER_DESC rasterizerDesc{};
+    rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+    rasterizerDesc.CullMode = D3D11_CULL_NONE;
+
+    HRESULT hr;
+    GFX_THROW_INFO(Graphics().GetDevice().CreateRasterizerState(&rasterizerDesc, &rasterizer));
+    //Graphics().GetContext().RSSetState(rasterizer.Get());
 }
 
 Game::~Game()

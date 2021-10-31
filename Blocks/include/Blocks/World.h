@@ -5,24 +5,17 @@
 // This source code is licensed under the MIT-style license found in LICENSE file in the root directory of this source tree.
 // 
 // Author: Jorge Paravicini
-// File: Vertex.h
+// File: World.h
 
 #pragma once
 
-#include <DirectXMath.h>
-
-namespace BlocksEngine
+namespace Blocks
 {
-    struct Vertex
-    {
-        DirectX::XMFLOAT3 pos;
-
-        struct
-        {
-            float u;
-            float v;
-        } tex;
-
-        unsigned short texIndex;
-    };
+    class World;
 }
+
+class Blocks::World
+{
+public:
+protected:
+};

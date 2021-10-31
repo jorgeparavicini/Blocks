@@ -162,6 +162,12 @@
     <ClInclude Include="include\BlocksEngine\Sampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Texture2DArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -296,6 +302,12 @@
     <ClCompile Include="src\Graphics\Material\Sampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Terrain\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Texture2DArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
@@ -306,6 +318,8 @@
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorVS.hlsl" />
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoVS.hlsl" />
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoPS.hlsl" />
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainVS.hlsl" />
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />

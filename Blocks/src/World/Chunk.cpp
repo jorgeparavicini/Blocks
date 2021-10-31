@@ -4,6 +4,7 @@
 #include "BlocksEngine/Albedo.h"
 #include "BlocksEngine/Game.h"
 #include "BlocksEngine/Renderer.h"
+#include "BlocksEngine/Terrain.h"
 #include "BlocksEngine/Vector3.h"
 
 Blocks::Chunk::Chunk(BlocksEngine::Actor& actor)
@@ -42,10 +43,152 @@ int Blocks::Chunk::GetFlatIndex(BlocksEngine::Vector3 position) const
 
 void Blocks::Chunk::RegenerateMesh() const
 {
+    // Based on the post of: https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
     constexpr int nrBlocks = Width * Depth * Height;
-    std::vector<BlocksEngine::Vertex> vertices(24 * nrBlocks);
-    std::vector<int> indices(36 * nrBlocks);
+    std::vector<BlocksEngine::Vertex> vertices(24);
+    std::vector<int> indices(36);
 
+    int block = 0;
+
+    for (int dim = 0; dim < 3; ++dim)
+    {
+        int i, j, k, l, w, h;
+        int u = (dim + 1) % 3;
+        int v = (dim + 2) % 3;
+        int x[3] = {0, 0, 0};
+        int q[3] = {0, 0, 0};
+
+        int mask[Width * Depth];
+        q[dim] = 1;
+
+        for (x[dim] = -1; x[dim] < Width;)
+        {
+            int n = 0;
+            for (x[v] = 0; x[v] < Width; ++x[v])
+            {
+                for (x[u] = 0; x[u] < Width; ++x[u], ++n)
+                {
+                    int a = 0 <= x[dim] ? 1 : 0;
+                    int b = x[dim] < Width - 1 ? 1 : 0;
+
+                    if (a == b)
+                    {
+                        mask[n] = 0;
+                    }
+                    else if (a)
+                    {
+                        mask[n] = a;
+                    }
+                    else
+                    {
+                        mask[n] = -b;
+                    }
+                }
+            }
+
+            ++x[dim];
+            n = 0;
+
+            for (j = 0; j < Width; ++j)
+            {
+                for (i = 0; i < Width;)
+                {
+                    int c = mask[n];
+                    if (c)
+                    {
+                        for (w = 1; i + w < Width && c == mask[n + w]; w++)
+                        {
+                        }
+
+                        bool done = false;
+                        for (h = 1; j + h < Width; ++h)
+                        {
+                            for (k = 0; k < w; ++k)
+                            {
+                                if (c != mask[n + k + h * Width])
+                                {
+                                    done = true;
+                                    break;
+                                }
+                            }
+
+                            if (done) break;
+                        }
+
+                        x[u] = i;
+                        x[v] = j;
+
+                        int du[3] = {0, 0, 0};
+
+                        int dv[3] = {0, 0, 0};
+
+                        if (c > 0)
+                        {
+                            dv[v] = h;
+                            du[u] = w;
+                        }
+                        else
+                        {
+                            c = -c;
+                            du[v] = h;
+                            dv[u] = w;
+                        }
+
+
+                        vertices[block * 4].pos = {
+                            static_cast<float>(x[0]), static_cast<float>(x[1]), static_cast<float>(x[2])
+                        };
+                        vertices[block * 4].tex = {16, 16};
+                        vertices[block * 4].texIndex = 0;
+
+                        vertices[block * 4 + 1].pos = {
+                            static_cast<float>(x[0] + du[0]), static_cast<float>(x[1] + du[1]),
+                            static_cast<float>(x[2] + du[2])
+                        };
+                        vertices[block * 4 + 1].tex = {0, 16};
+                        vertices[block * 4 + 2].pos = {
+                            static_cast<float>(x[0] + dv[0]), static_cast<float>(x[1] + dv[1]),
+                            static_cast<float>(x[2] + dv[2])
+                        };
+                        vertices[block * 4 + 2].tex = {16, 0};
+                        vertices[block * 4 + 3].pos = {
+                            static_cast<float>(x[0] + du[0] + dv[0]), static_cast<float>(x[1] + du[1] + dv[1]),
+                            static_cast<float>(x[2] + du[2] + dv[2])
+                        };
+                        vertices[block * 4 + 3].tex = {0, 0};
+
+                        indices[block * 6] = block * 4;
+                        indices[block * 6 + 1] = block * 4 + 1;
+                        indices[block * 6 + 2] = block * 4 + 2;
+
+                        indices[block * 6 + 3] = block * 4 + 1;
+                        indices[block * 6 + 4] = block * 4 + 3;
+                        indices[block * 6 + 5] = block * 4 + 2;
+
+
+                        block += 1;
+
+                        for (l = 0; l < h; ++l)
+                        {
+                            for (k = 0; k < w; ++k)
+                            {
+                                mask[n + k + l * Width] = 0;
+                            }
+                        }
+
+                        i += w;
+                        n += w;
+                    }
+                    else
+                    {
+                        i++;
+                        n++;
+                    }
+                }
+            }
+        }
+    }
+    /*
     for (int z = 0; z < Depth; z++)
     {
         for (int y = 0; y < Height; y++)
@@ -288,13 +431,14 @@ void Blocks::Chunk::RegenerateMesh() const
                 indices[indexBase + 35] = vertexBase + 21;
             }
         }
-    }
+    }*/
 
     const BlocksEngine::Graphics& gfx = GetGame().Graphics();
 
     auto mesh = std::make_shared<BlocksEngine::Mesh>(std::make_shared<BlocksEngine::VertexBuffer>(gfx, vertices),
                                                      std::make_shared<BlocksEngine::IndexBuffer>(gfx, indices));
     GetActor().AddComponent<BlocksEngine::Renderer>(
-        std::make_shared<BlocksEngine::Albedo>(GetActor().GetGame().Graphics(), L"resources/images/block-atlas.png"),
+        std::make_shared<BlocksEngine::Terrain>(GetActor().GetGame().Graphics(),
+                                                std::vector{std::wstring{L"resources/images/dirt.png"}}),
         std::move(mesh));
 }
