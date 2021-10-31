@@ -80,8 +80,10 @@ void Camera::Update()
     }
 
     const Mouse& mouse = GetActor().GetGame().Mouse();
-    float deltaX = mouse.GetPosX() - lastX_;
-    float deltaY = mouse.GetPosY() - lastY_;
+    //float deltaX = mouse.GetPosX() - lastX_;
+    //float deltaY = mouse.GetPosY() - lastY_;
+    float deltaX = 0;
+    float deltaY = 0;
 
     if (keyboard.KeyIsPressed(VK_LEFT))
     {

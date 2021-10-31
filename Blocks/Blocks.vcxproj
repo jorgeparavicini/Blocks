@@ -201,6 +201,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\images\dirt.jpg" />
     <Image Include="resources\images\dirt.png">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>

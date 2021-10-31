@@ -20,10 +20,10 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     camera.GetTransform().SetRotation(rot);
     SetActiveCamera(camera);
 
-    /*Actor& blockActor = AddActor();
+    Actor& blockActor = AddActor();
     blockActor.AddComponent<Renderer>();
 
-    Actor& block2 = AddActor();
+    /*Actor& block2 = AddActor();
     Vector3 pos = block2.GetTransform().GetPosition();
     pos.y += 1;
     pos.x += 1;

@@ -48,13 +48,13 @@ void Blocks::Chunk::RegenerateMesh() const
     std::vector<BlocksEngine::Vertex> vertices(24);
     std::vector<int> indices(36);
 
-    int block = 0;
+    int faceNr = 0;
 
     for (int dim = 0; dim < 3; ++dim)
     {
-        int i, j, k, l, w, h;
-        int u = (dim + 1) % 3;
-        int v = (dim + 2) % 3;
+        int k, w, h;
+        const int u = (dim + 1) % 3;
+        const int v = (dim + 2) % 3;
         int x[3] = {0, 0, 0};
         int q[3] = {0, 0, 0};
 
@@ -89,9 +89,9 @@ void Blocks::Chunk::RegenerateMesh() const
             ++x[dim];
             n = 0;
 
-            for (j = 0; j < Width; ++j)
+            for (int j = 0; j < Width; ++j)
             {
-                for (i = 0; i < Width;)
+                for (int i = 0; i < Width;)
                 {
                     int c = mask[n];
                     if (c)
@@ -134,41 +134,41 @@ void Blocks::Chunk::RegenerateMesh() const
                             dv[u] = w;
                         }
 
+                        if (faceNr == 0)
+                        {
+                            vertices[faceNr * 4].pos = {
+                                static_cast<float>(x[0]), static_cast<float>(x[1]), static_cast<float>(x[2])
+                            };
+                            vertices[faceNr * 4].tex = {16, 16};
+                            vertices[faceNr * 4].texIndex = 0;
 
-                        vertices[block * 4].pos = {
-                            static_cast<float>(x[0]), static_cast<float>(x[1]), static_cast<float>(x[2])
-                        };
-                        vertices[block * 4].tex = {16, 16};
-                        vertices[block * 4].texIndex = 0;
+                            vertices[faceNr * 4 + 1].pos = {
+                                static_cast<float>(x[0] + du[0]), static_cast<float>(x[1] + du[1]),
+                                static_cast<float>(x[2] + du[2])
+                            };
+                            vertices[faceNr * 4 + 1].tex = {0, 16};
+                            vertices[faceNr * 4 + 2].pos = {
+                                static_cast<float>(x[0] + dv[0]), static_cast<float>(x[1] + dv[1]),
+                                static_cast<float>(x[2] + dv[2])
+                            };
+                            vertices[faceNr * 4 + 2].tex = {16, 0};
+                            vertices[faceNr * 4 + 3].pos = {
+                                static_cast<float>(x[0] + du[0] + dv[0]), static_cast<float>(x[1] + du[1] + dv[1]),
+                                static_cast<float>(x[2] + du[2] + dv[2])
+                            };
+                            vertices[faceNr * 4 + 3].tex = {0, 0};
 
-                        vertices[block * 4 + 1].pos = {
-                            static_cast<float>(x[0] + du[0]), static_cast<float>(x[1] + du[1]),
-                            static_cast<float>(x[2] + du[2])
-                        };
-                        vertices[block * 4 + 1].tex = {0, 16};
-                        vertices[block * 4 + 2].pos = {
-                            static_cast<float>(x[0] + dv[0]), static_cast<float>(x[1] + dv[1]),
-                            static_cast<float>(x[2] + dv[2])
-                        };
-                        vertices[block * 4 + 2].tex = {16, 0};
-                        vertices[block * 4 + 3].pos = {
-                            static_cast<float>(x[0] + du[0] + dv[0]), static_cast<float>(x[1] + du[1] + dv[1]),
-                            static_cast<float>(x[2] + du[2] + dv[2])
-                        };
-                        vertices[block * 4 + 3].tex = {0, 0};
+                            indices[faceNr * 6] = faceNr * 4;
+                            indices[faceNr * 6 + 1] = faceNr * 4 + 1;
+                            indices[faceNr * 6 + 2] = faceNr * 4 + 2;
 
-                        indices[block * 6] = block * 4;
-                        indices[block * 6 + 1] = block * 4 + 1;
-                        indices[block * 6 + 2] = block * 4 + 2;
+                            indices[faceNr * 6 + 3] = faceNr * 4 + 1;
+                            indices[faceNr * 6 + 4] = faceNr * 4 + 3;
+                            indices[faceNr * 6 + 5] = faceNr * 4 + 2;
+                        }
+                        faceNr += 1;
 
-                        indices[block * 6 + 3] = block * 4 + 1;
-                        indices[block * 6 + 4] = block * 4 + 3;
-                        indices[block * 6 + 5] = block * 4 + 2;
-
-
-                        block += 1;
-
-                        for (l = 0; l < h; ++l)
+                        for (int l = 0; l < h; ++l)
                         {
                             for (k = 0; k < w; ++k)
                             {
@@ -439,6 +439,6 @@ void Blocks::Chunk::RegenerateMesh() const
                                                      std::make_shared<BlocksEngine::IndexBuffer>(gfx, indices));
     GetActor().AddComponent<BlocksEngine::Renderer>(
         std::make_shared<BlocksEngine::Terrain>(GetActor().GetGame().Graphics(),
-                                                std::vector{std::wstring{L"resources/images/dirt.png"}}),
+                                                std::vector{std::wstring{L"resources/images/dirt.jpg"}}),
         std::move(mesh));
 }
