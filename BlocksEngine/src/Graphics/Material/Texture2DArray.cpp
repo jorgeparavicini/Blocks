@@ -1,6 +1,8 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Texture2DArray.h"
 
+#include <DDSTextureLoader.h>
+
 #include "BlocksEngine/DxgiInfoManager.h"
 #include "BlocksEngine/GraphicsException.h"
 #include "BlocksEngine/WICTextureLoader.h"

@@ -14,21 +14,27 @@ Chunk::Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vecto
     : Component{actor},
       world_{world}
 {
-    blocks_.fill(1);
-    blocks_[666] = 0;
+    for (int i = 0; i < Width; i++)
+    {
+        for (int j = 0; j < Height; j++)
+        {
+            for (int k = 0; k < Depth; k++)
+            {
+                blocks_[GetFlatIndex(i, j, k)] = j == Height - 1 ? 2 : 1;
+            }
+        }
+    }
+    //blocks_.fill(2);
+    /*blocks_[666] = 0;
     blocks_[667] = 0;
+    blocks_[20001] = 0;*/
     GetTransform().SetPosition({center.x, center.y, 0});
 }
 
 const Block& Chunk::GetBlock(const BlocksEngine::Vector3 position) const noexcept
 {
     const uint8_t blockId = blocks_[GetFlatIndex(position)];
-    const auto search = BlockRegistry::Blocks().find(blockId);
-    if (search != BlockRegistry::Blocks().end())
-    {
-        return search->second;
-    }
-    throw; // TODO: Application exception
+    return BlockRegistry::GetBlock(blockId);
 }
 
 const World& Chunk::GetWorld() const noexcept
@@ -45,6 +51,11 @@ int Chunk::GetFlatIndex(BlocksEngine::Vector3 position) const
     const int x = static_cast<int>(std::round(position.x));
     const int y = static_cast<int>(std::round(position.y));
     const int z = static_cast<int>(std::round(position.z));
+    return GetFlatIndex(x, y, z);
+}
+
+int Chunk::GetFlatIndex(const int x, const int y, const int z)
+{
     return x + Width * (y + Depth * z);
 }
 
@@ -160,6 +171,11 @@ void Chunk::RegenerateMesh() const
                             || q[1] == 1 && blockId < 0
                             || q[2] == 1 && blockId < 0;
 
+                        const uint8_t faceId = q[0] * (blockId < 0 ? 3 : 1)
+                            + q[1] * (blockId < 0 ? 5 : 4)
+                            + q[2] * (blockId < 0 ? 2 : 0);
+
+
                         // If blockId is less than 0 the face is flipped
                         if (blockId > 0)
                         {
@@ -186,6 +202,8 @@ void Chunk::RegenerateMesh() const
                             uv[1] = width;
                         }
 
+                        const Block& block = BlockRegistry::GetBlock(blockId);
+
                         int vertexCount = vertices.size();
                         vertices.push_back(BlocksEngine::Vertex{
                             {
@@ -194,7 +212,7 @@ void Chunk::RegenerateMesh() const
                                 static_cast<float>(x[2])
                             },
                             {static_cast<float>(flipUvs ? 0 : uv[1]), static_cast<float>(uv[0])},
-                            0
+                            block.GetTextures()[faceId]
                         });
 
                         vertices.push_back(BlocksEngine::Vertex{
@@ -204,7 +222,7 @@ void Chunk::RegenerateMesh() const
                                 static_cast<float>(x[2] + du[2])
                             },
                             {static_cast<float>(0), static_cast<float>(flipUvs ? 0 : uv[0])},
-                            0
+                            block.GetTextures()[faceId]
                         });
 
                         vertices.push_back(BlocksEngine::Vertex{
@@ -214,7 +232,7 @@ void Chunk::RegenerateMesh() const
                                 static_cast<float>(x[2] + dv[2])
                             },
                             {static_cast<float>(uv[1]), static_cast<float>(flipUvs ? uv[0] : 0)},
-                            0
+                            block.GetTextures()[faceId]
                         });
 
                         vertices.push_back(BlocksEngine::Vertex{
@@ -224,7 +242,7 @@ void Chunk::RegenerateMesh() const
                                 static_cast<float>(x[2] + du[2] + dv[2])
                             },
                             {static_cast<float>(flipUvs ? uv[1] : 0), static_cast<float>(0)},
-                            0
+                            block.GetTextures()[faceId]
                         });
 
                         indices.push_back(vertexCount);
@@ -264,6 +282,6 @@ void Chunk::RegenerateMesh() const
                                                      std::make_shared<BlocksEngine::IndexBuffer>(gfx, indices));
     GetActor().AddComponent<BlocksEngine::Renderer>(
         std::make_shared<BlocksEngine::Terrain>(GetActor().GetGame().Graphics(),
-                                                std::vector{std::wstring{L"resources/images/dirt.jpg"}}),
+                                                BlocksEngine::Texture2D::FromDds(gfx, L"resources/images/terrain.dds")),
         std::move(mesh));
 }

@@ -1,7 +1,7 @@
 ﻿#include "Blocks/pch.h"
 #include "Blocks/Block.h"
 
-Blocks::Block::Block(const uint8_t id, std::array<std::array<float, 2>, 6> textures, const bool isSeeThrough) noexcept
+Blocks::Block::Block(const uint8_t id, std::array<uint8_t, 6> textures, const bool isSeeThrough) noexcept
     : id_{id},
       textures_{textures},
       isSeeThrough_{isSeeThrough}
@@ -13,7 +13,7 @@ uint8_t Blocks::Block::GetId() const noexcept
     return id_;
 }
 
-const std::array<std::array<float, 2>, 6>& Blocks::Block::GetTextures() const noexcept
+const std::array<uint8_t, 6>& Blocks::Block::GetTextures() const noexcept
 {
     return textures_;
 }
@@ -24,23 +24,7 @@ bool Blocks::Block::IsSeeThrough() const noexcept
 }
 
 const Blocks::Block Blocks::Block::Air = {
-    0, {
-        {
-            // Front
-            {3.0f, 0.0f},
-            // Left
-            {3.0f, 0.0f},
-            // Back
-            {3.0f, 0.0f},
-            // Right
-            {3.0f, 0.0f},
-            // Top
-            {0.0f, 0.0f},
-            // Bottom
-            {2.0f, 0.0f}
-        }
-    },
-    true
+    0, {{0, 0, 0, 0, 0, 0}}, true
 };
 
 const Blocks::Block Blocks::Block::Dirt = {
@@ -48,17 +32,38 @@ const Blocks::Block Blocks::Block::Dirt = {
     {
         {
             // Front
-            {3.0f, 0.0f},
+            1,
             // Left
-            {3.0f, 0.0f},
+            1,
             // Back
-            {3.0f, 0.0f},
+            1,
             // Right
-            {3.0f, 0.0f},
+            1,
             // Top
-            {0.0f, 0.0f},
+            1,
             // Bottom
-            {2.0f, 0.0f}
+            1
+        }
+    },
+    false
+};
+
+const Blocks::Block Blocks::Block::Grass = {
+    2,
+    {
+        {
+            // Front
+            0,
+            // Left
+            0,
+            // Back
+            0,
+            // Right
+            0,
+            // Top
+            2,
+            // Bottom
+            1
         }
     },
     false

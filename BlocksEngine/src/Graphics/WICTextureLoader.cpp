@@ -542,7 +542,7 @@ static HRESULT CreateTextureFromWIC(_In_ ID3D11Device* d3dDevice,
     desc.Width = twidth;
     desc.Height = theight;
     desc.MipLevels = (autogen) ? 0 : 1;
-    desc.ArraySize = 1;
+    desc.ArraySize = 2;
     desc.Format = format;
     desc.SampleDesc.Count = 1;
     desc.SampleDesc.Quality = 0;

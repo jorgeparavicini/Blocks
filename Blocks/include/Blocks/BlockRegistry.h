@@ -26,6 +26,9 @@ public:
     BlockRegistry(const BlockRegistry&&) = delete;
     void operator=(const BlockRegistry&&) = delete;
 
+    ~BlockRegistry() = default;
+
+    static const Block& GetBlock(uint8_t blockId);
     static const std::unordered_map<uint8_t, const Block&>& Blocks();
 
 private:

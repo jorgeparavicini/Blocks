@@ -65,11 +65,9 @@
     <Image Include="resources\images\dirt.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\images\block-atlas.png">
+    <Image Include="resources\images\dirt_2.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\images\dirt.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <Image Include="resources\images\terrain.dds" />
   </ItemGroup>
 </Project>

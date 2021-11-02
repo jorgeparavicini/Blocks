@@ -5,9 +5,9 @@
 
 using namespace BlocksEngine;
 
-Terrain::Terrain(const Graphics& gfx, const std::vector<std::wstring>& textureNames)
+Terrain::Terrain(const Graphics& gfx, std::unique_ptr<Texture2D> texture)
     : Material{GetVertexShader(gfx), GetPixelShader(gfx), GetInputLayout(gfx)},
-      pTextures_{std::make_unique<Texture2DArray>(gfx, textureNames)},
+      pTexture_{std::move(texture)},
       pSampler_{std::make_unique<Sampler>(gfx)}
 {
 }
@@ -55,6 +55,6 @@ std::shared_ptr<InputLayout> Terrain::GetInputLayout(const Graphics& gfx) noexce
 void Terrain::Bind(const Graphics& gfx) noexcept
 {
     pSampler_->Bind(gfx);
-    pTextures_->Bind(gfx);
+    pTexture_->Bind(gfx);
     Material::Bind(gfx);
 }

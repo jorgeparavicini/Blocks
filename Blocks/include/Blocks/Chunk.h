@@ -25,7 +25,7 @@ class Blocks::Chunk final : public BlocksEngine::Component
 public:
     static constexpr int Width = 16;
     static constexpr int Depth = 16;
-    static constexpr int Height = 256;
+    static constexpr int Height = 16;
 
     Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vector2 center = BlocksEngine::Vector2::Zero);
 
@@ -41,4 +41,5 @@ private:
     //BlocksEngine::Mesh mesh_;
 
     [[nodiscard]] int GetFlatIndex(BlocksEngine::Vector3 position) const;
+    [[nodiscard]] static int GetFlatIndex(int x, int y, int z);
 };

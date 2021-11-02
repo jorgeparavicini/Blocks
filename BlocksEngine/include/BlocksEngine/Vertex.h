@@ -23,6 +23,6 @@ namespace BlocksEngine
             float v;
         } tex;
 
-        unsigned short texIndex;
+        unsigned int texIndex;
     };
 }
