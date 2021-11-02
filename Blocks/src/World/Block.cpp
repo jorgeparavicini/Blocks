@@ -23,10 +23,26 @@ bool Blocks::Block::IsSeeThrough() const noexcept
     return isSeeThrough_;
 }
 
-// TODO: Find a better way to keep all blocks referenced
-const std::unordered_map<uint8_t, const Blocks::Block&> Blocks::Block::Blocks = {{Dirt.GetId(), Dirt}};
+const Blocks::Block Blocks::Block::Air = {
+    0, {
+        {
+            // Front
+            {3.0f, 0.0f},
+            // Left
+            {3.0f, 0.0f},
+            // Back
+            {3.0f, 0.0f},
+            // Right
+            {3.0f, 0.0f},
+            // Top
+            {0.0f, 0.0f},
+            // Bottom
+            {2.0f, 0.0f}
+        }
+    },
+    true
+};
 
-// TODO: Block 0 should be air
 const Blocks::Block Blocks::Block::Dirt = {
     1,
     {

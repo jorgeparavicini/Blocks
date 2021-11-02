@@ -25,8 +25,9 @@ int WINAPI WinMain(
     game.AddSignalGameStart([&game]
     {
         BlocksEngine::Actor& chunkActor = game.AddActor();
+        Blocks::World world{};
 
-        Blocks::Chunk& chunk = chunkActor.AddComponent<Blocks::Chunk>(BlocksEngine::Vector2{0, 0});
+        Blocks::Chunk& chunk = chunkActor.AddComponent<Blocks::Chunk>(world);
         chunk.RegenerateMesh();
 
         /*BlocksEngine::Actor& chunkActor2 = game.AddActor();

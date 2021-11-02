@@ -26,7 +26,8 @@ public:
     [[nodiscard]] const std::array<std::array<float, 2>, 6>& GetTextures() const noexcept;
     [[nodiscard]] bool IsSeeThrough() const noexcept;
 
-    static const std::unordered_map<uint8_t, const Block&> Blocks;
+
+    static const Block Air;
     static const Block Dirt;
 
 private:

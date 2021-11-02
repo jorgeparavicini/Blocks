@@ -20,8 +20,8 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     camera.GetTransform().SetRotation(rot);
     SetActiveCamera(camera);
 
-    Actor& blockActor = AddActor();
-    blockActor.AddComponent<Renderer>();
+    // Actor& blockActor = AddActor();
+    //blockActor.AddComponent<Renderer>();
 
     /*Actor& block2 = AddActor();
     Vector3 pos = block2.GetTransform().GetPosition();
@@ -50,7 +50,7 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     clientRect.top += clientOrigin.y;
     clientRect.bottom += clientOrigin.y;
 
-    ClipCursor(&clientRect);
+    //ClipCursor(&clientRect);
 
 
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizer;

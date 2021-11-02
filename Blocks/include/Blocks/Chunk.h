@@ -10,6 +10,7 @@
 #pragma once
 
 #include "Block.h"
+#include "World.h"
 #include "BlocksEngine/Component.h"
 #include "BlocksEngine/Mesh.h"
 #include "BlocksEngine/Vector2.h"
@@ -26,18 +27,17 @@ public:
     static constexpr int Depth = 16;
     static constexpr int Height = 256;
 
-    Chunk(BlocksEngine::Actor& actor);
-    Chunk(BlocksEngine::Actor& actor, BlocksEngine::Vector2 center);
+    Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vector2 center = BlocksEngine::Vector2::Zero);
 
-    [[nodiscard]] BlocksEngine::Vector2 GetCenter() const;
-    [[nodiscard]] const Block& GetBlock(BlocksEngine::Vector3 position) const;
+    [[nodiscard]] const Block& GetBlock(BlocksEngine::Vector3 position) const noexcept;
+    [[nodiscard]] const World& GetWorld() const noexcept;
 
     void RegenerateMesh() const;
 
 
 private:
-    std::array<uint8_t, static_cast<unsigned long long>(Width * Depth * Height)> blocks_{};
-    BlocksEngine::Vector2 center_;
+    std::array<uint8_t, static_cast<unsigned long long>(Width * Depth * Height)> blocks_;
+    const World& world_;
     //BlocksEngine::Mesh mesh_;
 
     [[nodiscard]] int GetFlatIndex(BlocksEngine::Vector3 position) const;
