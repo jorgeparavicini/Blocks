@@ -11,26 +11,48 @@
 
 #include <DirectXMath.h>
 
+#include "BlocksEngine/Math.h"
+
+template <typename T>
+struct Vector2Base;
+
+template <>
+struct Vector2Base<float>
+{
+    using Base = DirectX::XMFLOAT2;
+    using Vector = DirectX::XMVECTORF32;
+};
+
+template <>
+struct Vector2Base<int32_t>
+{
+    using Base = DirectX::XMINT2;
+    using Vector = DirectX::XMVECTORI32;
+};
+
+template <>
+struct Vector2Base<uint32_t>
+{
+    using Base = DirectX::XMUINT2;
+    using Vector = DirectX::XMVECTORU32;
+};
+
 namespace BlocksEngine
 {
-    struct Plane;
-    struct Matrix;
-    struct Quaternion;
-    struct Vector3;
-    struct Vector4;
-
+    template <class T>
     struct Vector2;
 }
 
-struct BlocksEngine::Vector2 : DirectX::XMFLOAT2
+template <class T>
+struct BlocksEngine::Vector2 : Vector2Base<T>::Base
 {
     Vector2() noexcept;
 
-    constexpr explicit Vector2(float a) noexcept;
+    constexpr explicit Vector2(T a) noexcept;
 
-    constexpr Vector2(float ix, float iy) noexcept;
+    constexpr Vector2(T ix, T iy) noexcept;
 
-    explicit Vector2(_In_reads_(2) const float* pArray) noexcept;
+    explicit Vector2(_In_reads_(2) const T* pArray) noexcept;
 
     Vector2(DirectX::FXMVECTOR v) noexcept;
 
@@ -48,7 +70,7 @@ struct BlocksEngine::Vector2 : DirectX::XMFLOAT2
 
     operator DirectX::XMVECTOR() const noexcept;
 
-    // State getters
+    /*// State getters
     [[nodiscard]] bool IsDirty() const noexcept;
     void ConsumeIsDirty() noexcept;
 
@@ -139,16 +161,14 @@ struct BlocksEngine::Vector2 : DirectX::XMFLOAT2
                                 _Out_writes_(count) Vector2* resultArray) noexcept;
 
     // Constants
-    static const Vector2 Zero;
-    static const Vector2 One;
-    static const Vector2 UnitX;
-    static const Vector2 UnitY;
-
-private:
-    bool isDirty_{true};
+    static const Vector2<T, B> Zero;
+    static const Vector2<T, B> One;
+    static const Vector2<T, B> UnitX;
+    static const Vector2<T, B> UnitY;*/
 };
 
 // Binary operators
+/*
 BlocksEngine::Vector2 operator+(const BlocksEngine::Vector2& v1, const BlocksEngine::Vector2& v2) noexcept;
 BlocksEngine::Vector2 operator-(const BlocksEngine::Vector2& v1, const BlocksEngine::Vector2& v2) noexcept;
 BlocksEngine::Vector2 operator*(const BlocksEngine::Vector2& v1, const BlocksEngine::Vector2& v2) noexcept;
@@ -156,3 +176,4 @@ BlocksEngine::Vector2 operator*(const BlocksEngine::Vector2& v, float s) noexcep
 BlocksEngine::Vector2 operator/(const BlocksEngine::Vector2& v1, const BlocksEngine::Vector2& v2) noexcept;
 BlocksEngine::Vector2 operator/(const BlocksEngine::Vector2& v, float s) noexcept;
 BlocksEngine::Vector2 operator*(float s, const BlocksEngine::Vector2& v) noexcept;
+*/

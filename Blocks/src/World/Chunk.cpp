@@ -10,7 +10,7 @@
 
 using namespace Blocks;
 
-Chunk::Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vector2 center)
+Chunk::Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vector2<int32_t> center)
     : Component{actor},
       world_{world}
 {
@@ -24,6 +24,9 @@ Chunk::Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vecto
             }
         }
     }
+
+
+    blocks_[65] = 0;
     //blocks_.fill(2);
     /*blocks_[666] = 0;
     blocks_[667] = 0;

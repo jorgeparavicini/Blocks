@@ -54,9 +54,9 @@
 #include "BlocksEngine/Matrix.h"
 #include "BlocksEngine/Plane.h"
 #include "BlocksEngine/Quaternion.h"
-#include "BlocksEngine/Vector2.h"
 #include "BlocksEngine/Vector3.h"
 #include "BlocksEngine/Vector4.h"
+#include "BlocksEngine/Vector2.h"
 
 namespace BlocksEngine::Com
 {

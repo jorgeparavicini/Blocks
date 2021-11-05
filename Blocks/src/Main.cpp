@@ -30,10 +30,9 @@ int WINAPI WinMain(
         Blocks::Chunk& chunk = chunkActor.AddComponent<Blocks::Chunk>(world);
         chunk.RegenerateMesh();
 
-        /*BlocksEngine::Actor& chunkActor2 = game.AddActor();
-        chunkActor2.GetTransform().SetPosition({16.0f, 0.0f, 0.0f});
-        Blocks::Chunk& chunk2 = chunkActor2.AddComponent<Blocks::Chunk>(BlocksEngine::Vector2{0, 0});
-        chunk2.RegenerateMesh();*/
+        BlocksEngine::Actor& chunkActor2 = game.AddActor();
+        Blocks::Chunk& chunk2 = chunkActor2.AddComponent<Blocks::Chunk>(world, BlocksEngine::__Vector2{16.0f, 0.0f});
+        chunk2.RegenerateMesh();
     });
 
     try

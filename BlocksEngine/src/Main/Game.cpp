@@ -61,7 +61,7 @@ Game::Game(std::unique_ptr<WindowOptions> options)
 
     HRESULT hr;
     GFX_THROW_INFO(Graphics().GetDevice().CreateRasterizerState(&rasterizerDesc, &rasterizer));
-    //Graphics().GetContext().RSSetState(rasterizer.Get());
+    Graphics().GetContext().RSSetState(rasterizer.Get());
 }
 
 Game::~Game()

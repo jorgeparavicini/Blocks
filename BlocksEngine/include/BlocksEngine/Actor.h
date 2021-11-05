@@ -29,6 +29,7 @@ public:
 
     [[nodiscard]] Transform& GetTransform() const noexcept;
     [[nodiscard]] Game& GetGame() const noexcept;
+    [[nodiscard]] const std::string& GetName() const noexcept;
 
     void Update() const;
     void Render() const;
@@ -39,7 +40,7 @@ public:
     template <class T, class... Args, typename = std::enable_if_t<std::is_base_of_v<Component, T>>>
     decltype(auto) AddComponent(Args&&... args)
     {
-        std::unique_ptr<T> component = std::make_unique<T>(*this, std::forward<Args>(args)...);
+        std::shared_ptr<T> component = std::make_unique<T>(*this, std::forward<Args>(args)...);
         T& result = *component;
         pComponents_.insert(std::move(component));
         return result;
@@ -49,5 +50,5 @@ private:
     Game& game_;
     std::string name_;
     std::unique_ptr<Transform> pTransform_{};
-    std::unordered_set<std::unique_ptr<Component>> pComponents_{};
+    std::unordered_set<std::shared_ptr<Component>> pComponents_{};
 };

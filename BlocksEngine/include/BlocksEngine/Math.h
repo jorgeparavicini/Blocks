@@ -11,6 +11,15 @@
 
 namespace BlocksEngine
 {
+    struct Plane;
+    struct Matrix;
+    struct Quaternion;
+    template <class T>
+    struct Vector2;
+    struct Vector3;
+    struct Vector4;
+    
+
     class Math;
 }
 

@@ -14,7 +14,6 @@ namespace BlocksEngine
     struct Quaternion;
     struct Matrix;
     struct Plane;
-    struct Vector2;
     struct Vector3;
 
     struct Vector4;
@@ -116,8 +115,8 @@ struct BlocksEngine::Vector4 : DirectX::XMFLOAT4
     static void Refract(const Vector4& iVec, const Vector4& nVec, float refractionIndex, Vector4& result) noexcept;
     static Vector4 Refract(const Vector4& iVec, const Vector4& nVec, float refractionIndex) noexcept;
 
-    static void Transform(const Vector2& v, const Quaternion& quat, Vector4& result) noexcept;
-    static Vector4 Transform(const Vector2& v, const Quaternion& quat) noexcept;
+    //static void Transform(const Vector2& v, const Quaternion& quat, Vector4& result) noexcept;
+    //static Vector4 Transform(const Vector2& v, const Quaternion& quat) noexcept;
 
     static void Transform(const Vector3& v, const Quaternion& quat, Vector4& result) noexcept;
     static Vector4 Transform(const Vector3& v, const Quaternion& quat) noexcept;

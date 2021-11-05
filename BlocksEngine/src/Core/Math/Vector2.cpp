@@ -6,35 +6,56 @@
 using namespace BlocksEngine;
 using namespace DirectX;
 
+Vector2<int> x = Vector2<int>(2);
+
 //------------------------------------------------------------------------------
 // Constructors
 //------------------------------------------------------------------------------
 
-Vector2::Vector2() noexcept
-    : XMFLOAT2(0.0f, 0.0f)
+template <class T>
+Vector2<T>::Vector2() noexcept
+    : Vector2Base<T>::Base{0, 0}
 {
 }
 
-constexpr Vector2::Vector2(const float a) noexcept
-    : XMFLOAT2(a, a)
+template <class T>
+constexpr Vector2<T>::Vector2(const T a) noexcept
+    : Vector2Base<T>::Base{a, a}
 {
 }
 
-constexpr Vector2::Vector2(const float ix, const float iy) noexcept
-    : XMFLOAT2(ix, iy)
+template <class T>
+constexpr Vector2<T>::Vector2(const T ix, const T iy) noexcept
+    : Vector2Base<T>::Base{ix, iy}
 {
 }
 
-Vector2::Vector2(_In_reads_(2) const float* pArray) noexcept
-    : XMFLOAT2(pArray)
+template <class T>
+Vector2<T>::Vector2(_In_reads_(2) const T* pArray) noexcept
+    : Vector2Base<T>::Base{pArray}
 {
 }
 
-Vector2::Vector2(FXMVECTOR v) noexcept
-    : XMFLOAT2{}
+template <>
+Vector2<float>::Vector2(FXMVECTOR v) noexcept
+    : Vector2Base<float>::Base{}
 {
     XMStoreFloat2(this, v);
 }
+
+template<>
+Vector2<int32_t>::Vector2(FXMVECTOR v) noexcept
+    : Vector2Base<int32_t>::Base{} 
+{
+    XMStoreSInt2(this, v);
+}
+
+template<>
+Vector2<uint32_t>::Vector2(FXMVECTOR v) noexcept : Vector2Base<uint32_t>::Base{}
+{
+
+}
+
 
 Vector2::Vector2(const XMFLOAT2& v) noexcept
     : XMFLOAT2{v.x, v.y}
@@ -59,7 +80,7 @@ Vector2::operator DirectX::XMVECTOR() const noexcept
 // State manipulation
 //------------------------------------------------------------------------------
 
-bool Vector2::IsDirty() const noexcept
+/*bool Vector2::IsDirty() const noexcept
 {
     return isDirty_;
 }
@@ -575,12 +596,12 @@ void Vector2::TransformNormal(const Vector2* varray, const size_t count, const M
 const Vector2 Vector2::Zero = {0.f, 0.f};
 const Vector2 Vector2::One = {1.f, 1.f};
 const Vector2 Vector2::UnitX = {1.f, 0.f};
-const Vector2 Vector2::UnitY = {0.f, 1.f};
+const Vector2 Vector2::UnitY = {0.f, 1.f};*/
 
 //------------------------------------------------------------------------------
 // Binary operators
 //------------------------------------------------------------------------------
-
+/*
 Vector2 operator+(const Vector2& v1, const Vector2& v2) noexcept
 {
     const XMVECTOR x1 = XMLoadFloat2(&v1);
@@ -646,4 +667,8 @@ Vector2 operator*(const float s, const Vector2& v) noexcept
     Vector2 r;
     XMStoreFloat2(&r, x);
     return r;
-}
+}*/
+
+template struct Vector2<float>;
+template struct Vector2<int32_t>;
+template struct Vector2<uint32_t>;

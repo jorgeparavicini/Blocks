@@ -8,13 +8,20 @@
 // File: WorldGenerator.h
 
 #pragma once
+#include <cstdint>
+#include <unordered_map>
+
+#include "BlocksEngine/Component.h"
 
 namespace Blocks
 {
     class WorldGenerator;
 }
 
-class Blocks::WorldGenerator
+class Blocks::WorldGenerator : BlocksEngine::Component
 {
 public:
+private:
+    uint8_t chunkLoadDistance_{8};
+    //std::unordered_map<
 };

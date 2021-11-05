@@ -27,7 +27,8 @@ public:
     static constexpr int Depth = 16;
     static constexpr int Height = 16;
 
-    Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vector2 center = BlocksEngine::Vector2::Zero);
+    Chunk(BlocksEngine::Actor& actor, const World& world,
+          BlocksEngine::Vector2 center = BlocksEngine::Vector2::Zero);
 
     [[nodiscard]] const Block& GetBlock(BlocksEngine::Vector3 position) const noexcept;
     [[nodiscard]] const World& GetWorld() const noexcept;

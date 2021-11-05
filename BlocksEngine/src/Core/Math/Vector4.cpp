@@ -506,7 +506,7 @@ Vector4 Vector4::Refract(const Vector4& iVec, const Vector4& nVec, const float r
     XMStoreFloat4(&result, x);
     return result;
 }
-
+/*
 void Vector4::Transform(const Vector2& v, const Quaternion& quat, Vector4& result) noexcept
 {
     const XMVECTOR v1 = XMLoadFloat2(&v);
@@ -527,7 +527,7 @@ Vector4 Vector4::Transform(const Vector2& v, const Quaternion& quat) noexcept
     Vector4 result;
     XMStoreFloat4(&result, x);
     return result;
-}
+}*/
 
 void Vector4::Transform(const Vector3& v, const Quaternion& quat, Vector4& result) noexcept
 {

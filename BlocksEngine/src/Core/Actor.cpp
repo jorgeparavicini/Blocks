@@ -22,6 +22,11 @@ Game& Actor::GetGame() const noexcept
     return game_;
 }
 
+const std::string& Actor::GetName() const noexcept
+{
+    return name_;
+}
+
 void Actor::Update() const
 {
     pTransform_->UpdateMatrix();
