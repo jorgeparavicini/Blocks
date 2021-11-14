@@ -3,4 +3,7 @@
 	<Type Name="BlocksEngine::Vector3">
 		<DisplayString>{{x = {x}, y = {y}, z = {z}}</DisplayString>
 	</Type>
+	<Type Name="BlocksEngine::Actor">
+		<DisplayString>{{ {name_} - Actor }}</DisplayString>
+	</Type>
 </AutoVisualizer>

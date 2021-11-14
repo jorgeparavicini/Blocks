@@ -36,7 +36,7 @@ constexpr Matrix::Matrix(float m00, float m01, float m02, float m03, float m10, 
 {
 }
 
-Matrix::Matrix(const Vector3& r0, const Vector3& r1, const Vector3& r2) noexcept
+Matrix::Matrix(const Vector3<float>& r0, const Vector3<float>& r1, const Vector3<float>& r2) noexcept
     : XMFLOAT4X4{
         r0.x, r0.y, r0.z, 0,
         r1.x, r1.y, r1.z, 0,
@@ -46,7 +46,8 @@ Matrix::Matrix(const Vector3& r0, const Vector3& r1, const Vector3& r2) noexcept
 {
 }
 
-Matrix::Matrix(const Vector4& r0, const Vector4& r1, const Vector4& r2, const Vector4& r3) noexcept
+Matrix::Matrix(const Vector4<float>& r0, const Vector4<float>& r1, const Vector4<float>& r2,
+               const Vector4<float>& r3) noexcept
     : XMFLOAT4X4(r0.x, r0.y, r0.z, r0.w,
                  r1.x, r1.y, r1.z, r1.w,
                  r2.x, r2.y, r2.z, r2.w,
@@ -372,12 +373,12 @@ void Matrix::ConsumeIsDirty() noexcept
 // Properties
 //------------------------------------------------------------------------------
 
-Vector3 Matrix::Up() const noexcept
+Vector3<float> Matrix::Up() const noexcept
 {
     return Vector3(_21, _22, _23);
 }
 
-void Matrix::Up(const Vector3& v) noexcept
+void Matrix::Up(const Vector3<float>& v) noexcept
 {
     _21 = v.x;
     _22 = v.y;
@@ -386,12 +387,12 @@ void Matrix::Up(const Vector3& v) noexcept
     isDirty_ = true;
 }
 
-Vector3 Matrix::Down() const noexcept
+Vector3<float> Matrix::Down() const noexcept
 {
     return Vector3(-_21, -_22, -_23);
 }
 
-void Matrix::Down(const Vector3& v) noexcept
+void Matrix::Down(const Vector3<float>& v) noexcept
 {
     _21 = -v.x;
     _22 = -v.y;
@@ -400,12 +401,12 @@ void Matrix::Down(const Vector3& v) noexcept
     isDirty_ = true;
 }
 
-Vector3 Matrix::Right() const noexcept
+Vector3<float> Matrix::Right() const noexcept
 {
     return Vector3(_11, _12, _13);
 }
 
-void Matrix::Right(const Vector3& v) noexcept
+void Matrix::Right(const Vector3<float>& v) noexcept
 {
     _11 = v.x;
     _12 = v.y;
@@ -414,12 +415,12 @@ void Matrix::Right(const Vector3& v) noexcept
     isDirty_ = true;
 }
 
-Vector3 Matrix::Left() const noexcept
+Vector3<float> Matrix::Left() const noexcept
 {
     return Vector3(-_11, -_12, -_13);
 }
 
-void Matrix::Left(const Vector3& v) noexcept
+void Matrix::Left(const Vector3<float>& v) noexcept
 {
     _11 = -v.x;
     _12 = -v.y;
@@ -428,12 +429,12 @@ void Matrix::Left(const Vector3& v) noexcept
     isDirty_ = true;
 }
 
-Vector3 Matrix::Forward() const noexcept
+Vector3<float> Matrix::Forward() const noexcept
 {
     return Vector3(-_31, -_32, -_33);
 }
 
-void Matrix::Forward(const Vector3& v) noexcept
+void Matrix::Forward(const Vector3<float>& v) noexcept
 {
     _31 = -v.x;
     _32 = -v.y;
@@ -442,12 +443,12 @@ void Matrix::Forward(const Vector3& v) noexcept
     isDirty_ = true;
 }
 
-Vector3 Matrix::Backward() const noexcept
+Vector3<float> Matrix::Backward() const noexcept
 {
     return Vector3(_31, _32, _33);
 }
 
-void Matrix::Backward(const Vector3& v) noexcept
+void Matrix::Backward(const Vector3<float>& v) noexcept
 {
     _31 = v.x;
     _32 = v.y;
@@ -456,12 +457,12 @@ void Matrix::Backward(const Vector3& v) noexcept
     isDirty_ = true;
 }
 
-Vector3 Matrix::Translation() const noexcept
+Vector3<float> Matrix::Translation() const noexcept
 {
     return Vector3(_41, _42, _43);
 }
 
-void Matrix::Translation(const Vector3& v) noexcept
+void Matrix::Translation(const Vector3<float>& v) noexcept
 {
     _41 = v.x;
     _42 = v.y;
@@ -474,7 +475,7 @@ void Matrix::Translation(const Vector3& v) noexcept
 // Matrix operations
 //------------------------------------------------------------------------------
 
-bool Matrix::Decompose(Vector3& scale, Quaternion& rotation, Vector3& translation) const noexcept
+bool Matrix::Decompose(Vector3<float>& scale, Quaternion& rotation, Vector3<float>& translation) const noexcept
 {
     XMVECTOR s, r, t;
 
@@ -538,10 +539,10 @@ float Matrix::Determinant() const noexcept
 _Use_decl_annotations_
 
 Matrix Matrix::CreateBillboard(
-    const Vector3& object,
-    const Vector3& cameraPosition,
-    const Vector3& cameraUp,
-    const Vector3* cameraForward) noexcept
+    const Vector3<float>& object,
+    const Vector3<float>& cameraPosition,
+    const Vector3<float>& cameraUp,
+    const Vector3<float>* cameraForward) noexcept
 {
     const XMVECTOR o = XMLoadFloat3(&object);
     const XMVECTOR c = XMLoadFloat3(&cameraPosition);
@@ -580,11 +581,11 @@ Matrix Matrix::CreateBillboard(
 _Use_decl_annotations_
 
 Matrix Matrix::CreateConstrainedBillboard(
-    const Vector3& object,
-    const Vector3& cameraPosition,
-    const Vector3& rotateAxis,
-    const Vector3* cameraForward,
-    const Vector3* objectForward) noexcept
+    const Vector3<float>& object,
+    const Vector3<float>& cameraPosition,
+    const Vector3<float>& rotateAxis,
+    const Vector3<float>* cameraForward,
+    Vector3<float>* objectForward) noexcept
 {
     // 1.0 - XMConvertToRadians( 0.1f );
     static constexpr XMVECTORF32 MinAngle = {{{0.99825467075f, 0.99825467075f, 0.99825467075f, 0.99825467075f}}};
@@ -655,7 +656,7 @@ Matrix Matrix::CreateConstrainedBillboard(
     return r;
 }
 
-Matrix Matrix::CreateTranslation(const Vector3& position) noexcept
+Matrix Matrix::CreateTranslation(const Vector3<float>& position) noexcept
 {
     Matrix r;
     XMStoreFloat4x4(&r, XMMatrixTranslation(position.x, position.y, position.z));
@@ -669,7 +670,7 @@ Matrix Matrix::CreateTranslation(const float x, const float y, const float z) no
     return r;
 }
 
-Matrix Matrix::CreateScale(const Vector3& scales) noexcept
+Matrix Matrix::CreateScale(const Vector3<float>& scales) noexcept
 {
     Matrix r;
     XMStoreFloat4x4(&r, XMMatrixScaling(scales.x, scales.y, scales.z));
@@ -711,7 +712,7 @@ Matrix Matrix::CreateRotationZ(const float radians) noexcept
     return r;
 }
 
-Matrix Matrix::CreateFromAxisAngle(const Vector3& axis, const float angle) noexcept
+Matrix Matrix::CreateFromAxisAngle(const Vector3<float>& axis, const float angle) noexcept
 {
     Matrix r;
     const XMVECTOR a = XMLoadFloat3(&axis);
@@ -759,7 +760,8 @@ Matrix Matrix::CreateOrthographicOffCenter(const float left, const float right, 
     return r;
 }
 
-Matrix Matrix::CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up) noexcept
+Matrix Matrix::CreateLookAt(const Vector3<float>& position, const Vector3<float>& target,
+                            const Vector3<float>& up) noexcept
 {
     Matrix r;
     const XMVECTOR eyeV = XMLoadFloat3(&position);
@@ -769,7 +771,8 @@ Matrix Matrix::CreateLookAt(const Vector3& position, const Vector3& target, cons
     return r;
 }
 
-Matrix Matrix::CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up) noexcept
+Matrix Matrix::CreateWorld(const Vector3<float>& position, const Vector3<float>& forward,
+                           const Vector3<float>& up) noexcept
 {
     const XMVECTOR zAxis = XMVector3Normalize(XMVectorNegate(XMLoadFloat3(&forward)));
     XMVECTOR yAxis = XMLoadFloat3(&up);
@@ -803,7 +806,7 @@ Matrix Matrix::CreateFromYawPitchRoll(const float yaw, const float pitch, const 
     return r;
 }
 
-Matrix Matrix::CreateShadow(const Vector3& lightDir, const Plane& plane) noexcept
+Matrix Matrix::CreateShadow(const Vector3<float>& lightDir, const Plane& plane) noexcept
 {
     Matrix r;
     const XMVECTOR light = XMLoadFloat3(&lightDir);

@@ -22,12 +22,12 @@ constexpr Quaternion::Quaternion(const float ix, const float iy, const float iz,
 {
 }
 
-Quaternion::Quaternion(const Vector3& v, const float scalar) noexcept
+Quaternion::Quaternion(const Vector3<float>& v, const float scalar) noexcept
     : XMFLOAT4{v.x, v.y, v.z, scalar}
 {
 }
 
-Quaternion::Quaternion(const Vector4& v) noexcept
+Quaternion::Quaternion(const Vector4<float>& v) noexcept
     : XMFLOAT4{v.x, v.y, v.z, v.w}
 {
 }
@@ -221,7 +221,7 @@ float Quaternion::Dot(const Quaternion& q) const noexcept
 // Static functions
 //------------------------------------------------------------------------------
 
-Quaternion Quaternion::CreateFromAxisAngle(const Vector3& axis, const float angle) noexcept
+Quaternion Quaternion::CreateFromAxisAngle(const Vector3<float>& axis, const float angle) noexcept
 {
     const XMVECTOR a = XMLoadFloat3(&axis);
 
@@ -237,7 +237,7 @@ Quaternion Quaternion::CreateFromYawPitchRoll(const float yaw, const float pitch
     return r;
 }
 
-Quaternion Quaternion::CreateFromYawPitchRoll(const Vector3& rot) noexcept
+Quaternion Quaternion::CreateFromYawPitchRoll(const Vector3<float>& rot) noexcept
 {
     const XMVECTOR v = XMLoadFloat3(&rot);
 
@@ -339,7 +339,7 @@ Quaternion Quaternion::Concatenate(const Quaternion& q1, const Quaternion& q2) n
     return result;
 }
 
-Quaternion Quaternion::EulerRadians(const Vector3& v)
+Quaternion Quaternion::EulerRadians(const Vector3<float>& v)
 {
     return EulerRadians(v.x, v.y, v.z);
 }
@@ -349,26 +349,9 @@ Quaternion Quaternion::EulerRadians(const float x, const float y, const float z)
     Quaternion r;
     XMStoreFloat4(&r, XMQuaternionRotationRollPitchYaw(x, y, z));
     return r;
-    /*const float roll = z * 0.5f;
-    const float sinRoll = std::sin(roll);
-    const float cosRoll = std::cos(roll);
-
-    const float pitch = y * 0.5f;
-    const float sinPitch = std::sin(pitch);
-    const float cosPitch = std::cos(pitch);
-
-    const float yaw = x * 0.5f;
-    const float sinYaw = std::sin(yaw);
-    const float cosYaw = std::cos(yaw);
-
-    const float resX = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
-    const float resY = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * sinRoll;
-    const float resZ = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
-    const float resW = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
-    return {resX, resY, resZ, resW};*/
 }
 
-Quaternion Quaternion::Euler(const Vector3& v)
+Quaternion Quaternion::Euler(const Vector3<float>& v)
 {
     return EulerRadians(v * Math::DegToRad);
 }

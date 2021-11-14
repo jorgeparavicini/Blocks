@@ -25,11 +25,11 @@ namespace BlocksEngine
 class BlocksEngine::Actor final : public Entity
 {
 public:
-    explicit Actor(Game& game, std::string name);
+    explicit Actor(Game& game, std::wstring name);
 
     [[nodiscard]] Transform& GetTransform() const noexcept;
     [[nodiscard]] Game& GetGame() const noexcept;
-    [[nodiscard]] const std::string& GetName() const noexcept;
+    [[nodiscard]] const std::wstring& GetName() const noexcept;
 
     void Update() const;
     void Render() const;
@@ -41,14 +41,13 @@ public:
     decltype(auto) AddComponent(Args&&... args)
     {
         std::shared_ptr<T> component = std::make_unique<T>(*this, std::forward<Args>(args)...);
-        T& result = *component;
-        pComponents_.insert(std::move(component));
-        return result;
+        pComponents_.insert(std::dynamic_pointer_cast<Component>(component));
+        return component;
     }
 
 private:
     Game& game_;
-    std::string name_;
+    std::wstring name_;
     std::unique_ptr<Transform> pTransform_{};
     std::unordered_set<std::shared_ptr<Component>> pComponents_{};
 };

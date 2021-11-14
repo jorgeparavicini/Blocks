@@ -11,13 +11,10 @@
 
 #include <DirectXMath.h>
 
+#include "BlocksEngine/Math.h"
+
 namespace BlocksEngine
 {
-    struct Vector3;
-    struct Vector4;
-    struct Quaternion;
-    struct Matrix;
-
     struct Plane;
 }
 
@@ -25,10 +22,10 @@ struct BlocksEngine::Plane : DirectX::XMFLOAT4
 {
     Plane() noexcept;
     constexpr Plane(float ix, float iy, float iz, float iw) noexcept;
-    Plane(const Vector3& normal, float d) noexcept;
-    Plane(const Vector3& point1, const Vector3& point2, const Vector3& point3) noexcept;
-    Plane(const Vector3& point, const Vector3& normal) noexcept;
-    explicit Plane(const Vector4& v) noexcept;
+    Plane(const Vector3<float>& normal, float d) noexcept;
+    Plane(const Vector3<float>& point1, const Vector3<float>& point2, const Vector3<float>& point3) noexcept;
+    Plane(const Vector3<float>& point, const Vector3<float>& normal) noexcept;
+    explicit Plane(const Vector4<float>& v) noexcept;
     explicit Plane(_In_reads_(4) const float* pArray) noexcept;
     Plane(DirectX::FXMVECTOR v) noexcept;
     Plane(const XMFLOAT4& p) noexcept;
@@ -56,9 +53,9 @@ struct BlocksEngine::Plane : DirectX::XMFLOAT4
     Plane& operator=(const DirectX::XMVECTORF32& f) noexcept;
 
     // Properties
-    [[nodiscard]] Vector3 Normal() const noexcept;
+    [[nodiscard]] Vector3<float> Normal() const noexcept;
 
-    void Normal(const Vector3& normal) noexcept;
+    void Normal(const Vector3<float>& normal) noexcept;
 
     [[nodiscard]] float D() const noexcept;
     void D(float d) noexcept;
@@ -67,9 +64,9 @@ struct BlocksEngine::Plane : DirectX::XMFLOAT4
     void Normalize() noexcept;
     void Normalize(Plane& result) const noexcept;
 
-    [[nodiscard]] float Dot(const Vector4& v) const noexcept;
-    [[nodiscard]] float DotCoordinate(const Vector3& position) const noexcept;
-    [[nodiscard]] float DotNormal(const Vector3& normal) const noexcept;
+    [[nodiscard]] float Dot(const Vector4<float>& v) const noexcept;
+    [[nodiscard]] float DotCoordinate(const Vector3<float>& position) const noexcept;
+    [[nodiscard]] float DotNormal(const Vector3<float>& normal) const noexcept;
 
     // Static functions
     static void Transform(const Plane& plane, const Matrix& m, Plane& result) noexcept;

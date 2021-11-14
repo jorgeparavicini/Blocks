@@ -11,14 +11,20 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))}
 {
     // TODO: Catch potential error
-    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    if (FAILED(hr))
+    {
+        throw "shit";
+    }
 
-    Actor& cameraActor = AddActor();
-    Camera& camera = cameraActor.AddComponent<Camera>();
-    camera.GetTransform().SetPosition(Vector3(0, 0, -10));
+    const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera");
+    const std::shared_ptr<Camera> camera = cameraActor->AddComponent<Camera>();
+    camera->GetTransform().SetPosition(Vector3<float>(0, 0, -10));
     const Quaternion rot = Quaternion::Euler(0, 180, 0);
-    camera.GetTransform().SetRotation(rot);
-    SetActiveCamera(camera);
+    camera->GetTransform().SetRotation(rot);
+    SetActiveCamera(*camera);
+
+    int x = camera.use_count();
 
     // Actor& blockActor = AddActor();
     //blockActor.AddComponent<Renderer>();
@@ -59,9 +65,8 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
     rasterizerDesc.CullMode = D3D11_CULL_NONE;
 
-    HRESULT hr;
     GFX_THROW_INFO(Graphics().GetDevice().CreateRasterizerState(&rasterizerDesc, &rasterizer));
-    Graphics().GetContext().RSSetState(rasterizer.Get());
+    //Graphics().GetContext().RSSetState(rasterizer.Get());
 }
 
 Game::~Game()
@@ -141,13 +146,17 @@ const Time& Game::Time() const noexcept
     return time_;
 }
 
-Actor& Game::AddActor()
+std::shared_ptr<Actor> Game::AddActor()
 {
-    std::string name = "GetActor " + std::to_string(totalActorCount_++);
-    auto actor = std::make_unique<Actor>(*this, std::move(name));
-    Actor& a = *actor;
-    pActors_.push_back(std::move(actor));
-    return a;
+    std::wstring name = L"GetActor " + std::to_wstring(totalActorCount_++);
+    return AddActor(std::move(name));
+}
+
+std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
+{
+    auto actor = std::make_shared<Actor>(*this, std::move(actorName));
+    pActors_.push_back(actor);
+    return std::move(actor);
 }
 
 boost::signals2::connection Game::AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept

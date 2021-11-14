@@ -312,6 +312,7 @@
   <ItemGroup>
     <None Include="Blocks Engine.props" />
     <None Include="packages.config" />
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl" />

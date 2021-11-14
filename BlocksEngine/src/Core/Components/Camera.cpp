@@ -27,10 +27,10 @@ Matrix Camera::WorldView() const noexcept
     const Vector3 position = GetTransform().GetPosition();
     const Matrix rotation = Matrix::CreateFromQuaternion(GetTransform().GetRotation());
 
-    Vector3 target = Vector3::Transform(Vector3::Forward, rotation);
+    Vector3 target = Vector3<float>::Transform(Vector3<float>::Forward, rotation);
     target.Normalize();
 
-    return Matrix::CreateLookAt(position, position + target, Vector3::Up);
+    return Matrix::CreateLookAt(position, position + target, Vector3<float>::Up);
 }
 
 Matrix Camera::Projection() const noexcept
@@ -45,38 +45,39 @@ void Camera::OnWindowResized(const int width, const int height) noexcept
 
 void Camera::Update()
 {
-    const float deltaTime = static_cast<float>(GetGame().Time().DeltaTime());
+    const auto deltaTime = static_cast<float>(GetGame().Time().DeltaTime());
     x_ += 0.01f;
     const Keyboard& keyboard = GetActor().GetGame().Keyboard();
     //GetTransform().SetRotation(Quaternion::CreateFromYawPitchRoll(0, 1, x_));
     if (keyboard.KeyIsPressed('W'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Forward * moveSpeed_ * deltaTime;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3<float>::Forward * moveSpeed_ * deltaTime;
     }
 
     if (keyboard.KeyIsPressed('S'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Backward * moveSpeed_ * deltaTime;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3<float>::Backward * moveSpeed_ *
+            deltaTime;
     }
 
     if (keyboard.KeyIsPressed('A'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Left * moveSpeed_ * deltaTime;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3<float>::Left * moveSpeed_ * deltaTime;
     }
 
     if (keyboard.KeyIsPressed('D'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Right * moveSpeed_ * deltaTime;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3<float>::Right * moveSpeed_ * deltaTime;
     }
 
     if (keyboard.KeyIsPressed('Q'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Up * moveSpeed_ * deltaTime;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3<float>::Up * moveSpeed_ * deltaTime;
     }
 
     if (keyboard.KeyIsPressed('E'))
     {
-        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3::Down * moveSpeed_ * deltaTime;
+        GetTransform().GetPosition() += GetTransform().GetRotation() * Vector3<float>::Down * moveSpeed_ * deltaTime;
     }
 
     const Mouse& mouse = GetActor().GetGame().Mouse();

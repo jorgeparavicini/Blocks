@@ -33,5 +33,5 @@ Texture2DArray::~Texture2DArray()
 
 void Texture2DArray::Bind(const Graphics& gfx) noexcept
 {
-    gfx.GetContext().PSSetShaderResources(0u, ppTextureViews_.size(), ppTextureViews_.data());
+    gfx.GetContext().PSSetShaderResources(0u, static_cast<UINT>(ppTextureViews_.size()), ppTextureViews_.data());
 }

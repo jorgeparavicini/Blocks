@@ -18,12 +18,12 @@ constexpr Plane::Plane(const float ix, const float iy, const float iz, const flo
 {
 }
 
-Plane::Plane(const Vector3& normal, const float d) noexcept
+Plane::Plane(const Vector3<float>& normal, const float d) noexcept
     : XMFLOAT4{normal.x, normal.y, normal.z, d}
 {
 }
 
-Plane::Plane(const Vector3& point1, const Vector3& point2, const Vector3& point3) noexcept
+Plane::Plane(const Vector3<float>& point1, const Vector3<float>& point2, const Vector3<float>& point3) noexcept
     : XMFLOAT4{}
 {
     const XMVECTOR p0 = XMLoadFloat3(&point1);
@@ -32,7 +32,7 @@ Plane::Plane(const Vector3& point1, const Vector3& point2, const Vector3& point3
     XMStoreFloat4(this, XMPlaneFromPoints(p0, p1, p2));
 }
 
-Plane::Plane(const Vector3& point, const Vector3& normal) noexcept
+Plane::Plane(const Vector3<float>& point, const Vector3<float>& normal) noexcept
     : XMFLOAT4{}
 {
     const XMVECTOR p = XMLoadFloat3(&point);
@@ -40,7 +40,7 @@ Plane::Plane(const Vector3& point, const Vector3& normal) noexcept
     XMStoreFloat4(this, XMPlaneFromPointNormal(p, n));
 }
 
-Plane::Plane(const Vector4& v) noexcept
+Plane::Plane(const Vector4<float>& v) noexcept
     : XMFLOAT4{v.x, v.y, v.z, v.w}
 {
 }
@@ -128,12 +128,12 @@ Plane& Plane::operator=(const XMVECTORF32& f) noexcept
 // Plane properties
 //------------------------------------------------------------------------------
 
-Vector3 Plane::Normal() const noexcept
+Vector3<float> Plane::Normal() const noexcept
 {
     return Vector3(x, y, z);
 }
 
-void Plane::Normal(const Vector3& normal) noexcept
+void Plane::Normal(const Vector3<float>& normal) noexcept
 {
     x = normal.x;
     y = normal.y;
@@ -172,21 +172,21 @@ void Plane::Normalize(Plane& result) const noexcept
     XMStoreFloat4(&result, XMPlaneNormalize(p));
 }
 
-float Plane::Dot(const Vector4& v) const noexcept
+float Plane::Dot(const Vector4<float>& v) const noexcept
 {
     const XMVECTOR p = XMLoadFloat4(this);
     const XMVECTOR v0 = XMLoadFloat4(&v);
     return XMVectorGetX(XMPlaneDot(p, v0));
 }
 
-float Plane::DotCoordinate(const Vector3& position) const noexcept
+float Plane::DotCoordinate(const Vector3<float>& position) const noexcept
 {
     const XMVECTOR p = XMLoadFloat4(this);
     const XMVECTOR v0 = XMLoadFloat3(&position);
     return XMVectorGetX(XMPlaneDotCoord(p, v0));
 }
 
-float Plane::DotNormal(const Vector3& normal) const noexcept
+float Plane::DotNormal(const Vector3<float>& normal) const noexcept
 {
     const XMVECTOR p = XMLoadFloat4(this);
     const XMVECTOR n0 = XMLoadFloat3(&normal);

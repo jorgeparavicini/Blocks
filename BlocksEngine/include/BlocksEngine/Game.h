@@ -51,7 +51,8 @@ public:
     void ForceExit() noexcept;
     void SetActiveCamera(Camera& camera);
 
-    Actor& AddActor();
+    std::shared_ptr<Actor> AddActor();
+    std::shared_ptr<Actor> AddActor(std::wstring actorName);
 
     // Signals
     boost::signals2::connection AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept;
@@ -66,7 +67,7 @@ private:
     static std::optional<int> ProcessApplicationMessages() noexcept;
 
     Camera* camera_{nullptr};
-    std::vector<std::unique_ptr<Actor>> pActors_{};
+    std::vector<std::shared_ptr<Actor>> pActors_{};
 
     // Rendering loop Timer
     BlocksEngine::Time time_;

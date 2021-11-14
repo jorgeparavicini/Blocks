@@ -5,7 +5,7 @@
 
 using namespace BlocksEngine;
 
-Actor::Actor(Game& game, std::string name)
+Actor::Actor(Game& game, std::wstring name)
     : game_{game},
       name_{std::move(name)},
       pTransform_{std::make_unique<Transform>()}
@@ -22,7 +22,7 @@ Game& Actor::GetGame() const noexcept
     return game_;
 }
 
-const std::string& Actor::GetName() const noexcept
+const std::wstring& Actor::GetName() const noexcept
 {
     return name_;
 }
