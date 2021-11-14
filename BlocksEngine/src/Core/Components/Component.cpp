@@ -5,24 +5,24 @@
 
 using namespace BlocksEngine;
 
-Component::Component(Actor& actor)
-    : actor_{actor}
+Component::Component(std::weak_ptr<Actor> actor)
+    : actor_{std::move(actor)}
 {
 }
 
-Actor& Component::GetActor() const noexcept
+std::shared_ptr<Game> Component::GetGame() const noexcept
 {
-    return actor_;
+    return GetActor()->GetGame();
 }
 
-Game& Component::GetGame() const noexcept
+std::shared_ptr<Actor> Component::GetActor() const noexcept
 {
-    return actor_.GetGame();
+    return actor_.lock();
 }
 
-Transform& Component::GetTransform() const noexcept
+std::shared_ptr<Transform> Component::GetTransform() const noexcept
 {
-    return actor_.GetTransform();
+    return GetActor()->GetTransform();
 }
 
 void Component::Update()

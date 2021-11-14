@@ -20,18 +20,21 @@ namespace BlocksEngine
     class Game;
 }
 
-class BlocksEngine::Game
+class BlocksEngine::Game : public std::enable_shared_from_this<Game>
 {
 public:
     using GameStartSignal = boost::signals2::signal<void()>;
 
-    //------------------------------------------------------------------------------
-    // Constructors
-    //------------------------------------------------------------------------------
-
-    explicit Game(std::unique_ptr<WindowOptions> options = std::make_unique<WindowOptions>());
-
     ~Game();
+
+    static std::shared_ptr<Game> CreateGame(std::unique_ptr<WindowOptions> options = std::make_unique<WindowOptions>())
+    {
+        // Since a shared_ptr needs to be created to use a game, the constructor is private.
+        // And since the constructor is private, make_shared cannot be used
+        auto game = std::shared_ptr<Game>{new Game{std::move(options)}};
+        game->Initialize();
+        return game;
+    }
 
     /**
      * \brief Starts the blocking Main Loop. 
@@ -51,22 +54,34 @@ public:
     void ForceExit() noexcept;
     void SetActiveCamera(Camera& camera);
 
-    Actor& AddActor();
+    std::shared_ptr<Actor> AddActor();
+    std::shared_ptr<Actor> AddActor(std::wstring actorName);
 
     // Signals
     boost::signals2::connection AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept;
 
 private:
+    //------------------------------------------------------------------------------
+    // Constructors
+    //------------------------------------------------------------------------------
+
+    explicit Game(std::unique_ptr<WindowOptions> options = std::make_unique<WindowOptions>());
+
+    void Initialize();
+
     int totalActorCount_{0};
     bool shutdownForced_{false};
     std::unique_ptr<BlocksEngine::Window> pWindow_{};
     void Tick() noexcept;
-    void Update() const;
+    void Update();
     void Render() const;
     static std::optional<int> ProcessApplicationMessages() noexcept;
 
     Camera* camera_{nullptr};
-    std::vector<std::unique_ptr<Actor>> pActors_{};
+    std::vector<std::shared_ptr<Actor>> pActors_{};
+    std::queue<std::shared_ptr<Actor>> pNewActorsQueue_{};
+
+    void LoadNewActors();
 
     // Rendering loop Timer
     BlocksEngine::Time time_;

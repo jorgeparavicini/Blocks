@@ -11,35 +11,22 @@ Game::Game(std::unique_ptr<WindowOptions> options)
     : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))}
 {
     // TODO: Catch potential error
-    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    // TODO: If we do this here, only one game could be created.
+    const HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    if (FAILED(hr))
+    {
+        throw "shit";
+    }
+}
 
-    Actor& cameraActor = AddActor();
-    Camera& camera = cameraActor.AddComponent<Camera>();
-    camera.GetTransform().SetPosition(Vector3(0, 0, -10));
+void Game::Initialize()
+{
+    const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera");
+    const std::shared_ptr<Camera> camera = cameraActor->AddComponent<Camera>();
+    camera->GetTransform()->SetPosition(Vector3<float>(0, 0, -10));
     const Quaternion rot = Quaternion::Euler(0, 180, 0);
-    camera.GetTransform().SetRotation(rot);
-    SetActiveCamera(camera);
-
-    // Actor& blockActor = AddActor();
-    //blockActor.AddComponent<Renderer>();
-
-    /*Actor& block2 = AddActor();
-    Vector3 pos = block2.GetTransform().GetPosition();
-    pos.y += 1;
-    pos.x += 1;
-    block2.GetTransform().SetPosition(pos);
-    block2.AddComponent<Renderer>();
-
-    Actor& block3 = AddActor();
-    Vector3 pos2 = block3.GetTransform().GetPosition();
-    pos2.y += 6;
-    pos2.x += 4;
-    block3.GetTransform().SetPosition(pos2);
-    block3.AddComponent<Renderer>();
-
-    Actor& floor = AddActor();
-    floor.GetTransform().SetScale({100, 1, 100});
-    floor.AddComponent<Renderer>();*/
+    camera->GetTransform()->SetRotation(rot);
+    SetActiveCamera(*camera);
 
     RECT clientRect;
     GetClientRect(Window().HWnd(), &clientRect);
@@ -61,7 +48,7 @@ Game::Game(std::unique_ptr<WindowOptions> options)
 
     HRESULT hr;
     GFX_THROW_INFO(Graphics().GetDevice().CreateRasterizerState(&rasterizerDesc, &rasterizer));
-    Graphics().GetContext().RSSetState(rasterizer.Get());
+    //Graphics().GetContext().RSSetState(rasterizer.Get());
 }
 
 Game::~Game()
@@ -141,13 +128,17 @@ const Time& Game::Time() const noexcept
     return time_;
 }
 
-Actor& Game::AddActor()
+std::shared_ptr<Actor> Game::AddActor()
 {
-    std::string name = "GetActor " + std::to_string(totalActorCount_++);
-    auto actor = std::make_unique<Actor>(*this, std::move(name));
-    Actor& a = *actor;
-    pActors_.push_back(std::move(actor));
-    return a;
+    std::wstring name = L"GetActor " + std::to_wstring(totalActorCount_++);
+    return AddActor(std::move(name));
+}
+
+std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
+{
+    auto actor = std::make_shared<Actor>(shared_from_this(), std::move(actorName));
+    pNewActorsQueue_.push(actor);
+    return std::move(actor);
 }
 
 boost::signals2::connection Game::AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept
@@ -164,8 +155,9 @@ void Game::Tick() noexcept
     Render();
 }
 
-void Game::Update() const
+void Game::Update()
 {
+    LoadNewActors();
     for (const auto& pActor : pActors_)
     {
         pActor->Update();
@@ -199,4 +191,13 @@ std::optional<int> Game::ProcessApplicationMessages() noexcept
     }
 
     return {};
+}
+
+void Game::LoadNewActors()
+{
+    while (!pNewActorsQueue_.empty())
+    {
+        pActors_.push_back(std::move(pNewActorsQueue_.front()));
+        pNewActorsQueue_.pop();
+    }
 }

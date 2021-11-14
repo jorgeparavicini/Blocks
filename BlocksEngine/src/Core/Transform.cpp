@@ -5,7 +5,7 @@ using namespace DirectX;
 using namespace BlocksEngine;
 
 
-Transform::Transform(Vector3 position, Quaternion rotation, Vector3 scale)
+Transform::Transform(Vector3<float> position, Quaternion rotation, Vector3<float> scale)
     : position_{std::move(position)},
       rotation_{std::move(rotation)},
       scale_{std::move(scale)}
@@ -18,7 +18,7 @@ const Matrix& Transform::GetMatrix() const noexcept
     return matrix_;
 }
 
-Vector3& Transform::GetPosition() noexcept
+Vector3<float>& Transform::GetPosition() noexcept
 {
     return position_;
 }
@@ -28,12 +28,12 @@ Quaternion& Transform::GetRotation() noexcept
     return rotation_;
 }
 
-Vector3& Transform::GetScale() noexcept
+Vector3<float>& Transform::GetScale() noexcept
 {
     return scale_;
 }
 
-void Transform::SetPosition(Vector3 position) noexcept
+void Transform::SetPosition(Vector3<float> position) noexcept
 {
     position_ = std::move(position);
 }
@@ -43,7 +43,7 @@ void Transform::SetRotation(Quaternion rotation) noexcept
     rotation_ = std::move(rotation);
 }
 
-void Transform::SetScale(const Vector3 scale) noexcept
+void Transform::SetScale(const Vector3<float> scale) noexcept
 {
     scale_ = scale;
 }

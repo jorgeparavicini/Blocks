@@ -1,12 +1,12 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Vector2.h"
 
+#include <boost/container_hash/hash.hpp>
+
 #include "BlocksEngine/Quaternion.h"
 
 using namespace BlocksEngine;
 using namespace DirectX;
-
-Vector2<int> x = Vector2<int>(2);
 
 //------------------------------------------------------------------------------
 // Constructors
@@ -25,8 +25,8 @@ constexpr Vector2<T>::Vector2(const T a) noexcept
 }
 
 template <class T>
-constexpr Vector2<T>::Vector2(const T ix, const T iy) noexcept
-    : Vector2Base<T>::Base{ix, iy}
+constexpr Vector2<T>::Vector2(const T x, const T y) noexcept
+    : Vector2Base<T>::Base{x, y}
 {
 }
 
@@ -36,34 +36,33 @@ Vector2<T>::Vector2(_In_reads_(2) const T* pArray) noexcept
 {
 }
 
+template <class T>
+Vector2<T>::Vector2(FXMVECTOR v) noexcept // NOLINT(cppcoreguidelines-pro-type-member-init)
+{
+    Store(this, v);
+}
+
+template <class T>
+Vector2<T>::Vector2(const typename Vector2Base<T>::Base& v) noexcept
+    : Vector2Base<T>::Base{v.x, v.y}
+{
+}
+
 template <>
-Vector2<float>::Vector2(FXMVECTOR v) noexcept
-    : Vector2Base<float>::Base{}
-{
-    XMStoreFloat2(this, v);
-}
-
-template<>
-Vector2<int32_t>::Vector2(FXMVECTOR v) noexcept
-    : Vector2Base<int32_t>::Base{} 
-{
-    XMStoreSInt2(this, v);
-}
-
-template<>
-Vector2<uint32_t>::Vector2(FXMVECTOR v) noexcept : Vector2Base<uint32_t>::Base{}
-{
-
-}
-
-
-Vector2::Vector2(const XMFLOAT2& v) noexcept
-    : XMFLOAT2{v.x, v.y}
+Vector2<float>::Vector2(const Vector2Base<float>::Vector& v) noexcept
+    : Vector2Base<float>::Base{v.f[0], v.f[1]}
 {
 }
 
-Vector2::Vector2(const XMVECTORF32& v) noexcept
-    : XMFLOAT2{v.f[0], v.f[1]}
+template <>
+Vector2<int32_t>::Vector2(const Vector2Base<int32_t>::Vector& v) noexcept
+    : Vector2Base<int32_t>::Base{v.i[0], v.i[1]}
+{
+}
+
+template <>
+Vector2<uint32_t>::Vector2(const Vector2Base<uint32_t>::Vector& v) noexcept
+    : Vector2Base<uint32_t>::Base{v.u[0], v.u[1]}
 {
 }
 
@@ -71,40 +70,29 @@ Vector2::Vector2(const XMVECTORF32& v) noexcept
 // Converter operators
 //------------------------------------------------------------------------------
 
-Vector2::operator DirectX::XMVECTOR() const noexcept
+template <class T>
+Vector2<T>::operator DirectX::XMVECTOR() const noexcept
 {
-    return XMLoadFloat2(this);
-}
-
-//------------------------------------------------------------------------------
-// State manipulation
-//------------------------------------------------------------------------------
-
-/*bool Vector2::IsDirty() const noexcept
-{
-    return isDirty_;
-}
-
-void Vector2::ConsumeIsDirty() noexcept
-{
-    isDirty_ = false;
+    return Load(this);
 }
 
 //------------------------------------------------------------------------------
 // Comparision operators
 //------------------------------------------------------------------------------
 
-bool Vector2::operator==(const Vector2& v) const noexcept
+template <class T>
+bool Vector2<T>::operator==(const Vector2<T>& v) const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&v);
     return XMVector2Equal(v1, v2);
 }
 
-bool Vector2::operator!=(const Vector2& v) const noexcept
+template <class T>
+bool Vector2<T>::operator!=(const Vector2<T>& v) const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&v);
     return XMVector2NotEqual(v1, v2);
 }
 
@@ -112,72 +100,87 @@ bool Vector2::operator!=(const Vector2& v) const noexcept
 // Assignment operators
 //------------------------------------------------------------------------------
 
-Vector2& Vector2::operator=(const XMVECTORF32& f) noexcept
+template <>
+Vector2<float>& Vector2<float>::operator=(const Vector2Base<float>::Vector& f) noexcept
 {
-    x = f.f[0];
-    y = f.f[1];
-
-    isDirty_ = true;
+    this->x = f.f[0];
+    this->y = f.f[1];
 
     return *this;
 }
 
-Vector2& Vector2::operator+=(const Vector2& v) noexcept
+template <>
+Vector2<int32_t>& Vector2<int32_t>::operator=(const Vector2Base<int32_t>::Vector& f) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&v);
+    this->x = f.i[0];
+    this->y = f.i[1];
+
+    return *this;
+}
+
+template <>
+Vector2<uint32_t>& Vector2<uint32_t>::operator=(const Vector2Base<uint32_t>::Vector& f) noexcept
+{
+    this->x = f.u[0];
+    this->y = f.u[1];
+
+    return *this;
+}
+
+template <class T>
+template <class U>
+Vector2<T>& Vector2<T>::operator+=(const Vector2<U>& v) noexcept
+{
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&v);
     const XMVECTOR x = XMVectorAdd(v1, v2);
-    XMStoreFloat2(this, x);
-
-    isDirty_ = true;
+    Store(this, x);
 
     return *this;
 }
 
-Vector2& Vector2::operator-=(const Vector2& v) noexcept
+template <class T>
+template <class U>
+Vector2<T>& Vector2<T>::operator-=(const Vector2<U>& v) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&v);
     const XMVECTOR x = XMVectorSubtract(v1, v2);
-    XMStoreFloat2(this, x);
-
-    isDirty_ = true;
+    Store(this, x);
 
     return *this;
 }
 
-Vector2& Vector2::operator*=(const Vector2& v) noexcept
+template <class T>
+template <class U>
+Vector2<T>& Vector2<T>::operator*=(const Vector2<U>& v) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&v);
     const XMVECTOR x = XMVectorMultiply(v1, v2);
-    XMStoreFloat2(this, x);
-
-    isDirty_ = true;
+    Store(this, x);
 
     return *this;
 }
 
-Vector2& Vector2::operator*=(const float s) noexcept
+template <class T>
+Vector2<T>& Vector2<T>::operator*=(const float s) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
+    const XMVECTOR v1 = Load(this);
     const XMVECTOR x = XMVectorScale(v1, s);
-    XMStoreFloat2(this, x);
-
-    isDirty_ = true;
+    Store(this, x);
 
     return *this;
 }
 
-Vector2& Vector2::operator/=(const float s) noexcept
+template <class T>
+Vector2<T>& Vector2<T>::operator/=(const float s) noexcept
 {
     assert(s != 0.0f);
 
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR X = XMVectorScale(v1, 1.f / s);
-    XMStoreFloat2(this, X);
-
-    isDirty_ = true;
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR x = XMVectorScale(v1, 1.f / s);
+    Store(this, x);
 
     return *this;
 }
@@ -186,488 +189,596 @@ Vector2& Vector2::operator/=(const float s) noexcept
 // Unary operators
 //------------------------------------------------------------------------------
 
-Vector2 Vector2::operator+() const noexcept
+template <class T>
+Vector2<T> Vector2<T>::operator+() const noexcept
 {
     return *this;
 }
 
-Vector2 Vector2::operator-() const noexcept
+// TODO: Could be done with XMVectorNegate, but test it
+template <>
+Vector2<float> Vector2<float>::operator-() const noexcept
 {
-    return Vector2(-x, -y);
+    return Vector2(-this->x, -this->y);
 }
+
+template <>
+Vector2<int32_t> Vector2<int32_t>::operator-() const noexcept
+{
+    return Vector2(-this->x, -this->y);
+}
+
+template <>
+Vector2<uint32_t> Vector2<uint32_t>::operator-() const noexcept
+{
+    return Vector2(this->x, this->y);
+}
+
+//------------------------------------------------------------------------------
+// Hashing
+//------------------------------------------------------------------------------
+
+/*template <class T>
+std::size_t hash_value(const Vector2<T>& v)
+{
+    std::size_t seed = 0;
+    boost::hash_combine(seed, v.x);
+    boost::hash_combine(seed, v.y);
+
+    return seed;
+}*/
 
 //------------------------------------------------------------------------------
 // Vector operations
 //------------------------------------------------------------------------------
 
-bool Vector2::InBounds(const Vector2& bounds) const noexcept
+template <class T>
+template <class U>
+bool Vector2<T>::InBounds(const Vector2<U>& bounds) const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&bounds);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&bounds);
     return XMVector2InBounds(v1, v2);
 }
 
-float Vector2::Length() const noexcept
+template <class T>
+float Vector2<T>::Length() const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
+    const XMVECTOR v1 = Load(this);
     const XMVECTOR x = XMVector2Length(v1);
     return XMVectorGetX(x);
 }
 
-float Vector2::LengthSquared() const noexcept
+template <class T>
+float Vector2<T>::LengthSquared() const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
+    const XMVECTOR v1 = Load(this);
     const XMVECTOR x = XMVector2LengthSq(v1);
     return XMVectorGetX(x);
 }
 
-float Vector2::Dot(const Vector2& v) const noexcept
+template <class T>
+template <class U>
+float Vector2<T>::Dot(const Vector2<U>& v) const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&v);
     const XMVECTOR x = XMVector2Dot(v1, v2);
     return XMVectorGetX(x);
 }
 
-void Vector2::Cross(const Vector2& v, Vector2& result) const noexcept
+template <class T>
+template <class U, class V>
+void Vector2<T>::Cross(const Vector2<U>& v, Vector2<V>& result) const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&v);
     const XMVECTOR r = XMVector2Cross(v1, v2);
-    XMStoreFloat2(&result, r);
+    Store(&result, r);
 }
 
-Vector2 Vector2::Cross(const Vector2& v) const noexcept
+template <class T>
+template <class U, class V>
+Vector2<U> Vector2<T>::Cross(const Vector2<V>& v) const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&v);
     const XMVECTOR r = XMVector2Cross(v1, v2);
 
-    Vector2 result;
-    XMStoreFloat2(&result, r);
+    Vector2<U> result;
+    Store(&result, r);
     return result;
 }
 
-void Vector2::Normalize() noexcept
+template <class T>
+void Vector2<T>::Normalize() noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
+    const XMVECTOR v1 = Load(this);
     const XMVECTOR x = XMVector2Normalize(v1);
 
-    isDirty_ = true;
-
-    XMStoreFloat2(this, x);
+    Store(this, x);
 }
 
-void Vector2::Normalize(Vector2& result) const noexcept
+template <class T>
+template <class U>
+void Vector2<T>::Normalize(Vector2<U>& result) const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
+    const XMVECTOR v1 = Load(this);
     const XMVECTOR x = XMVector2Normalize(v1);
-    XMStoreFloat2(&result, x);
+    Store(&result, x);
 }
 
-void Vector2::Clamp(const Vector2& vMin, const Vector2& vMax) noexcept
+template <class T>
+template <class U, class V>
+void Vector2<T>::Clamp(const Vector2<U>& vMin, const Vector2<V>& vMax) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&vMin);
-    const XMVECTOR v3 = XMLoadFloat2(&vMax);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&vMin);
+    const XMVECTOR v3 = Load(&vMax);
     const XMVECTOR x = XMVectorClamp(v1, v2, v3);
 
-    isDirty_ = true;
-
-    XMStoreFloat2(this, x);
+    Store(this, x);
 }
 
-void Vector2::Clamp(const Vector2& vMin, const Vector2& vMax, Vector2& result) const noexcept
+template <class T>
+template <class U, class V, class W>
+void Vector2<T>::Clamp(const Vector2<U>& vMin, const Vector2<V>& vMax, Vector2<W>& result) const noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(this);
-    const XMVECTOR v2 = XMLoadFloat2(&vMin);
-    const XMVECTOR v3 = XMLoadFloat2(&vMax);
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR v2 = Load(&vMin);
+    const XMVECTOR v3 = Load(&vMax);
     const XMVECTOR x = XMVectorClamp(v1, v2, v3);
-    XMStoreFloat2(&result, x);
+
+    Store(&result, x);
 }
 
 //------------------------------------------------------------------------------
 // Static functions
 //------------------------------------------------------------------------------
 
-float Vector2::Distance(const Vector2& v1, const Vector2& v2) noexcept
+template <class T>
+template <class U, class V>
+float Vector2<T>::Distance(const Vector2<U>& v1, const Vector2<V>& v2) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR v = XMVectorSubtract(x2, x1);
     const XMVECTOR x = XMVector2Length(v);
+
     return XMVectorGetX(x);
 }
 
-float Vector2::DistanceSquared(const Vector2& v1, const Vector2& v2) noexcept
+template <class T>
+template <class U, class V>
+float Vector2<T>::DistanceSquared(const Vector2<U>& v1, const Vector2<V>& v2) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR v = XMVectorSubtract(x2, x1);
     const XMVECTOR x = XMVector2LengthSq(v);
+
     return XMVectorGetX(x);
 }
 
-void Vector2::Min(const Vector2& v1, const Vector2& v2, Vector2& result) noexcept
+template <class T>
+template <class U, class V>
+void Vector2<T>::Min(const Vector2<U>& v1, const Vector2<V>& v2, Vector2<T>& result) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
-    const XMVECTOR x = XMVectorMin(x1, x2);
-    XMStoreFloat2(&result, x);
-}
-
-Vector2 Vector2::Min(const Vector2& v1, const Vector2& v2) noexcept
-{
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorMin(x1, x2);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Store(&result, x);
+}
+
+template <class T>
+template <class U, class V>
+Vector2<T> Vector2<T>::Min(const Vector2<U>& v1, const Vector2<V>& v2) noexcept
+{
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
+    const XMVECTOR x = XMVectorMin(x1, x2);
+
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::Max(const Vector2& v1, const Vector2& v2, Vector2& result) noexcept
+template <class T>
+template <class U, class V>
+void Vector2<T>::Max(const Vector2<U>& v1, const Vector2<V>& v2, Vector2<T>& result) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorMax(x1, x2);
-    XMStoreFloat2(&result, x);
+
+    Store(&result, x);
 }
 
-Vector2 Vector2::Max(const Vector2& v1, const Vector2& v2) noexcept
+template <class T>
+template <class U, class V>
+Vector2<T> Vector2<T>::Max(const Vector2<U>& v1, const Vector2<V>& v2) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorMax(x1, x2);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::Lerp(const Vector2& v1, const Vector2& v2, const float t, Vector2& result) noexcept
+template <class T>
+template <class U, class V>
+void Vector2<T>::Lerp(const Vector2<U>& v1, const Vector2<V>& v2, const float t, Vector2<T>& result) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorLerp(x1, x2, t);
-    XMStoreFloat2(&result, x);
+
+    Store(&result, x);
 }
 
-Vector2 Vector2::Lerp(const Vector2& v1, const Vector2& v2, const float t) noexcept
+template <class T>
+template <class U, class V>
+Vector2<T> Vector2<T>::Lerp(const Vector2<U>& v1, const Vector2<V>& v2, const float t) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorLerp(x1, x2, t);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::SmoothStep(const Vector2& v1, const Vector2& v2, float t, Vector2& result) noexcept
+template <class T>
+template <class U, class V>
+void Vector2<T>::SmoothStep(const Vector2<U>& v1, const Vector2<V>& v2, float t, Vector2<T>& result) noexcept
 {
     t = t > 1.0f ? 1.0f : t < 0.0f ? 0.0f : t; // Clamp value to 0 to 1
     t = t * t * (3.f - 2.f * t);
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorLerp(x1, x2, t);
-    XMStoreFloat2(&result, x);
+
+    Store(&result, x);
 }
 
-Vector2 Vector2::SmoothStep(const Vector2& v1, const Vector2& v2, float t) noexcept
+template <class T>
+template <class U, class V>
+Vector2<T> Vector2<T>::SmoothStep(const Vector2<U>& v1, const Vector2<V>& v2, float t) noexcept
 {
     t = t > 1.0f ? 1.0f : t < 0.0f ? 0.0f : t; // Clamp value to 0 to 1
     t = t * t * (3.f - 2.f * t);
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorLerp(x1, x2, t);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::Barycentric(const Vector2& v1, const Vector2& v2, const Vector2& v3, const float f, const float g,
-                          Vector2& result) noexcept
+template <class T>
+template <class U, class V, class W>
+void Vector2<T>::Barycentric(const Vector2<U>& v1, const Vector2<V>& v2, const Vector2<W>& v3, const float f,
+                             const float g, Vector2<T>& result) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
-    const XMVECTOR x3 = XMLoadFloat2(&v3);
-    const XMVECTOR x = XMVectorBaryCentric(x1, x2, x3, f, g);
-    XMStoreFloat2(&result, x);
-}
-
-Vector2 Vector2::Barycentric(const Vector2& v1, const Vector2& v2, const Vector2& v3, const float f,
-                             const float g) noexcept
-{
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
-    const XMVECTOR x3 = XMLoadFloat2(&v3);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
+    const XMVECTOR x3 = Load(&v3);
     const XMVECTOR x = XMVectorBaryCentric(x1, x2, x3, f, g);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Store(&result, x);
+}
+
+template <class T>
+template <class U, class V, class W>
+Vector2<T> Vector2<T>::Barycentric(const Vector2<U>& v1, const Vector2<V>& v2, const Vector2<W>& v3, const float f,
+                                   const float g) noexcept
+{
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
+    const XMVECTOR x3 = Load(&v3);
+    const XMVECTOR x = XMVectorBaryCentric(x1, x2, x3, f, g);
+
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::CatmullRom(const Vector2& v1, const Vector2& v2, const Vector2& v3, const Vector2& v4, const float t,
-                         Vector2& result) noexcept
+template <class T>
+template <class U, class V, class W, class X>
+void Vector2<T>::CatmullRom(const Vector2<U>& v1, const Vector2<V>& v2, const Vector2<W>& v3, const Vector2<X>& v4,
+                            const float t, Vector2<T>& result) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
-    const XMVECTOR x3 = XMLoadFloat2(&v3);
-    const XMVECTOR x4 = XMLoadFloat2(&v4);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
+    const XMVECTOR x3 = Load(&v3);
+    const XMVECTOR x4 = Load(&v4);
     const XMVECTOR x = XMVectorCatmullRom(x1, x2, x3, x4, t);
-    XMStoreFloat2(&result, x);
+
+    Store(&result, x);
 }
 
-Vector2 Vector2::CatmullRom(const Vector2& v1, const Vector2& v2, const Vector2& v3, const Vector2& v4,
-                            const float t) noexcept
+template <class T>
+template <class U, class V, class W, class X>
+Vector2<T> Vector2<T>::CatmullRom(const Vector2<U>& v1, const Vector2<V>& v2, const Vector2<W>& v3,
+                                  const Vector2<X>& v4, const float t) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
-    const XMVECTOR x3 = XMLoadFloat2(&v3);
-    const XMVECTOR x4 = XMLoadFloat2(&v4);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
+    const XMVECTOR x3 = Load(&v3);
+    const XMVECTOR x4 = Load(&v4);
     const XMVECTOR x = XMVectorCatmullRom(x1, x2, x3, x4, t);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::Hermite(const Vector2& v1, const Vector2& t1, const Vector2& v2, const Vector2& t2, const float t,
-                      Vector2& result) noexcept
+template <class T>
+template <class U, class V, class W, class X>
+void Vector2<T>::Hermite(const Vector2<U>& v1, const Vector2<V>& t1, const Vector2<W>& v2, const Vector2<X>& t2,
+                         const float t, Vector2<T>& result) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&t1);
-    const XMVECTOR x3 = XMLoadFloat2(&v2);
-    const XMVECTOR x4 = XMLoadFloat2(&t2);
-    const XMVECTOR x = XMVectorHermite(x1, x2, x3, x4, t);
-    XMStoreFloat2(&result, x);
-}
-
-Vector2 Vector2::Hermite(const Vector2& v1, const Vector2& t1, const Vector2& v2, const Vector2& t2,
-                         const float t) noexcept
-{
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&t1);
-    const XMVECTOR x3 = XMLoadFloat2(&v2);
-    const XMVECTOR x4 = XMLoadFloat2(&t2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&t1);
+    const XMVECTOR x3 = Load(&v2);
+    const XMVECTOR x4 = Load(&t2);
     const XMVECTOR x = XMVectorHermite(x1, x2, x3, x4, t);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Store(&result, x);
+}
+
+template <class T>
+template <class U, class V, class W, class X>
+Vector2<T> Vector2<T>::Hermite(const Vector2<U>& v1, const Vector2<V>& t1, const Vector2<W>& v2, const Vector2<X>& t2,
+                               const float t) noexcept
+{
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&t1);
+    const XMVECTOR x3 = Load(&v2);
+    const XMVECTOR x4 = Load(&t2);
+    const XMVECTOR x = XMVectorHermite(x1, x2, x3, x4, t);
+
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::Reflect(const Vector2& iVec, const Vector2& nVec, Vector2& result) noexcept
+template <class T>
+template <class U, class V>
+void Vector2<T>::Reflect(const Vector2<U>& iVec, const Vector2<V>& nVec, Vector2<T>& result) noexcept
 {
-    const XMVECTOR i = XMLoadFloat2(&iVec);
-    const XMVECTOR n = XMLoadFloat2(&nVec);
+    const XMVECTOR i = Load(&iVec);
+    const XMVECTOR n = Load(&nVec);
     const XMVECTOR x = XMVector2Reflect(i, n);
-    XMStoreFloat2(&result, x);
+
+    Store(&result, x);
 }
 
-Vector2 Vector2::Reflect(const Vector2& iVec, const Vector2& nVec) noexcept
+template <class T>
+template <class U, class V>
+Vector2<T> Vector2<T>::Reflect(const Vector2<U>& iVec, const Vector2<V>& nVec) noexcept
 {
-    const XMVECTOR i = XMLoadFloat2(&iVec);
-    const XMVECTOR n = XMLoadFloat2(&nVec);
+    const XMVECTOR i = Load(&iVec);
+    const XMVECTOR n = Load(&nVec);
     const XMVECTOR x = XMVector2Reflect(i, n);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::Refract(const Vector2& iVec, const Vector2& nVec, const float refractionIndex, Vector2& result) noexcept
+template <class T>
+template <class U, class V>
+void Vector2<T>::Refract(const Vector2<U>& iVec, const Vector2<V>& nVec, const float refractionIndex,
+                         Vector2<T>& result) noexcept
 {
-    const XMVECTOR i = XMLoadFloat2(&iVec);
-    const XMVECTOR n = XMLoadFloat2(&nVec);
+    const XMVECTOR i = Load(&iVec);
+    const XMVECTOR n = Load(&nVec);
     const XMVECTOR x = XMVector2Refract(i, n, refractionIndex);
-    XMStoreFloat2(&result, x);
+
+    Store(&result, x);
 }
 
-Vector2 Vector2::Refract(const Vector2& iVec, const Vector2& nVec, const float refractionIndex) noexcept
+template <class T>
+template <class U, class V>
+Vector2<T> Vector2<T>::Refract(const Vector2<U>& iVec, const Vector2<V>& nVec, const float refractionIndex) noexcept
 {
-    const XMVECTOR i = XMLoadFloat2(&iVec);
-    const XMVECTOR n = XMLoadFloat2(&nVec);
+    const XMVECTOR i = Load(&iVec);
+    const XMVECTOR n = Load(&nVec);
     const XMVECTOR x = XMVector2Refract(i, n, refractionIndex);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::Transform(const Vector2& v, const Quaternion& quat, Vector2& result) noexcept
+template <class T>
+template <class U>
+void Vector2<T>::Transform(const Vector2<U>& v, const Quaternion& quat, Vector2<T>& result) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(&v);
     const XMVECTOR q = XMLoadFloat4(&quat);
     const XMVECTOR x = XMVector3Rotate(v1, q);
-    XMStoreFloat2(&result, x);
+
+    Store(&result, x);
 }
 
-Vector2 Vector2::Transform(const Vector2& v, const Quaternion& quat) noexcept
+template <class T>
+template <class U>
+Vector2<T> Vector2<T>::Transform(const Vector2<U>& v, const Quaternion& quat) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(&v);
     const XMVECTOR q = XMLoadFloat4(&quat);
     const XMVECTOR x = XMVector3Rotate(v1, q);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
-void Vector2::Transform(const Vector2& v, const Matrix& m, Vector2& result) noexcept
+template <class T>
+template <class U>
+void Vector2<T>::Transform(const Vector2<U>& v, const Matrix& m, Vector2<T>& result) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(&v);
-    const XMMATRIX m1 = XMLoadFloat4x4(&m);
-    const XMVECTOR x = XMVector2TransformCoord(v1, m1);
-    XMStoreFloat2(&result, x);
-}
-
-Vector2 Vector2::Transform(const Vector2& v, const Matrix& m) noexcept
-{
-    const XMVECTOR v1 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(&v);
     const XMMATRIX m1 = XMLoadFloat4x4(&m);
     const XMVECTOR x = XMVector2TransformCoord(v1, m1);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Store(&result, x);
+}
+
+template <class T>
+template <class U>
+Vector2<T> Vector2<T>::Transform(const Vector2<U>& v, const Matrix& m) noexcept
+{
+    const XMVECTOR v1 = Load(&v);
+    const XMMATRIX m1 = XMLoadFloat4x4(&m);
+    const XMVECTOR x = XMVector2TransformCoord(v1, m1);
+
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
+template <class T>
+template <class U>
 _Use_decl_annotations_
 
-void Vector2::Transform(const Vector2* varray, const size_t count, const Matrix& m, Vector2* resultArray) noexcept
+void Vector2<T>::Transform(const Vector2<U>* varray, const size_t count, const Matrix& m,
+                           Vector2<T>* resultArray) noexcept
 {
     const XMMATRIX m1 = XMLoadFloat4x4(&m);
-    XMVector2TransformCoordStream(resultArray, sizeof(XMFLOAT2), varray, sizeof(XMFLOAT2), count, m1);
-}
-
-void Vector2::Transform(const Vector2& v, const Matrix& m, Vector4& result) noexcept
-{
-    const XMVECTOR v1 = XMLoadFloat2(&v);
-    const XMMATRIX m1 = XMLoadFloat4x4(&m);
-    const XMVECTOR x = XMVector2Transform(v1, m1);
-    XMStoreFloat4(&result, x);
+    XMVector2TransformCoordStream(resultArray, sizeof Vector2Base<U>::Vector, varray, sizeof Vector2Base<T>::Vector,
+                                  count, m1);
 }
 
 
-_Use_decl_annotations_
-
-void Vector2::Transform(const Vector2* varray, const size_t count, const Matrix& m, Vector4* resultArray) noexcept
+template <class T>
+template <class U>
+void Vector2<T>::TransformNormal(const Vector2<U>& v, const Matrix& m, Vector2<T>& result) noexcept
 {
-    const XMMATRIX m1 = XMLoadFloat4x4(&m);
-    XMVector2TransformStream(resultArray, sizeof(XMFLOAT4), varray, sizeof(XMFLOAT2), count, m1);
-}
-
-void Vector2::TransformNormal(const Vector2& v, const Matrix& m, Vector2& result) noexcept
-{
-    const XMVECTOR v1 = XMLoadFloat2(&v);
-    const XMMATRIX m1 = XMLoadFloat4x4(&m);
-    const XMVECTOR x = XMVector2TransformNormal(v1, m1);
-    XMStoreFloat2(&result, x);
-}
-
-Vector2 Vector2::TransformNormal(const Vector2& v, const Matrix& m) noexcept
-{
-    const XMVECTOR v1 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(&v);
     const XMMATRIX m1 = XMLoadFloat4x4(&m);
     const XMVECTOR x = XMVector2TransformNormal(v1, m1);
 
-    Vector2 result;
-    XMStoreFloat2(&result, x);
+    Store(&result, x);
+}
+
+template <class T>
+template <class U>
+Vector2<T> Vector2<T>::TransformNormal(const Vector2<U>& v, const Matrix& m) noexcept
+{
+    const XMVECTOR v1 = Load(&v);
+    const XMMATRIX m1 = XMLoadFloat4x4(&m);
+    const XMVECTOR x = XMVector2TransformNormal(v1, m1);
+
+    Vector2<T> result;
+    Store(&result, x);
     return result;
 }
 
+template <class T>
+template <class U>
 _Use_decl_annotations_
 
-void Vector2::TransformNormal(const Vector2* varray, const size_t count, const Matrix& m, Vector2* resultArray) noexcept
+void Vector2<T>::TransformNormal(const Vector2<U>* varray, const size_t count, const Matrix& m,
+                                 Vector2<T>* resultArray) noexcept
 {
     const XMMATRIX m1 = XMLoadFloat4x4(&m);
-    XMVector2TransformNormalStream(resultArray, sizeof(XMFLOAT2), varray, sizeof(XMFLOAT2), count, m1);
+    XMVector2TransformNormalStream(resultArray, sizeof Vector2Base<U>::Vector, varray, sizeof Vector2Base<T>::Vector,
+                                   count, m1);
 }
 
-//------------------------------------------------------------------------------
-// Constants
-//------------------------------------------------------------------------------
-
-const Vector2 Vector2::Zero = {0.f, 0.f};
-const Vector2 Vector2::One = {1.f, 1.f};
-const Vector2 Vector2::UnitX = {1.f, 0.f};
-const Vector2 Vector2::UnitY = {0.f, 1.f};*/
 
 //------------------------------------------------------------------------------
 // Binary operators
 //------------------------------------------------------------------------------
-/*
-Vector2 operator+(const Vector2& v1, const Vector2& v2) noexcept
+
+template <class T, class U, class V>
+Vector2<T> operator+(const Vector2<U>& v1, const Vector2<V>& v2) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorAdd(x1, x2);
-    Vector2 r;
-    XMStoreFloat2(&r, x);
+
+    Vector2<T> r;
+    Vector2<T>::Store(&r, x);
     return r;
 }
 
-Vector2 operator-(const Vector2& v1, const Vector2& v2) noexcept
+template <class T, class U, class V>
+Vector2<T> operator-(const Vector2<U>& v1, const Vector2<V>& v2) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorSubtract(x1, x2);
-    Vector2 r;
-    XMStoreFloat2(&r, x);
+
+    Vector2<T> r;
+    Vector2<T>::Store(&r, x);
     return r;
 }
 
-Vector2 operator*(const Vector2& v1, const Vector2& v2) noexcept
+template <class T, class U, class V>
+Vector2<T> operator*(const Vector2<U>& v1, const Vector2<V>& v2) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorMultiply(x1, x2);
-    Vector2 r;
-    XMStoreFloat2(&r, x);
+
+    Vector2<T> r;
+    Vector2<T>::Store(&r, x);
     return r;
 }
 
-Vector2 operator*(const Vector2& v, const float s) noexcept
+template <class T, class U>
+Vector2<T> operator*(const Vector2<U>& v, const float s) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v);
+    const XMVECTOR x1 = Load(&v);
     const XMVECTOR x = XMVectorScale(x1, s);
-    Vector2 r;
-    XMStoreFloat2(&r, x);
+
+    Vector2<T> r;
+    Vector2<T>::Store(&r, x);
     return r;
 }
 
-Vector2 operator/(const Vector2& v1, const Vector2& v2) noexcept
+template <class T, class U, class V>
+Vector2<T> operator/(const Vector2<U>& v1, const Vector2<V>& v2) noexcept
 {
-    const XMVECTOR x1 = XMLoadFloat2(&v1);
-    const XMVECTOR x2 = XMLoadFloat2(&v2);
+    const XMVECTOR x1 = Load(&v1);
+    const XMVECTOR x2 = Load(&v2);
     const XMVECTOR x = XMVectorDivide(x1, x2);
-    Vector2 r;
-    XMStoreFloat2(&r, x);
+
+    Vector2<T> r;
+    Vector2<T>::Store(&r, x);
     return r;
 }
 
-Vector2 operator/(const Vector2& v, const float s) noexcept
+template <class T, class U>
+Vector2<T> operator/(const Vector2<U>& v, const float s) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(&v);
     const XMVECTOR x = XMVectorScale(v1, 1.f / s);
-    Vector2 r;
-    XMStoreFloat2(&r, x);
+
+    Vector2<T> r;
+    Vector2<T>::Store(&r, x);
     return r;
 }
 
-Vector2 operator*(const float s, const Vector2& v) noexcept
+template <class T, class U>
+Vector2<T> operator*(const float s, const Vector2<U>& v) noexcept
 {
-    const XMVECTOR v1 = XMLoadFloat2(&v);
+    const XMVECTOR v1 = Load(&v);
     const XMVECTOR x = XMVectorScale(v1, s);
-    Vector2 r;
-    XMStoreFloat2(&r, x);
+
+    Vector2<T> r;
+    Vector2<T>::Store(&r, x);
     return r;
-}*/
+}
 
 template struct Vector2<float>;
 template struct Vector2<int32_t>;

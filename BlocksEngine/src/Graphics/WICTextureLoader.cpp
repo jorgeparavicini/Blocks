@@ -650,7 +650,7 @@ HRESULT CreateWICTextureFromMemory(_In_ ID3D11Device* d3dDevice,
         return hr;
     }
 
-    // Initialize WIC
+    // CreateGame WIC
     ScopedObject<IWICBitmapDecoder> decoder;
     hr = pWIC->CreateDecoderFromStream(stream.Get(), nullptr, WICDecodeMetadataCacheOnDemand, &decoder);
     if (FAILED(hr))
@@ -711,7 +711,7 @@ HRESULT CreateWICTextureFromFile(_In_ ID3D11Device* d3dDevice,
         return E_NOINTERFACE;
     }
 
-    // Initialize WIC
+    // CreateGame WIC
     ScopedObject<IWICBitmapDecoder> decoder;
     HRESULT hr = pWIC->CreateDecoderFromFilename(fileName, nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand,
                                                  &decoder);

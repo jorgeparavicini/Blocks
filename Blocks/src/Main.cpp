@@ -1,11 +1,8 @@
 ﻿#include "Blocks/pch.h"
 
 #include <Windows.h>
-#include <boost/signals2.hpp>
-#include <boost/functional/hash.hpp>
 
-#include "Blocks/Block.h"
-#include "Blocks/Chunk.h"
+#include "Blocks/World.h"
 #include "BlocksEngine/Exception.h"
 #include "BlocksEngine/Game.h"
 #include "BlocksEngine/Renderer.h"
@@ -20,24 +17,29 @@ int WINAPI WinMain(
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    auto game = BlocksEngine::Game{};
+    auto game = BlocksEngine::Game::CreateGame();
 
-    game.AddSignalGameStart([&game]
+    game->AddSignalGameStart([&game]
     {
-        BlocksEngine::Actor& chunkActor = game.AddActor();
+        auto worldActor = game->AddActor(L"World");
+        worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform());
+        //world = worldActor->AddComponent<Blocks::World>(game.MainCamera().GetTransform());
+        //world->SetPlayerTransform(std::shared_ptr<BlocksEngine::Transform>{&game.MainCamera().GetTransform()});
+
+        /*BlocksEngine::Actor& chunkActor = game.AddActor();
         Blocks::World world{};
 
         Blocks::Chunk& chunk = chunkActor.AddComponent<Blocks::Chunk>(world);
         chunk.RegenerateMesh();
 
         BlocksEngine::Actor& chunkActor2 = game.AddActor();
-        Blocks::Chunk& chunk2 = chunkActor2.AddComponent<Blocks::Chunk>(world, BlocksEngine::__Vector2{16.0f, 0.0f});
-        chunk2.RegenerateMesh();
+        Blocks::Chunk& chunk2 = chunkActor2.AddComponent<Blocks::Chunk>(world, BlocksEngine::Vector2{16, 0});
+        chunk2.RegenerateMesh();*/
     });
 
     try
     {
-        return game.Start();
+        return game->Start();
     }
     catch (const BlocksEngine::Exception& e)
     {

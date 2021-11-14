@@ -96,9 +96,6 @@
     <ClInclude Include="include\BlocksEngine\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\BlocksEngine\Actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -236,9 +233,6 @@
     <ClCompile Include="src\Core\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -312,6 +306,7 @@
   <ItemGroup>
     <None Include="Blocks Engine.props" />
     <None Include="packages.config" />
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl" />

@@ -5,27 +5,28 @@
 
 using namespace BlocksEngine;
 
-Actor::Actor(Game& game, std::string name)
-    : game_{game},
-      name_{std::move(name)},
-      pTransform_{std::make_unique<Transform>()}
+Actor::Actor(std::weak_ptr<Game> game, std::wstring name)
+    : name_{std::move(name)},
+      game_{std::move(game)},
+      pTransform_{std::make_shared<Transform>()}
 {
 }
 
-Transform& Actor::GetTransform() const noexcept
-{
-    return *pTransform_;
-}
-
-Game& Actor::GetGame() const noexcept
-{
-    return game_;
-}
-
-const std::string& Actor::GetName() const noexcept
+const std::wstring& Actor::GetName() const noexcept
 {
     return name_;
 }
+
+std::shared_ptr<Game> Actor::GetGame() const noexcept
+{
+    return game_.lock();
+}
+
+std::shared_ptr<Transform> Actor::GetTransform() const noexcept
+{
+    return pTransform_;
+}
+
 
 void Actor::Update() const
 {

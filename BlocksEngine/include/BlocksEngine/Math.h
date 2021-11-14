@@ -14,14 +14,27 @@ namespace BlocksEngine
     struct Plane;
     struct Matrix;
     struct Quaternion;
-    template <class T>
+
+    template <class T = float>
     struct Vector2;
+
+    template <class T = float>
     struct Vector3;
+
+    template <class T = float>
     struct Vector4;
-    
+
 
     class Math;
 }
+
+#include "BlocksEngine/Matrix.h"
+#include "BlocksEngine/Plane.h"
+#include "BlocksEngine/Quaternion.h"
+#include "BlocksEngine/Vector2.h"
+#include "BlocksEngine/Vector3.h"
+#include "BlocksEngine/Vector4.h"
+
 
 class BlocksEngine::Math
 {

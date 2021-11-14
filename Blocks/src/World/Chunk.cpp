@@ -2,6 +2,7 @@
 #include "Blocks/Chunk.h"
 
 #include "Blocks/BlockRegistry.h"
+#include "Blocks/World.h"
 #include "BlocksEngine/Albedo.h"
 #include "BlocksEngine/Game.h"
 #include "BlocksEngine/Renderer.h"
@@ -10,9 +11,10 @@
 
 using namespace Blocks;
 
-Chunk::Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vector2<int32_t> center)
-    : Component{actor},
-      world_{world}
+Chunk::Chunk(std::weak_ptr<BlocksEngine::Actor> actor, const World& world, const ChunkCoords coords)
+    : Component{std::move(actor)},
+      world_{world},
+      coords_{coords}
 {
     for (int i = 0; i < Width; i++)
     {
@@ -25,19 +27,22 @@ Chunk::Chunk(BlocksEngine::Actor& actor, const World& world, BlocksEngine::Vecto
         }
     }
 
-
     blocks_[65] = 0;
-    //blocks_.fill(2);
-    /*blocks_[666] = 0;
-    blocks_[667] = 0;
-    blocks_[20001] = 0;*/
-    GetTransform().SetPosition({center.x, center.y, 0});
+    GetTransform()->SetPosition({static_cast<float>(coords.x) * Width, 0, static_cast<float>(coords.y) * Depth});
 }
 
-const Block& Chunk::GetBlock(const BlocksEngine::Vector3 position) const noexcept
+const Block& Chunk::GetWorldBlock(const BlocksEngine::Vector3<int> position) const noexcept
 {
+    if (position.y < 0 || position.y > Height - 1) return Block::Air;
+    if (world_.ChunkCoordFromPosition(position) != coords_) return world_.GetBlock(position);
+
     const uint8_t blockId = blocks_[GetFlatIndex(position)];
     return BlockRegistry::GetBlock(blockId);
+}
+
+const Block& Chunk::GetLocalBlock(const BlocksEngine::Vector3<int> position) const noexcept
+{
+    return GetWorldBlock({position.x + coords_.x * Width, position.y, position.z + coords_.y * Depth});
 }
 
 const World& Chunk::GetWorld() const noexcept
@@ -45,21 +50,18 @@ const World& Chunk::GetWorld() const noexcept
     return world_;
 }
 
-int Chunk::GetFlatIndex(BlocksEngine::Vector3 position) const
+int Chunk::GetFlatIndex(BlocksEngine::Vector3<int> position)
 {
-    static constexpr auto MaxSize = BlocksEngine::Vector3(Width, Height, Depth);
-    position.Clamp(BlocksEngine::Vector3::Zero, MaxSize);
+    static const auto MaxSize = BlocksEngine::Vector3(Width - 1, Height - 1, Depth - 1);
+    position.Clamp(BlocksEngine::Vector3<int>::Zero, MaxSize);
 
-    // TODO: We need an integer Vector class.
-    const int x = static_cast<int>(std::round(position.x));
-    const int y = static_cast<int>(std::round(position.y));
-    const int z = static_cast<int>(std::round(position.z));
-    return GetFlatIndex(x, y, z);
+    return position.x + Width * (position.y + Depth * position.z);
 }
 
+// TODO: needs clamping
 int Chunk::GetFlatIndex(const int x, const int y, const int z)
 {
-    return x + Width * (y + Depth * z);
+    return GetFlatIndex({x, y, z});
 }
 
 void Chunk::RegenerateMesh() const
@@ -95,20 +97,15 @@ void Chunk::RegenerateMesh() const
                 for (x[u] = 0; x[u] < dimensions[u]; ++x[u], ++n)
                 {
                     // q determines the direction that we are searching
-                    const int a = 0 <= x[dim]
-                                      ? GetBlock({
-                                          static_cast<float>(x[0]),
-                                          static_cast<float>(x[1]),
-                                          static_cast<float>(x[2])
-                                      }).GetId()
+                    /*const int a = 0 <= x[dim]
+                                      ? GetLocalBlock({x[0], x[1], x[2]}).GetId()
                                       : 0;
                     const int b = x[dim] < dimensions[dim] - 1
-                                      ? GetBlock({
-                                          static_cast<float>(x[0] + q[0]),
-                                          static_cast<float>(x[1] + q[1]),
-                                          static_cast<float>(x[2] + q[2])
-                                      }).GetId()
+                                      ? GetLocalBlock({x[0] + q[0], x[1] + q[1], x[2] + q[2]}).GetId()
                                       : 0;
+*/
+                    const int a = GetLocalBlock({x[0], x[1], x[2]}).GetId();
+                    const int b = GetLocalBlock({x[0] + q[0], x[1] + q[1], x[2] + q[2]}).GetId();
 
 
                     if (static_cast<bool>(a) == static_cast<bool>(b))
@@ -207,7 +204,7 @@ void Chunk::RegenerateMesh() const
 
                         const Block& block = BlockRegistry::GetBlock(blockId);
 
-                        int vertexCount = vertices.size();
+                        int vertexCount = static_cast<int>(vertices.size());
                         vertices.push_back(BlocksEngine::Vertex{
                             {
                                 static_cast<float>(x[0]),
@@ -279,12 +276,12 @@ void Chunk::RegenerateMesh() const
         }
     }
 
-    const BlocksEngine::Graphics& gfx = GetGame().Graphics();
+    const BlocksEngine::Graphics& gfx = GetGame()->Graphics();
 
     auto mesh = std::make_shared<BlocksEngine::Mesh>(std::make_shared<BlocksEngine::VertexBuffer>(gfx, vertices),
                                                      std::make_shared<BlocksEngine::IndexBuffer>(gfx, indices));
-    GetActor().AddComponent<BlocksEngine::Renderer>(
-        std::make_shared<BlocksEngine::Terrain>(GetActor().GetGame().Graphics(),
+    GetActor()->AddComponent<BlocksEngine::Renderer>(
+        std::make_shared<BlocksEngine::Terrain>(GetActor()->GetGame()->Graphics(),
                                                 BlocksEngine::Texture2D::FromDds(gfx, L"resources/images/terrain.dds")),
         std::move(mesh));
 }
