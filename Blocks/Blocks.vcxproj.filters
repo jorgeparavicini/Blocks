@@ -70,4 +70,7 @@
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
 </Project>

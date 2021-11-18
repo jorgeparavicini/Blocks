@@ -46,7 +46,6 @@ void Game::Initialize()
     rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
     rasterizerDesc.CullMode = D3D11_CULL_NONE;
 
-    HRESULT hr;
     GFX_THROW_INFO(Graphics().GetDevice().CreateRasterizerState(&rasterizerDesc, &rasterizer));
     //Graphics().GetContext().RSSetState(rasterizer.Get());
 }
