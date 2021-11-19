@@ -184,6 +184,10 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
         Store(&result, x);
     }
 
+    void Abs() noexcept;
+
+    void Abs(Vector3<T>& result) const noexcept;
+
     // Static functions
     template <class U, class V>
     static float Distance(const Vector3<U>& v1, const Vector3<V>& v2) noexcept;
@@ -399,6 +403,12 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
         Vector3<T> result;
         Vector3<T>::Store(&result, DirectX::XMVectorSet(resX, resY, resZ, 0));
         return result;
+    }
+
+    template <class U>
+    friend Vector3<T> operator%(const Vector3<T>& v1, const Vector3<U>& v2) noexcept
+    {
+        return {v1.x % v2.x, v1.y % v2.y, v1.z % v2.z};
     }
 
 

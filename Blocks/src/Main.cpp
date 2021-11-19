@@ -22,7 +22,7 @@ int WINAPI WinMain(
     game->AddSignalGameStart([&game]
     {
         auto worldActor = game->AddActor(L"World");
-        worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform());
+        worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
         //world = worldActor->AddComponent<Blocks::World>(game.MainCamera().GetTransform());
         //world->SetPlayerTransform(std::shared_ptr<BlocksEngine::Transform>{&game.MainCamera().GetTransform()});
 

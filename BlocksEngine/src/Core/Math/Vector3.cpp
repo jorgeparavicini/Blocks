@@ -258,6 +258,22 @@ void Vector3<T>::Normalize(Vector3<U>& result) const noexcept
 // Static functions
 //------------------------------------------------------------------------------
 
+template <typename T>
+void Vector3<T>::Abs() noexcept
+{
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR x = XMVectorAbs(v1);
+    Store(this, x);
+}
+
+template <typename T>
+void Vector3<T>::Abs(Vector3<T>& result) const noexcept
+{
+    const XMVECTOR v1 = Load(this);
+    const XMVECTOR x = XMVectorAbs(v1);
+    Store(&result, x);
+}
+
 template <class T>
 template <class U, class V>
 float Vector3<T>::Distance(const Vector3<U>& v1, const Vector3<V>& v2) noexcept

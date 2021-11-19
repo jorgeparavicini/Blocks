@@ -23,11 +23,15 @@ Chunk::Chunk(std::weak_ptr<BlocksEngine::Actor> actor, const World& world, const
             for (int k = 0; k < Depth; k++)
             {
                 blocks_[GetFlatIndex(i, j, k)] = j == Height - 1 ? 2 : 1;
+
+                if (j == Height - 1 && i % 2 == 0 && k % 2 == 0)
+                {
+                    blocks_[GetFlatIndex(i, j, k)] = 0;
+                }
             }
         }
     }
 
-    blocks_[65] = 0;
     GetTransform()->SetPosition({static_cast<float>(coords.x) * Width, 0, static_cast<float>(coords.y) * Depth});
 }
 
@@ -50,16 +54,21 @@ const World& Chunk::GetWorld() const noexcept
     return world_;
 }
 
-int Chunk::GetFlatIndex(BlocksEngine::Vector3<int> position)
+inline int Chunk::GetFlatIndex(BlocksEngine::Vector3<int> position)
 {
-    static const auto MaxSize = BlocksEngine::Vector3(Width - 1, Height - 1, Depth - 1);
-    position.Clamp(BlocksEngine::Vector3<int>::Zero, MaxSize);
+    static const auto MaxSize = BlocksEngine::Vector3(Width, Height, Depth);
+    // TODO: invert for negative values
+    position = position % MaxSize;
+    if (position.x < 0) position.x += Width;
+    if (position.y < 0) position.y += Height;
+    if (position.z < 0) position.z += Depth;
 
-    return position.x + Width * (position.y + Depth * position.z);
+
+    return position.x + Width * (position.y + Height * position.z);
 }
 
 // TODO: needs clamping
-int Chunk::GetFlatIndex(const int x, const int y, const int z)
+inline int Chunk::GetFlatIndex(const int x, const int y, const int z)
 {
     return GetFlatIndex({x, y, z});
 }

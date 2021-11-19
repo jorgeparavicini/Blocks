@@ -59,7 +59,6 @@ void Blocks::World::GenerateWorld() noexcept
             CreateChunk({i - chunkViewDistance_ / 2, j - chunkViewDistance_ / 2});
         }
     }
-
     for (const auto& [fst, snd] : chunkMap_)
     {
         snd->RegenerateMesh();
