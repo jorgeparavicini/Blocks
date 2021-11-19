@@ -16,21 +16,7 @@ Chunk::Chunk(std::weak_ptr<BlocksEngine::Actor> actor, const World& world, const
       world_{world},
       coords_{coords}
 {
-    for (int i = 0; i < Width; i++)
-    {
-        for (int j = 0; j < Height; j++)
-        {
-            for (int k = 0; k < Depth; k++)
-            {
-                blocks_[GetFlatIndex(i, j, k)] = j == Height - 1 ? 2 : 1;
-
-                if (j == Height - 1 && i % 2 == 0 && k % 2 == 0)
-                {
-                    blocks_[GetFlatIndex(i, j, k)] = 0;
-                }
-            }
-        }
-    }
+    
 
     GetTransform()->SetPosition({static_cast<float>(coords.x) * Width, 0, static_cast<float>(coords.y) * Depth});
 }

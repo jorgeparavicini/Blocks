@@ -23,18 +23,6 @@ int WINAPI WinMain(
     {
         auto worldActor = game->AddActor(L"World");
         worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
-        //world = worldActor->AddComponent<Blocks::World>(game.MainCamera().GetTransform());
-        //world->SetPlayerTransform(std::shared_ptr<BlocksEngine::Transform>{&game.MainCamera().GetTransform()});
-
-        /*BlocksEngine::Actor& chunkActor = game.AddActor();
-        Blocks::World world{};
-
-        Blocks::Chunk& chunk = chunkActor.AddComponent<Blocks::Chunk>(world);
-        chunk.RegenerateMesh();
-
-        BlocksEngine::Actor& chunkActor2 = game.AddActor();
-        Blocks::Chunk& chunk2 = chunkActor2.AddComponent<Blocks::Chunk>(world, BlocksEngine::Vector2{16, 0});
-        chunk2.RegenerateMesh();*/
     });
 
     try

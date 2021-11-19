@@ -71,7 +71,6 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="PropertySheet.props" />
     <Import Project="Blocks.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -173,10 +172,12 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Blocks\Chunk.h" />
+    <ClInclude Include="include\Blocks\ChunkAction.h" />
     <ClInclude Include="include\Blocks\pch.h" />
     <ClInclude Include="include\Blocks\Block.h" />
     <ClInclude Include="include\Blocks\World.h" />
     <ClInclude Include="include\Blocks\BlockRegistry.h" />
+    <ClInclude Include="include\Blocks\WorldGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\World\BlockRegistry.cpp" />
@@ -190,6 +191,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\World\World.cpp" />
+    <ClCompile Include="src\World\WorldGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlocksEngine\BlocksEngine.vcxproj">
