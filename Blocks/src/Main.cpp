@@ -1,11 +1,32 @@
 ﻿#include "Blocks/pch.h"
 
 #include <Windows.h>
+#include <boost/log/trivial.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/file.hpp>
 
 #include "Blocks/World.h"
 #include "BlocksEngine/Exception.h"
 #include "BlocksEngine/Game.h"
 #include "BlocksEngine/Renderer.h"
+
+void SetupLogging()
+{
+    namespace Logging = boost::log;
+    namespace Keywords = boost::log::keywords;
+
+    Logging::register_simple_formatter_factory<Logging::trivial::severity_level, char>("Severity");
+    Logging::add_file_log(
+        Keywords::file_name = "blocks.log",
+        Keywords::format = "[%TimeStamp%] [%ThreadID%] [%Severity%] %Message%"
+    );
+
+    Logging::core::get()->set_filter(
+        Logging::trivial::severity >= Logging::trivial::trace
+    );
+
+    Logging::add_common_attributes();
+}
 
 
 int WINAPI WinMain(
@@ -17,11 +38,13 @@ int WINAPI WinMain(
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    SetupLogging();
+
     auto game = BlocksEngine::Game::CreateGame();
 
     game->AddSignalGameStart([&game]
     {
-        auto worldActor = game->AddActor(L"World");
+        const auto worldActor = game->AddActor(L"World");
         worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
     });
 

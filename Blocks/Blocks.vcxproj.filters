@@ -30,9 +30,6 @@
     <ClInclude Include="include\Blocks\BlockRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Blocks\WorldGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Blocks\ChunkAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,9 +51,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\World\BlockRegistry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\World\WorldGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

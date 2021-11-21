@@ -5,72 +5,68 @@
 // This source code is licensed under the MIT-style license found in LICENSE file in the root directory of this source tree.
 // 
 // Author: Jorge Paravicini
-// File: WorldGenerator.h
+// File: DispatchQueue.h
 
 #pragma once
+
 #include <condition_variable>
 #include <functional>
-#include <memory>
 #include <queue>
 
-#include "ChunkAction.h"
+#include "BaseDispatchQueue.h"
 
-namespace Blocks
+namespace BlocksEngine
 {
-    class WorldGenerator;
+    class DispatchQueue;
 }
 
-class Blocks::WorldGenerator
+class BlocksEngine::DispatchQueue final : BaseDispatchQueue
 {
 public:
+    //------------------------------------------------------------------------------
+    // Constructors
+    //------------------------------------------------------------------------------
+
+    explicit DispatchQueue(size_t threadCount = 1);
+
     //------------------------------------------------------------------------------
     // Copy Constructor & Assignment
     //------------------------------------------------------------------------------
 
-    WorldGenerator(const WorldGenerator&) = delete;
-    WorldGenerator& operator=(const WorldGenerator&) = delete;
+    DispatchQueue(const DispatchQueue&) = delete;
+    DispatchQueue& operator=(const DispatchQueue&) = delete;
 
     //------------------------------------------------------------------------------
     // Move Constructor & Assignment
     //------------------------------------------------------------------------------
 
-    WorldGenerator(const WorldGenerator&&) = delete;
-    WorldGenerator& operator=(const WorldGenerator&&) = delete;
+    DispatchQueue(const DispatchQueue&&) = delete;
+    DispatchQueue& operator=(const DispatchQueue&&) = delete;
 
     //------------------------------------------------------------------------------
     // Destructors
     //------------------------------------------------------------------------------
 
-    ~WorldGenerator();
+    ~DispatchQueue() override;
 
     //------------------------------------------------------------------------------
-    // Static Methods
+    // Global Queues
     //------------------------------------------------------------------------------
 
-    static void AddChunkAction(std::unique_ptr<ChunkAction> action);
+    static DispatchQueue& Background();
+
+    //------------------------------------------------------------------------------
+    // Methods
+    //------------------------------------------------------------------------------
+
+    void Async(std::function<void()> workItem) override;
 
 
 private:
-    //------------------------------------------------------------------------------
-    // Constructors
-    //------------------------------------------------------------------------------
-
-    explicit WorldGenerator(size_t threadCount = 1);
-
-    //------------------------------------------------------------------------------
-    // Singleton Instance
-    //------------------------------------------------------------------------------
-
-    static WorldGenerator& Instance();
-
-    std::mutex lock_;
-    std::condition_variable workingCondition_;
-    std::vector<std::thread> workerThreads_;
     bool shutdown_{false};
 
-    std::queue<std::unique_ptr<ChunkAction>> queue_;
+    std::condition_variable workingCondition_;
+    std::vector<std::thread> workerThreads_;
 
     void DispatchThreadHandler();
-    void HandleChunkAction(std::unique_ptr<ChunkAction> action);
-    void GenerateChunk(std::shared_ptr<Chunk> chunk);
 };

@@ -69,11 +69,16 @@
     <ClInclude Include="include\BlocksEngine\Sampler.h" />
     <ClInclude Include="include\BlocksEngine\Terrain.h" />
     <ClInclude Include="include\BlocksEngine\Texture2DArray.h" />
+    <ClInclude Include="include\BlocksEngine\DispatchQueue.h" />
+    <ClInclude Include="include\BlocksEngine\BaseDispatchQueue.h" />
+    <ClInclude Include="include\BlocksEngine\MainDispatchQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Actor.cpp" />
     <ClCompile Include="src\Core\Components\Component.cpp" />
     <ClCompile Include="src\Core\Components\Renderer.cpp" />
+    <ClCompile Include="src\Core\Dispatch\BaseDispatchQueue.cpp" />
+    <ClCompile Include="src\Core\Dispatch\MainDispatcher.cpp" />
     <ClCompile Include="src\Core\Input\Keyboard.cpp" />
     <ClCompile Include="src\Core\Input\Mouse.cpp" />
     <ClCompile Include="src\Core\Math\Math.cpp" />
@@ -84,6 +89,7 @@
     <ClCompile Include="src\Core\Math\Vector3.cpp" />
     <ClCompile Include="src\Core\Math\Vector4.cpp" />
     <ClCompile Include="src\Core\Time.cpp" />
+    <ClCompile Include="src\Core\Dispatch\DispatchQueue.cpp" />
     <ClCompile Include="src\Exceptions\BufferException.cpp" />
     <ClCompile Include="src\Exceptions\EngineException.cpp" />
     <ClCompile Include="src\Core\Components\Camera.cpp" />

@@ -29,23 +29,32 @@ public:
     static constexpr int Width = 16;
     static constexpr int Depth = 16;
     static constexpr int Height = 16;
+    static constexpr unsigned long long Size = Width * Depth * Height;
 
     Chunk(std::weak_ptr<BlocksEngine::Actor> actor, const World& world,
           ChunkCoords coords = ChunkCoords::Zero);
 
+    //------------------------------------------------------------------------------
+    // Operators
+    //------------------------------------------------------------------------------
+    friend std::ostream& operator<<(std::ostream& out, const Chunk& chunk);
+
     [[nodiscard]] const Block& GetWorldBlock(BlocksEngine::Vector3<int> position) const noexcept;
     [[nodiscard]] const Block& GetLocalBlock(BlocksEngine::Vector3<int> position) const noexcept;
     [[nodiscard]] const World& GetWorld() const noexcept;
+    [[nodiscard]] ChunkCoords GetCoords() const noexcept;
+    [[nodiscard]] bool IsInitialized() const noexcept;
 
+    void SetBlocks(std::vector<uint8_t> blocks);
     void RegenerateMesh() const;
-
-
-private:
-    std::array<uint8_t, static_cast<unsigned long long>(Width * Depth * Height)> blocks_;
-    const World& world_;
-    const ChunkCoords coords_;
-    //BlocksEngine::Mesh mesh_;
 
     [[nodiscard]] static int GetFlatIndex(BlocksEngine::Vector3<int> position);
     [[nodiscard]] static int GetFlatIndex(int x, int y, int z);
+
+
+private:
+    std::optional<std::vector<uint8_t>> blocks_;
+    const World& world_;
+    const ChunkCoords coords_;
+    //BlocksEngine::Mesh mesh_;
 };

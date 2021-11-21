@@ -22,11 +22,11 @@ constexpr Vector3<T>::Vector3(const T a) noexcept
 {
 }
 
-template <class T>
+/*template <class T>
 constexpr Vector3<T>::Vector3(const T x, const T y, const T z) noexcept
     : Vector3Base<T>::Base{x, y, z}
 {
-}
+}*/
 
 template <class T>
 Vector3<T>::Vector3(_In_reads_(3) const T* pArray) noexcept

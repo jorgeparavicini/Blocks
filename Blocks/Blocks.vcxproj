@@ -177,7 +177,6 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <ClInclude Include="include\Blocks\Block.h" />
     <ClInclude Include="include\Blocks\World.h" />
     <ClInclude Include="include\Blocks\BlockRegistry.h" />
-    <ClInclude Include="include\Blocks\WorldGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\World\BlockRegistry.cpp" />
@@ -191,7 +190,6 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\World\World.cpp" />
-    <ClCompile Include="src\World\WorldGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlocksEngine\BlocksEngine.vcxproj">
@@ -216,6 +214,13 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <Import Project="..\packages\boost.1.77.0.0\build\boost.targets" Condition="Exists('..\packages\boost.1.77.0.0\build\boost.targets')" />
     <Import Project="..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets" Condition="Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" />
     <Import Project="..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets" Condition="Exists('..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets')" />
+    <Import Project="..\packages\boost_log-vc142.1.77.0.0\build\boost_log-vc142.targets" Condition="Exists('..\packages\boost_log-vc142.1.77.0.0\build\boost_log-vc142.targets')" />
+    <Import Project="..\packages\boost_filesystem-vc142.1.77.0.0\build\boost_filesystem-vc142.targets" Condition="Exists('..\packages\boost_filesystem-vc142.1.77.0.0\build\boost_filesystem-vc142.targets')" />
+    <Import Project="..\packages\boost_date_time-vc142.1.77.0.0\build\boost_date_time-vc142.targets" Condition="Exists('..\packages\boost_date_time-vc142.1.77.0.0\build\boost_date_time-vc142.targets')" />
+    <Import Project="..\packages\boost_thread-vc142.1.77.0.0\build\boost_thread-vc142.targets" Condition="Exists('..\packages\boost_thread-vc142.1.77.0.0\build\boost_thread-vc142.targets')" />
+    <Import Project="..\packages\boost_log_setup-vc142.1.77.0.0\build\boost_log_setup-vc142.targets" Condition="Exists('..\packages\boost_log_setup-vc142.1.77.0.0\build\boost_log_setup-vc142.targets')" />
+    <Import Project="..\packages\boost_chrono-vc142.1.77.0.0\build\boost_chrono-vc142.targets" Condition="Exists('..\packages\boost_chrono-vc142.1.77.0.0\build\boost_chrono-vc142.targets')" />
+    <Import Project="..\packages\boost_atomic-vc142.1.77.0.0\build\boost_atomic-vc142.targets" Condition="Exists('..\packages\boost_atomic-vc142.1.77.0.0\build\boost_atomic-vc142.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -224,5 +229,12 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <Error Condition="!Exists('..\packages\boost.1.77.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.77.0.0\build\boost.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets'))" />
     <Error Condition="!Exists('..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_log-vc142.1.77.0.0\build\boost_log-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_log-vc142.1.77.0.0\build\boost_log-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_filesystem-vc142.1.77.0.0\build\boost_filesystem-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_filesystem-vc142.1.77.0.0\build\boost_filesystem-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_date_time-vc142.1.77.0.0\build\boost_date_time-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_date_time-vc142.1.77.0.0\build\boost_date_time-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_thread-vc142.1.77.0.0\build\boost_thread-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_thread-vc142.1.77.0.0\build\boost_thread-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_log_setup-vc142.1.77.0.0\build\boost_log_setup-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_log_setup-vc142.1.77.0.0\build\boost_log_setup-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_chrono-vc142.1.77.0.0\build\boost_chrono-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_chrono-vc142.1.77.0.0\build\boost_chrono-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_atomic-vc142.1.77.0.0\build\boost_atomic-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_atomic-vc142.1.77.0.0\build\boost_atomic-vc142.targets'))" />
   </Target>
 </Project>

@@ -49,7 +49,10 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
 
     constexpr Vector3(T a) noexcept;
 
-    constexpr Vector3(T x, T y, T z) noexcept;
+    constexpr Vector3(const T x, const T y, const T z) noexcept
+        : Vector3Base<T>::Base{x, y, z}
+    {
+    }
 
     explicit Vector3(_In_reads_(3) const T* pArray) noexcept;
 

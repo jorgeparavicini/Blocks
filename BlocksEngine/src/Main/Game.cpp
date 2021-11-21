@@ -3,19 +3,21 @@
 
 #include "BlocksEngine/Actor.h"
 #include "BlocksEngine/Camera.h"
+#include "BlocksEngine/EngineException.h"
 #include "BlocksEngine/Renderer.h"
 
 using namespace BlocksEngine;
 
 Game::Game(std::unique_ptr<WindowOptions> options)
-    : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))}
+    : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))},
+      pMainDispatch_{std::make_unique<BlocksEngine::MainDispatchQueue>()}
 {
     // TODO: Catch potential error
     // TODO: If we do this here, only one game could be created.
     const HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     if (FAILED(hr))
     {
-        throw "shit";
+        throw ENGINE_EXCEPTION("Failed to initialize COM");
     }
 }
 
@@ -23,8 +25,8 @@ void Game::Initialize()
 {
     const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera");
     const std::shared_ptr<Camera> camera = cameraActor->AddComponent<Camera>();
-    camera->GetTransform()->SetPosition(Vector3<float>(0, 0, -10));
-    const Quaternion rot = Quaternion::Euler(0, 180, 0);
+    camera->GetTransform()->SetPosition(Vector3<float>(0, 20, -10));
+    const Quaternion rot = Quaternion::Euler(0, 90, 90);
     camera->GetTransform()->SetRotation(rot);
     SetActiveCamera(*camera);
 
@@ -73,6 +75,8 @@ int Game::Start()
         {
             return *eCode;
         }
+
+        pMainDispatch_->HandleQueue();
 
         Tick();
     }
@@ -126,6 +130,11 @@ const Mouse& Game::Mouse() const noexcept
 const Time& Game::Time() const noexcept
 {
     return time_;
+}
+
+BaseDispatchQueue& Game::MainDispatchQueue() const noexcept
+{
+    return *pMainDispatch_;
 }
 
 std::shared_ptr<Actor> Game::AddActor()
