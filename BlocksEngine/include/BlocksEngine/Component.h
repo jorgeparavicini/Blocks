@@ -8,41 +8,45 @@
 // File: Component.h
 
 #pragma once
-#include "BlocksEngine/Entity.h"
+
+#include <memory>
 
 namespace BlocksEngine
 {
     class Transform;
     class Actor;
     class Game;
+
     class Component;
 }
 
-class BlocksEngine::Component : public Entity
+class BlocksEngine::Component
 {
 public:
     /**
      * Subclasses need to put GetActor& as first parameter.
      */
-    explicit Component(Actor& actor);
+    explicit Component(std::weak_ptr<Actor> actor);
+
     virtual ~Component() = default;
     Component(const Component&) = delete;
     Component& operator=(const Component&) = delete;
     Component(const Component&&) = delete;
     Component& operator=(const Component&&) = delete;
 
+    [[nodiscard]] std::shared_ptr<Game> GetGame() const noexcept;
     /**
      * Gets the actor this component is attached to.
      */
-    [[nodiscard]] Actor& GetActor() const noexcept;
-    [[nodiscard]] Game& GetGame() const noexcept;
-    [[nodiscard]] Transform& GetTransform() const noexcept;
+    [[nodiscard]] std::shared_ptr<Actor> GetActor() const noexcept;
+
+    [[nodiscard]] std::shared_ptr<Transform> GetTransform() const noexcept;
 
     // Events
     virtual void Update();
     virtual void Draw();
 
 private:
-    Actor& actor_;
+    std::weak_ptr<Actor> actor_;
     bool isInitialized_{false};
 };

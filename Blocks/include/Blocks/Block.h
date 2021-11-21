@@ -20,17 +20,19 @@ namespace Blocks
 class Blocks::Block
 {
 public:
-    Block(uint8_t id, std::array<std::array<float, 2>, 6> textures, bool isSeeThrough = false) noexcept;
+    Block(uint8_t id, std::array<uint8_t, 6> textures, bool isSeeThrough = false) noexcept;
 
     [[nodiscard]] uint8_t GetId() const noexcept;
-    [[nodiscard]] const std::array<std::array<float, 2>, 6>& GetTextures() const noexcept;
+    [[nodiscard]] const std::array<uint8_t, 6>& GetTextures() const noexcept;
     [[nodiscard]] bool IsSeeThrough() const noexcept;
 
-    static const std::unordered_map<uint8_t, const Block&> Blocks;
+
+    static const Block Air;
     static const Block Dirt;
+    static const Block Grass;
 
 private:
     uint8_t id_;
-    std::array<std::array<float, 2>, 6> textures_;
+    std::array<uint8_t, 6> textures_;
     bool isSeeThrough_;
 };

@@ -96,9 +96,6 @@
     <ClInclude Include="include\BlocksEngine\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\BlocksEngine\Actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -160,6 +157,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BlocksEngine\Sampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Texture2DArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\DispatchQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\BaseDispatchQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\MainDispatchQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -230,9 +242,6 @@
     <ClCompile Include="src\Core\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -296,16 +305,34 @@
     <ClCompile Include="src\Graphics\Material\Sampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Terrain\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Texture2DArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Dispatch\DispatchQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Dispatch\BaseDispatchQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Dispatch\MainDispatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
     <None Include="packages.config" />
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl" />
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorVS.hlsl" />
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoVS.hlsl" />
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoPS.hlsl" />
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainVS.hlsl" />
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />

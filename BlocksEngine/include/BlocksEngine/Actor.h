@@ -12,7 +12,6 @@
 #include <unordered_set>
 
 #include "BlocksEngine/Component.h"
-#include "BlocksEngine/Entity.h"
 #include "BlocksEngine/Graphics.h"
 #include "BlocksEngine/Transform.h"
 
@@ -22,13 +21,14 @@ namespace BlocksEngine
     class Actor;
 }
 
-class BlocksEngine::Actor final : public Entity
+class BlocksEngine::Actor final : public std::enable_shared_from_this<Actor>
 {
 public:
-    explicit Actor(Game& game, std::string name);
+    explicit Actor(std::weak_ptr<Game> game, std::wstring name);
 
-    [[nodiscard]] Transform& GetTransform() const noexcept;
-    [[nodiscard]] Game& GetGame() const noexcept;
+    [[nodiscard]] const std::wstring& GetName() const noexcept;
+    [[nodiscard]] std::shared_ptr<Game> GetGame() const noexcept;
+    [[nodiscard]] std::shared_ptr<Transform> GetTransform() const noexcept;
 
     void Update() const;
     void Render() const;
@@ -39,15 +39,14 @@ public:
     template <class T, class... Args, typename = std::enable_if_t<std::is_base_of_v<Component, T>>>
     decltype(auto) AddComponent(Args&&... args)
     {
-        std::unique_ptr<T> component = std::make_unique<T>(*this, std::forward<Args>(args)...);
-        T& result = *component;
-        pComponents_.insert(std::move(component));
-        return result;
+        std::shared_ptr<T> component = std::make_shared<T>(shared_from_this(), std::forward<Args>(args)...);
+        pComponents_.insert(std::dynamic_pointer_cast<Component>(component));
+        return component;
     }
 
 private:
-    Game& game_;
-    std::string name_;
-    std::unique_ptr<Transform> pTransform_{};
-    std::unordered_set<std::unique_ptr<Component>> pComponents_{};
+    std::wstring name_;
+    std::weak_ptr<Game> game_;
+    std::shared_ptr<Transform> pTransform_{};
+    std::unordered_set<std::shared_ptr<Component>> pComponents_{};
 };

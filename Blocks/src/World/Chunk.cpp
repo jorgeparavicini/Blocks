@@ -1,300 +1,307 @@
 ﻿#include "Blocks/pch.h"
 #include "Blocks/Chunk.h"
 
+#include "Blocks/BlockRegistry.h"
+#include "Blocks/World.h"
 #include "BlocksEngine/Albedo.h"
+#include "BlocksEngine/DispatchQueue.h"
 #include "BlocksEngine/Game.h"
 #include "BlocksEngine/Renderer.h"
+#include "BlocksEngine/Terrain.h"
 #include "BlocksEngine/Vector3.h"
 
-Blocks::Chunk::Chunk(BlocksEngine::Actor& actor)
-    : Chunk{actor, BlocksEngine::Vector2{0, 0}}
+using namespace Blocks;
+
+Chunk::Chunk(std::weak_ptr<BlocksEngine::Actor> actor, const World& world, const ChunkCoords coords)
+    : Component{std::move(actor)},
+      world_{world},
+      coords_{coords}
 {
+    GetTransform()->SetPosition({static_cast<float>(coords.x) * Width, 0, static_cast<float>(coords.y) * Depth});
 }
 
-Blocks::Chunk::Chunk(BlocksEngine::Actor& actor, BlocksEngine::Vector2 center)
-    : Component{actor},
-      center_{center}
+const Block& Chunk::GetWorldBlock(const BlocksEngine::Vector3<int> position) const noexcept
 {
-}
-
-BlocksEngine::Vector2 Blocks::Chunk::GetCenter() const
-{
-    return center_;
-}
-
-const Blocks::Block& Blocks::Chunk::GetBlock(const BlocksEngine::Vector3 position) const
-{
-    const uint8_t blockId = blocks_[GetFlatIndex(position)];
-    return Block::Blocks.at(blockId);
-}
-
-int Blocks::Chunk::GetFlatIndex(BlocksEngine::Vector3 position) const
-{
-    static constexpr auto MaxSize = BlocksEngine::Vector3(Width, Height, Depth);
-    position.Clamp(BlocksEngine::Vector3::Zero, MaxSize);
-
-    // TODO: We need an integer Vector class.
-    const int x = static_cast<int>(std::round(position.x));
-    const int y = static_cast<int>(std::round(position.y));
-    const int z = static_cast<int>(std::round(position.z));
-    return x + Width * (y + Depth * z);
-}
-
-void Blocks::Chunk::RegenerateMesh() const
-{
-    constexpr int nrBlocks = Width * Depth * Height;
-    std::vector<BlocksEngine::Vertex> vertices(24 * nrBlocks);
-    std::vector<int> indices(36 * nrBlocks);
-
-    for (int z = 0; z < Depth; z++)
+    if (!IsInitialized())
     {
-        for (int y = 0; y < Height; y++)
+        // TODO: This needs to change
+        return Block::Air;
+    }
+    if (position.y < 0 || position.y > Height - 1) return Block::Air;
+    if (world_.ChunkCoordFromPosition(position) != coords_) return world_.GetBlock(position);
+
+    const uint8_t blockId = blocks_.value()[GetFlatIndex(position)];
+    return BlockRegistry::GetBlock(blockId);
+}
+
+const Block& Chunk::GetLocalBlock(const BlocksEngine::Vector3<int> position) const noexcept
+{
+    return GetWorldBlock({position.x + coords_.x * Width, position.y, position.z + coords_.y * Depth});
+}
+
+const World& Chunk::GetWorld() const noexcept
+{
+    return world_;
+}
+
+Chunk::ChunkCoords Chunk::GetCoords() const noexcept
+{
+    return coords_;
+}
+
+bool Chunk::IsInitialized() const noexcept
+{
+    return blocks_ != std::nullopt;
+}
+
+void Chunk::SetBlocks(std::vector<uint8_t> blocks)
+{
+    blocks_ = std::move(blocks);
+}
+
+inline int Chunk::GetFlatIndex(BlocksEngine::Vector3<int> position)
+{
+    static constexpr auto MaxSize = BlocksEngine::Vector3{Width, Height, Depth};
+    // TODO: can this be optimized?
+    position = position % MaxSize;
+    if (position.x < 0) position.x += Width;
+    if (position.y < 0) position.y += Height;
+    if (position.z < 0) position.z += Depth;
+
+
+    return position.x + Width * (position.y + Height * position.z);
+}
+
+int Chunk::GetFlatIndex(const int x, const int y, const int z)
+{
+    return GetFlatIndex({x, y, z});
+}
+
+void Chunk::RegenerateMesh() const
+{
+    BlocksEngine::DispatchQueue::Background().Async([this]
+    {
+        // Based on the post of: https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
+        // and https://github.com/Vercidium/voxel-mesh-generation
+
+        std::vector<BlocksEngine::Vertex> vertices;
+        std::vector<int> indices;
+
+        constexpr int dimensions[3] = {Width, Height, Depth};
+
+        // Loop over every axis (x, y, z)
+        for (int dim = 0; dim < 3; ++dim)
         {
-            for (int x = 0; x < Width; x++)
+            int k;
+            const int u = (dim + 1) % 3;
+            const int v = (dim + 2) % 3;
+
+            int x[3] = {0, 0, 0};
+            int q[3] = {0, 0, 0};
+            q[dim] = 1;
+
+            std::vector<int> mask(dimensions[u] * dimensions[v]);
+
+            // Check every slice of the chunk
+            for (x[dim] = -1; x[dim] < dimensions[dim];)
             {
-                const unsigned short blockNr = x + y * Width + z * Width * Height;
-                const int vertexBase = blockNr * 24;
-                const int indexBase = blockNr * 36;
-
-                const Block& block = Block::Dirt;
-
-                // Front
-
-                vertices[vertexBase + 0].pos = {
-                    static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)
-                };
-                vertices[vertexBase + 0].tex = {
-                    block.GetTextures()[0][0] / 16.0f, (block.GetTextures()[0][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 1].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z)
-                };
-                vertices[vertexBase + 1].tex = {
-                    (block.GetTextures()[0][0] + 1.0f) / 16.0f, (block.GetTextures()[0][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 2].pos = {
-                    static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z)
-                };
-                vertices[vertexBase + 2].tex = {
-                    block.GetTextures()[0][0] / 16.0f, block.GetTextures()[0][1] / 16.0f
-                };
-
-                vertices[vertexBase + 3].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z)
-                };
-                vertices[vertexBase + 3].tex = {
-                    (block.GetTextures()[0][0] + 1.0f) / 16.0f, block.GetTextures()[0][1] / 16.0f
-                };
-
-                // Right
-
-                vertices[vertexBase + 4].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z)
-                };
-                vertices[vertexBase + 4].tex = {
-                    block.GetTextures()[1][0] / 16.0f, (block.GetTextures()[1][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 5].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 5].tex = {
-                    (block.GetTextures()[1][0] + 1.0f) / 16.0f, (block.GetTextures()[1][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 6].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z)
-                };
-                vertices[vertexBase + 6].tex = {
-                    block.GetTextures()[1][0] / 16.0f, block.GetTextures()[1][1] / 16.0f
-                };
-
-                vertices[vertexBase + 7].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 7].tex = {
-                    (block.GetTextures()[1][0] + 1.0f) / 16.0f, block.GetTextures()[1][1] / 16.0f
-                };
-
-                // Back
-
-                vertices[vertexBase + 8].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 8].tex = {
-                    block.GetTextures()[2][0] / 16.0f, (block.GetTextures()[2][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 9].pos = {
-                    static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 9].tex = {
-                    (block.GetTextures()[2][0] + 1.0f) / 16.0f, (block.GetTextures()[2][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 10].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 10].tex = {
-                    block.GetTextures()[2][0] / 16.0f, block.GetTextures()[2][1] / 16.0f
-                };
-
-                vertices[vertexBase + 11].pos = {
-                    static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 11].tex = {
-                    (block.GetTextures()[2][0] + 1.0f) / 16.0f, block.GetTextures()[2][1] / 16.0f
-                };
-
-                // Left
-
-                vertices[vertexBase + 12].pos = {
-                    static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 12].tex = {
-                    block.GetTextures()[3][0] / 16.0f, (block.GetTextures()[3][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 13].pos = {
-                    static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)
-                };
-                vertices[vertexBase + 13].tex = {
-                    (block.GetTextures()[3][0] + 1.0f) / 16.0f, (block.GetTextures()[3][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 14].pos = {
-                    static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 14].tex = {
-                    block.GetTextures()[3][0] / 16.0f, block.GetTextures()[3][1] / 16.0f
-                };
-
-                vertices[vertexBase + 15].pos = {
-                    static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z)
-                };
-                vertices[vertexBase + 15].tex = {
-                    (block.GetTextures()[3][0] + 1.0f) / 16.0f, block.GetTextures()[3][1] / 16.0f
-                };
-
-                // Top
-
-                vertices[vertexBase + 16].pos = {
-                    static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z)
-                };
-                vertices[vertexBase + 16].tex = {
-                    block.GetTextures()[4][0] / 16.0f, (block.GetTextures()[4][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 17].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z)
-                };
-                vertices[vertexBase + 17].tex = {
-                    (block.GetTextures()[4][0] + 1.0f) / 16.0f, (block.GetTextures()[4][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 18].pos = {
-                    static_cast<float>(x), static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 18].tex = {
-                    block.GetTextures()[4][0] / 16.0f, block.GetTextures()[4][1] / 16.0f
-                };
-
-                vertices[vertexBase + 19].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y) + 1.0f, static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 19].tex = {
-                    (block.GetTextures()[4][0] + 1.0f) / 16.0f, block.GetTextures()[4][1] / 16.0f
-                };
-
-                // Bottom
-
-                vertices[vertexBase + 20].pos = {
-                    static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 20].tex = {
-                    block.GetTextures()[5][0] / 16.0f, (block.GetTextures()[5][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 21].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z) + 1.0f
-                };
-                vertices[vertexBase + 21].tex = {
-                    (block.GetTextures()[5][0] + 1.0f) / 16.0f, (block.GetTextures()[5][1] + 1.0f) / 16.0f
-                };
-
-                vertices[vertexBase + 22].pos = {
-                    static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)
-                };
-                vertices[vertexBase + 22].tex = {
-                    block.GetTextures()[5][0] / 16.0f, block.GetTextures()[5][1] / 16.0f
-                };
-
-                vertices[vertexBase + 23].pos = {
-                    static_cast<float>(x) + 1.0f, static_cast<float>(y), static_cast<float>(z)
-                };
-                vertices[vertexBase + 23].tex = {
-                    (block.GetTextures()[5][0] + 1.0f) / 16.0f, block.GetTextures()[5][1] / 16.0f
-                };
+                // Compute the mask
+                int n = 0;
+                for (x[v] = 0; x[v] < dimensions[v]; ++x[v])
+                {
+                    for (x[u] = 0; x[u] < dimensions[u]; ++x[u], ++n)
+                    {
+                        const int a = GetLocalBlock({x[0], x[1], x[2]}).GetId();
+                        const int b = GetLocalBlock({x[0] + q[0], x[1] + q[1], x[2] + q[2]}).GetId();
 
 
-                indices[indexBase + 0] = vertexBase + 0;
-                indices[indexBase + 1] = vertexBase + 2;
-                indices[indexBase + 2] = vertexBase + 1;
+                        if (static_cast<bool>(a) == static_cast<bool>(b))
+                        {
+                            mask[n] = 0;
+                        }
+                        else if (static_cast<bool>(a))
+                        {
+                            mask[n] = a;
+                        }
+                        else
+                        {
+                            mask[n] = -b;
+                        }
+                    }
+                }
 
-                indices[indexBase + 3] = vertexBase + 2;
-                indices[indexBase + 4] = vertexBase + 3;
-                indices[indexBase + 5] = vertexBase + 1;
+                ++x[dim];
 
-                indices[indexBase + 6] = vertexBase + 4;
-                indices[indexBase + 7] = vertexBase + 6;
-                indices[indexBase + 8] = vertexBase + 5;
+                // Generate mesh for the current mask
+                n = 0;
 
-                indices[indexBase + 9] = vertexBase + 6;
-                indices[indexBase + 10] = vertexBase + 7;
-                indices[indexBase + 11] = vertexBase + 5;
+                for (int j = 0; j < dimensions[v]; ++j)
+                {
+                    for (int i = 0; i < dimensions[u];)
+                    {
+                        if (int blockId = mask[n]; static_cast<bool>(blockId))
+                        {
+                            // Compute width of the face
+                            int width = 1;
+                            while (i + width < dimensions[u] && blockId == mask[static_cast<unsigned long long>(n) +
+                                width])
+                            {
+                                ++width;
+                            }
 
-                indices[indexBase + 12] = vertexBase + 8;
-                indices[indexBase + 13] = vertexBase + 10;
-                indices[indexBase + 14] = vertexBase + 9;
+                            // Compute height of the face
+                            int height = 1;
+                            while (j + height < dimensions[v])
+                            {
+                                for (k = 0; k < width; ++k)
+                                {
+                                    if (blockId != mask[
+                                        static_cast<unsigned long long>(n)
+                                        + k
+                                        + static_cast<unsigned long long>(height)
+                                        * dimensions[u]])
+                                    {
+                                        goto afterLoop;
+                                    }
+                                }
+                                ++height;
+                            }
+                        afterLoop:
 
-                indices[indexBase + 15] = vertexBase + 10;
-                indices[indexBase + 16] = vertexBase + 11;
-                indices[indexBase + 17] = vertexBase + 9;
+                            x[u] = i;
+                            x[v] = j;
 
-                indices[indexBase + 18] = vertexBase + 12;
-                indices[indexBase + 19] = vertexBase + 14;
-                indices[indexBase + 20] = vertexBase + 13;
+                            // Determine the size and orientation of this face
+                            int du[3] = {0, 0, 0};
+                            int dv[3] = {0, 0, 0};
 
-                indices[indexBase + 21] = vertexBase + 14;
-                indices[indexBase + 22] = vertexBase + 15;
-                indices[indexBase + 23] = vertexBase + 13;
+                            const bool flipUvs = q[0] == 1 && blockId > 0
+                                || q[1] == 1 && blockId < 0
+                                || q[2] == 1 && blockId < 0;
 
-                indices[indexBase + 24] = vertexBase + 16;
-                indices[indexBase + 25] = vertexBase + 18;
-                indices[indexBase + 26] = vertexBase + 17;
+                            const uint8_t faceId = q[0] * (blockId < 0 ? 3 : 1)
+                                + q[1] * (blockId < 0 ? 5 : 4)
+                                + q[2] * (blockId < 0 ? 2 : 0);
 
-                indices[indexBase + 27] = vertexBase + 18;
-                indices[indexBase + 28] = vertexBase + 19;
-                indices[indexBase + 29] = vertexBase + 17;
 
-                indices[indexBase + 30] = vertexBase + 20;
-                indices[indexBase + 31] = vertexBase + 22;
-                indices[indexBase + 32] = vertexBase + 21;
+                            // If blockId is less than 0 the face is flipped
+                            if (blockId > 0)
+                            {
+                                dv[v] = height;
+                                du[u] = width;
+                            }
+                            else
+                            {
+                                blockId = -blockId;
+                                du[v] = height;
+                                dv[u] = width;
+                            }
 
-                indices[indexBase + 33] = vertexBase + 22;
-                indices[indexBase + 34] = vertexBase + 23;
-                indices[indexBase + 35] = vertexBase + 21;
+                            int uv[2] = {0, 0};
+
+                            if (q[0] == 1)
+                            {
+                                uv[0] = width;
+                                uv[1] = height;
+                            }
+                            else
+                            {
+                                uv[0] = height;
+                                uv[1] = width;
+                            }
+
+                            const Block& block = BlockRegistry::GetBlock(blockId);
+
+                            int vertexCount = static_cast<int>(vertices.size());
+                            vertices.push_back(BlocksEngine::Vertex{
+                                {
+                                    static_cast<float>(x[0]),
+                                    static_cast<float>(x[1]),
+                                    static_cast<float>(x[2])
+                                },
+                                {static_cast<float>(flipUvs ? 0 : uv[1]), static_cast<float>(uv[0])},
+                                block.GetTextures()[faceId]
+                            });
+
+                            vertices.push_back(BlocksEngine::Vertex{
+                                {
+                                    static_cast<float>(x[0] + du[0]),
+                                    static_cast<float>(x[1] + du[1]),
+                                    static_cast<float>(x[2] + du[2])
+                                },
+                                {static_cast<float>(0), static_cast<float>(flipUvs ? 0 : uv[0])},
+                                block.GetTextures()[faceId]
+                            });
+
+                            vertices.push_back(BlocksEngine::Vertex{
+                                {
+                                    static_cast<float>(x[0] + dv[0]),
+                                    static_cast<float>(x[1] + dv[1]),
+                                    static_cast<float>(x[2] + dv[2])
+                                },
+                                {static_cast<float>(uv[1]), static_cast<float>(flipUvs ? uv[0] : 0)},
+                                block.GetTextures()[faceId]
+                            });
+
+                            vertices.push_back(BlocksEngine::Vertex{
+                                {
+                                    static_cast<float>(x[0] + du[0] + dv[0]),
+                                    static_cast<float>(x[1] + du[1] + dv[1]),
+                                    static_cast<float>(x[2] + du[2] + dv[2])
+                                },
+                                {static_cast<float>(flipUvs ? uv[1] : 0), static_cast<float>(0)},
+                                block.GetTextures()[faceId]
+                            });
+
+                            indices.push_back(vertexCount);
+                            indices.push_back(vertexCount + 1);
+                            indices.push_back(vertexCount + 2);
+
+                            indices.push_back(vertexCount + 1);
+                            indices.push_back(vertexCount + 3);
+                            indices.push_back(vertexCount + 2);
+
+
+                            for (int l = 0; l < height; ++l)
+                            {
+                                for (k = 0; k < width; ++k)
+                                {
+                                    mask[static_cast<unsigned long long>(n) + k + static_cast<unsigned long long>(l) *
+                                        dimensions[u]] = 0;
+                                }
+                            }
+
+                            i += width;
+                            n += width;
+                        }
+                        else
+                        {
+                            i++;
+                            n++;
+                        }
+                    }
+                }
             }
         }
-    }
 
-    const BlocksEngine::Graphics& gfx = GetGame().Graphics();
 
-    auto mesh = std::make_shared<BlocksEngine::Mesh>(std::make_shared<BlocksEngine::VertexBuffer>(gfx, vertices),
-                                                     std::make_shared<BlocksEngine::IndexBuffer>(gfx, indices));
-    GetActor().AddComponent<BlocksEngine::Renderer>(
-        std::make_shared<BlocksEngine::Albedo>(GetActor().GetGame().Graphics(), L"resources/images/block-atlas.png"),
-        std::move(mesh));
+        const BlocksEngine::Graphics& gfx = GetGame()->Graphics();
+
+        auto mesh = std::make_shared<BlocksEngine::Mesh>(std::make_shared<BlocksEngine::VertexBuffer>(gfx, vertices),
+                                                         std::make_shared<BlocksEngine::IndexBuffer>(gfx, indices));
+        GetGame()->MainDispatchQueue().Async([this, mesh]
+        {
+            GetActor()->AddComponent<BlocksEngine::Renderer>(
+                std::make_shared<BlocksEngine::Terrain>(GetActor()->GetGame()->Graphics(),
+                                                        BlocksEngine::Texture2D::FromDds(
+                                                            GetGame()->Graphics(), L"resources/images/terrain.dds")),
+                mesh);
+        });
+    });
+}
+
+std::ostream& Blocks::operator<<(std::ostream& out, const Chunk& chunk)
+{
+    out << chunk.coords_.x << ", " << chunk.coords_.y;
+    return out;
 }

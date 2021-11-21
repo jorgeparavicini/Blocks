@@ -24,7 +24,13 @@
     <ClInclude Include="include\Blocks\Chunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Blocks\WorldGenerator.h">
+    <ClInclude Include="include\Blocks\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\BlockRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\ChunkAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,7 +47,10 @@
     <ClCompile Include="src\World\Chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\World\WorldGenerator.cpp">
+    <ClCompile Include="src\World\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\BlockRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,8 +62,18 @@
     <Image Include="resources\images\dirt.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="resources\images\block-atlas.png">
+    <Image Include="resources\images\dirt_2.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\images\terrain.dds" />
+    <Image Include="resources\images\grass.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
 </Project>

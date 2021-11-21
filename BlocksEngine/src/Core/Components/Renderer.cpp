@@ -9,20 +9,21 @@
 
 using namespace BlocksEngine;
 
-Renderer::Renderer(Actor& actor)
+Renderer::Renderer(const std::weak_ptr<Actor> actor)
     : Renderer{
         actor,
-        std::make_shared<SolidColor>(actor.GetGame().Graphics()),
-        std::make_shared<Mesh>(actor.GetGame().Graphics())
+        std::make_shared<SolidColor>(actor.lock()->GetGame()->Graphics()),
+        std::make_shared<Mesh>(actor.lock()->GetGame()->Graphics())
     }
 {
 }
 
-Renderer::Renderer(Actor& actor, std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh)
+// TODO: These constructors could be optimized with move semantics
+Renderer::Renderer(const std::weak_ptr<Actor> actor, std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh)
     : Component{actor},
       pMaterial_{std::move(pMaterial)},
       pMesh_{std::move(pMesh)},
-      pConstantBuffer_{std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(actor.GetGame().Graphics())}
+      pConstantBuffer_{std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(actor.lock()->GetGame()->Graphics())}
 {
     pMaterial_->AddConstantBuffer(pConstantBuffer_);
 }
@@ -44,9 +45,9 @@ void Renderer::Draw()
         return;
     }
 
-    const auto wvp = GetActor().GetTransform().GetMatrix() * GetGame().MainCamera().ViewProjection();
+    const auto wvp = GetActor()->GetTransform()->GetMatrix() * GetGame()->MainCamera().ViewProjection();
 
-    const Graphics& gfx = GetGame().Graphics();
+    const Graphics& gfx = GetGame()->Graphics();
 
     pConstantBuffer_->Update(gfx, XMMatrixTranspose(wvp));
 

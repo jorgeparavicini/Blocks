@@ -19,7 +19,11 @@ class BlocksEngine::Texture2D final : public Bindable
 {
 public:
     Texture2D(const Graphics& gfx, std::wstring fileName);
+    Texture2D(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView);
+
     void Bind(const Graphics& gfx) noexcept override;
+
+    static std::unique_ptr<Texture2D> FromDds(const Graphics& gfx, std::wstring fileName);
 
 protected:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pTextureView_;

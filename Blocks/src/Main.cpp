@@ -1,14 +1,32 @@
 ﻿#include "Blocks/pch.h"
 
 #include <Windows.h>
-#include <boost/signals2.hpp>
-#include <boost/functional/hash.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/file.hpp>
 
-#include "Blocks/Block.h"
-#include "Blocks/Chunk.h"
+#include "Blocks/World.h"
 #include "BlocksEngine/Exception.h"
 #include "BlocksEngine/Game.h"
 #include "BlocksEngine/Renderer.h"
+
+void SetupLogging()
+{
+    namespace Logging = boost::log;
+    namespace Keywords = boost::log::keywords;
+
+    Logging::register_simple_formatter_factory<Logging::trivial::severity_level, char>("Severity");
+    Logging::add_file_log(
+        Keywords::file_name = "blocks.log",
+        Keywords::format = "[%TimeStamp%] [%ThreadID%] [%Severity%] %Message%"
+    );
+
+    Logging::core::get()->set_filter(
+        Logging::trivial::severity >= Logging::trivial::trace
+    );
+
+    Logging::add_common_attributes();
+}
 
 
 int WINAPI WinMain(
@@ -20,24 +38,19 @@ int WINAPI WinMain(
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    auto game = BlocksEngine::Game{};
+    SetupLogging();
 
-    game.AddSignalGameStart([&game]
+    auto game = BlocksEngine::Game::CreateGame();
+
+    game->AddSignalGameStart([&game]
     {
-        BlocksEngine::Actor& chunkActor = game.AddActor();
-
-        Blocks::Chunk& chunk = chunkActor.AddComponent<Blocks::Chunk>(BlocksEngine::Vector2{0, 0});
-        chunk.RegenerateMesh();
-
-        BlocksEngine::Actor& chunkActor2 = game.AddActor();
-        chunkActor2.GetTransform().SetPosition({16.0f, 0.0f, 0.0f});
-        Blocks::Chunk& chunk2 = chunkActor2.AddComponent<Blocks::Chunk>(BlocksEngine::Vector2{0, 0});
-        chunk2.RegenerateMesh();
+        const auto worldActor = game->AddActor(L"World");
+        worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
     });
 
     try
     {
-        return game.Start();
+        return game->Start();
     }
     catch (const BlocksEngine::Exception& e)
     {

@@ -21,25 +21,25 @@ namespace BlocksEngine
 class BlocksEngine::Transform
 {
 public:
-    explicit Transform(Vector3 position = Vector3::Zero,
+    explicit Transform(Vector3<float> position = Vector3<float>::Zero,
                        Quaternion rotation = Quaternion::Identity,
-                       Vector3 scale = Vector3::One);
+                       Vector3<float> scale = Vector3<float>::One);
 
     [[nodiscard]] const Matrix& GetMatrix() const noexcept;
-    [[nodiscard]] Vector3& GetPosition() noexcept;
+    [[nodiscard]] Vector3<float>& GetPosition() noexcept;
     [[nodiscard]] Quaternion& GetRotation() noexcept;
-    [[nodiscard]] Vector3& GetScale() noexcept;
+    [[nodiscard]] Vector3<float>& GetScale() noexcept;
 
-    void SetPosition(Vector3 position) noexcept;
+    void SetPosition(Vector3<float> position) noexcept;
     void SetRotation(Quaternion rotation) noexcept;
-    void SetScale(Vector3 scale) noexcept;
+    void SetScale(Vector3<float> scale) noexcept;
 
     void UpdateMatrix() noexcept;
 
 private:
-    Vector3 position_;
+    Vector3<float> position_;
     Quaternion rotation_;
-    Vector3 scale_;
+    Vector3<float> scale_;
 
     Matrix matrix_;
 };

@@ -48,7 +48,6 @@
     <ClInclude Include="include\BlocksEngine\SolidColor.h" />
     <ClInclude Include="include\BlocksEngine\Vertex.h" />
     <ClInclude Include="include\BlocksEngine\Transform.h" />
-    <ClInclude Include="include\BlocksEngine\Entity.h" />
     <ClInclude Include="include\BlocksEngine\Actor.h" />
     <ClInclude Include="include\BlocksEngine\Camera.h" />
     <ClInclude Include="include\BlocksEngine\Component.h" />
@@ -68,12 +67,18 @@
     <ClInclude Include="include\BlocksEngine\Texture2D.h" />
     <ClInclude Include="include\BlocksEngine\Albedo.h" />
     <ClInclude Include="include\BlocksEngine\Sampler.h" />
+    <ClInclude Include="include\BlocksEngine\Terrain.h" />
+    <ClInclude Include="include\BlocksEngine\Texture2DArray.h" />
+    <ClInclude Include="include\BlocksEngine\DispatchQueue.h" />
+    <ClInclude Include="include\BlocksEngine\BaseDispatchQueue.h" />
+    <ClInclude Include="include\BlocksEngine\MainDispatchQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Actor.cpp" />
     <ClCompile Include="src\Core\Components\Component.cpp" />
     <ClCompile Include="src\Core\Components\Renderer.cpp" />
-    <ClCompile Include="src\Core\Entity.cpp" />
+    <ClCompile Include="src\Core\Dispatch\BaseDispatchQueue.cpp" />
+    <ClCompile Include="src\Core\Dispatch\MainDispatcher.cpp" />
     <ClCompile Include="src\Core\Input\Keyboard.cpp" />
     <ClCompile Include="src\Core\Input\Mouse.cpp" />
     <ClCompile Include="src\Core\Math\Math.cpp" />
@@ -84,6 +89,7 @@
     <ClCompile Include="src\Core\Math\Vector3.cpp" />
     <ClCompile Include="src\Core\Math\Vector4.cpp" />
     <ClCompile Include="src\Core\Time.cpp" />
+    <ClCompile Include="src\Core\Dispatch\DispatchQueue.cpp" />
     <ClCompile Include="src\Exceptions\BufferException.cpp" />
     <ClCompile Include="src\Exceptions\EngineException.cpp" />
     <ClCompile Include="src\Core\Components\Camera.cpp" />
@@ -91,7 +97,9 @@
     <ClCompile Include="src\Graphics\Material\ConstantBuffer.cpp" />
     <ClCompile Include="src\Graphics\Graphics.cpp" />
     <ClCompile Include="src\Graphics\Material\Sampler.cpp" />
+    <ClCompile Include="src\Graphics\Material\Terrain\Terrain.cpp" />
     <ClCompile Include="src\Graphics\Material\Texture2D.cpp" />
+    <ClCompile Include="src\Graphics\Material\Texture2DArray.cpp" />
     <ClCompile Include="src\Graphics\WICTextureLoader.cpp" />
     <ClCompile Include="src\Main\Window.cpp" />
     <ClCompile Include="src\Main\WindowClass.cpp" />
@@ -126,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
+    <None Include="cpp.hint" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +173,22 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -314,11 +339,15 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\boost.1.77.0.0\build\boost.targets" Condition="Exists('..\packages\boost.1.77.0.0\build\boost.targets')" />
+    <Import Project="..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets" Condition="Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" />
+    <Import Project="..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets" Condition="Exists('..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\boost.1.77.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.77.0.0\build\boost.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets'))" />
+    <Error Condition="!Exists('..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets'))" />
   </Target>
 </Project>
