@@ -49,7 +49,11 @@ struct BlocksEngine::Vector2 : Vector2Base<T>::Base
 
     constexpr explicit Vector2(T a) noexcept;
 
-    constexpr Vector2(T x, T y) noexcept;
+    constexpr Vector2<T>(T x, T y) noexcept
+        : Vector2Base<T>::Base{x, y}
+    {
+    }
+
 
     explicit Vector2(_In_reads_(2) const T* pArray) noexcept;
 

@@ -32,3 +32,7 @@ void Component::Update()
 void Component::Draw()
 {
 }
+
+void Component::Draw2D()
+{
+}

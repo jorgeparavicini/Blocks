@@ -45,6 +45,7 @@ public:
     // Events
     virtual void Update();
     virtual void Draw();
+    virtual void Draw2D();
 
 private:
     std::weak_ptr<Actor> actor_;

@@ -46,7 +46,7 @@ public:
     [[nodiscard]] bool IsInitialized() const noexcept;
 
     void SetBlocks(std::vector<uint8_t> blocks);
-    void RegenerateMesh() const;
+    void RegenerateMesh(std::function<void()> callback) const;
 
     [[nodiscard]] static int GetFlatIndex(BlocksEngine::Vector3<int> position);
     [[nodiscard]] static int GetFlatIndex(int x, int y, int z);

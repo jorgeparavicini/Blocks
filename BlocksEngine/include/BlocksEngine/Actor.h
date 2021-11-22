@@ -32,6 +32,7 @@ public:
 
     void Update() const;
     void Render() const;
+    void Render2D() const;
 
     /**
      * Creates a component and adds it to the component list.

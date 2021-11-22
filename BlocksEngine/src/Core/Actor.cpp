@@ -45,3 +45,11 @@ void Actor::Render() const
         pComponent->Draw();
     }
 }
+
+void Actor::Render2D() const
+{
+    for (auto& pComponent : pComponents_)
+    {
+        pComponent->Draw2D();
+    }
+}

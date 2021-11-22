@@ -182,7 +182,22 @@ void Game::Render() const
         pActor->Render();
     }
 
+    Render2D();
+
     pWindow_->Present();
+}
+
+void Game::Render2D() const
+{
+    ID2D1RenderTarget& renderTarget = Graphics().Get2DRenderTarget();
+    renderTarget.BeginDraw();
+
+    for (const auto& pActor : pActors_)
+    {
+        pActor->Render2D();
+    }
+
+    renderTarget.EndDraw();
 }
 
 

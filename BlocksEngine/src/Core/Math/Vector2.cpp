@@ -25,12 +25,6 @@ constexpr Vector2<T>::Vector2(const T a) noexcept
 }
 
 template <class T>
-constexpr Vector2<T>::Vector2(const T x, const T y) noexcept
-    : Vector2Base<T>::Base{x, y}
-{
-}
-
-template <class T>
 Vector2<T>::Vector2(_In_reads_(2) const T* pArray) noexcept
     : Vector2Base<T>::Base{pArray}
 {

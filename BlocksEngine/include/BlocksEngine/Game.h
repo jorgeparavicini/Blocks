@@ -78,6 +78,7 @@ private:
     void Tick() noexcept;
     void Update();
     void Render() const;
+    void Render2D() const;
     static std::optional<int> ProcessApplicationMessages() noexcept;
 
     Camera* camera_{nullptr};

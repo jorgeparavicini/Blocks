@@ -1,15 +1,19 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Graphics.h"
 
+#include <d2d1.h>
+
 #include "BlocksEngine/DxgiInfoManager.h"
 #include "BlocksEngine/GraphicsException.h"
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d2d1.lib")
 
 using Microsoft::WRL::ComPtr;
+using namespace BlocksEngine;
 
 
-BlocksEngine::Graphics::Graphics(HWND hWnd, const int width, const int height)
+Graphics::Graphics(HWND hWnd, const int width, const int height)
     : window_{hWnd},
       width_{std::max(width, 1)},
       height_{std::max(height, 1)},
@@ -22,13 +26,13 @@ BlocksEngine::Graphics::Graphics(HWND hWnd, const int width, const int height)
     CreateResources();
 }
 
-void BlocksEngine::Graphics::CreateDevice()
+void Graphics::CreateDevice()
 {
     HRESULT hr;
     UINT creationFlags = 0;
 
 #ifdef _DEBUG
-    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+    creationFlags |= D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #endif
 
     static constexpr D3D_FEATURE_LEVEL FeatureLevels[] = {
@@ -50,15 +54,26 @@ void BlocksEngine::Graphics::CreateDevice()
         &featureLevel_,
         pContext_.ReleaseAndGetAddressOf()
     ));
+
+    // Create 2D Factory
+    D2D1_FACTORY_OPTIONS options{};
+
+#if defined(_DEBUG)
+    options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
+#endif
+
+    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), &options, &pFactory_);
 }
 
-void BlocksEngine::Graphics::CreateResources()
+void Graphics::CreateResources()
 {
     // Clear the previous window size specific context.
     ID3D11RenderTargetView* nullViews[]{nullptr};
     pContext_->OMSetRenderTargets(static_cast<UINT>(std::size(nullViews)), nullViews, nullptr);
     pRenderTarget_.Reset();
     pDepthStencilView_.Reset();
+    pSurface_.Reset();
+    pRenderTarget2D_.Reset();
     pContext_->Flush();
 
     const UINT backBufferWidth = static_cast<UINT>(width_);
@@ -112,6 +127,7 @@ void BlocksEngine::Graphics::CreateResources()
     swapChainDesc.BufferCount = backBufferCount;
     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
+
     DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc{};
     fsSwapChainDesc.Windowed = TRUE;
 
@@ -136,6 +152,18 @@ void BlocksEngine::Graphics::CreateResources()
     GFX_THROW_INFO(
         pDevice_->CreateRenderTargetView(backBuffer.Get(), nullptr, pRenderTarget_.ReleaseAndGetAddressOf()));
 
+    // Create 2D Context
+    pSwapChain_->GetBuffer(0, IID_PPV_ARGS(&pSurface_));
+
+    const auto dpi = static_cast<FLOAT>(GetDpiForWindow(window_));
+    const D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT,
+                                                                             D2D1::PixelFormat(
+                                                                                 DXGI_FORMAT_UNKNOWN,
+                                                                                 D2D1_ALPHA_MODE_PREMULTIPLIED),
+                                                                             dpi,
+                                                                             dpi);
+    pFactory_->CreateDxgiSurfaceRenderTarget(pSurface_.Get(), &props, &pRenderTarget2D_);
+
     // Allocate a 2D depth/stencil buffer
     const CD3D11_TEXTURE2D_DESC depthStencilDesc(depthBufferFormat, backBufferWidth, backBufferHeight, 1, 1,
                                                  D3D11_BIND_DEPTH_STENCIL);
@@ -149,7 +177,7 @@ void BlocksEngine::Graphics::CreateResources()
             ReleaseAndGetAddressOf()));
 }
 
-void BlocksEngine::Graphics::OnWindowSizeChanged(const int width, const int height)
+void Graphics::OnWindowSizeChanged(const int width, const int height)
 {
     width_ = std::max(width, 1);
     height_ = std::max(height, 1);
@@ -159,40 +187,55 @@ void BlocksEngine::Graphics::OnWindowSizeChanged(const int width, const int heig
     windowResized_(width_, height_);
 }
 
-ID3D11Device& BlocksEngine::Graphics::GetDevice() const noexcept
+ID3D11Device& Graphics::GetDevice() const noexcept
 {
     return *pDevice_.Get();
 }
 
-ID3D11DeviceContext& BlocksEngine::Graphics::GetContext() const noexcept
+ID3D11DeviceContext& Graphics::GetContext() const noexcept
 {
     return *pContext_.Get();
 }
 
-float BlocksEngine::Graphics::AspectRatio() const noexcept
+ID2D1RenderTarget& Graphics::Get2DRenderTarget() const noexcept
+{
+    return *pRenderTarget2D_.Get();
+}
+
+float Graphics::AspectRatio() const noexcept
 {
     return static_cast<float>(width_) / static_cast<float>(height_);
 }
 
-float BlocksEngine::Graphics::Width() const noexcept
+Vector2<int> Graphics::Size() const noexcept
+{
+    return {width_, height_};
+}
+
+float Graphics::Width() const noexcept
 {
     return static_cast<float>(width_);
 }
 
-float BlocksEngine::Graphics::Height() const noexcept
+float Graphics::Height() const noexcept
 {
     return static_cast<float>(height_);
 }
 
-boost::signals2::connection BlocksEngine::Graphics::AddSignalWindowResized(
+boost::signals2::connection Graphics::AddSignalWindowResized(
     const WindowResizedSignal::slot_type& slot) noexcept
 {
     return windowResized_.connect(slot);
 }
 
-void BlocksEngine::Graphics::Clear()
+void Graphics::Clear()
 {
-    // Clear the views
+    // Clear 2D Render Target
+    pRenderTarget2D_->BeginDraw();
+    pRenderTarget2D_->Clear();
+    pRenderTarget2D_->EndDraw();
+
+    // Clear 3D Render Target and Depth Buffer
     pContext_->ClearRenderTargetView(pRenderTarget_.Get(), DirectX::Colors::CornflowerBlue);
     pContext_->ClearDepthStencilView(pDepthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -204,7 +247,7 @@ void BlocksEngine::Graphics::Clear()
 }
 
 // Present the back buffer contents to the screen.
-void BlocksEngine::Graphics::Present()
+void Graphics::Present()
 {
     DxgiInfoManager::Set();
     const HRESULT hr = pSwapChain_->Present(1, 0);
@@ -220,7 +263,7 @@ void BlocksEngine::Graphics::Present()
     }
 }
 
-void BlocksEngine::Graphics::OnDeviceLost()
+void Graphics::OnDeviceLost()
 {
     // Clean Up Direct3D resources
     pDepthStencilView_.Reset();
@@ -228,6 +271,9 @@ void BlocksEngine::Graphics::OnDeviceLost()
     pSwapChain_.Reset();
     pContext_.Reset();
     pDevice_.Reset();
+    pFactory_.Reset();
+    pSurface_.Reset();
+    pRenderTarget2D_.Reset();
 
     CreateDevice();
     CreateResources();
