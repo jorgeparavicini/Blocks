@@ -15,6 +15,7 @@
 #include <boost/container_hash/hash.hpp>
 
 #include "Chunk.h"
+#include "LoadingScreen.h"
 #include "BlocksEngine/Component.h"
 #include "BlocksEngine/Transform.h"
 
@@ -40,8 +41,6 @@ public:
     //------------------------------------------------------------------------------
 
     void Update() override;
-
-    void Draw2D() override;
 
     //------------------------------------------------------------------------------
     // Methods
@@ -106,10 +105,11 @@ private:
 
     void OnWorldGenerated();
 
-    void OnWorldLoaded();
+    void OnWorldLoaded() const;
 
     void UpdateChunks();
 
-    // 2D Rendering resources
-    Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pBrush_;
+
+    // TODO: Stuff that should not be in this class but is because i'm lazy
+    std::shared_ptr<LoadingScreen> loadingScreen_;
 };

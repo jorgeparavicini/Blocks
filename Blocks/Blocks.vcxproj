@@ -177,6 +177,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <ClInclude Include="include\Blocks\Block.h" />
     <ClInclude Include="include\Blocks\World.h" />
     <ClInclude Include="include\Blocks\BlockRegistry.h" />
+    <ClInclude Include="include\Blocks\LoadingScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\World\BlockRegistry.cpp" />
@@ -189,6 +190,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\World\LoadingScreen.cpp" />
     <ClCompile Include="src\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,7 @@ public:
     {
         // Since a shared_ptr needs to be created to use a game, the constructor is private.
         // And since the constructor is private, make_shared cannot be used
+        // TODO: ????? don't allocate it yourself let the system create the game+
         auto game = std::shared_ptr<Game>{new Game{std::move(options)}};
         game->Initialize();
         return game;

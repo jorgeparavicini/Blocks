@@ -12,6 +12,7 @@
 #include <d2d1.h>
 #include <d3d11_1.h>
 #include <d3dcommon.h>
+#include <dwrite.h>
 #include <Windows.h>
 #include <wrl.h>
 #include <BlocksEngine/Vector2.h>
@@ -45,6 +46,9 @@ public:
     [[nodiscard]] ID3D11Device& GetDevice() const noexcept;
     [[nodiscard]] ID3D11DeviceContext& GetContext() const noexcept;
     [[nodiscard]] ID2D1RenderTarget& Get2DRenderTarget() const noexcept;
+    [[nodiscard]] ID2D1Factory& Get2DFactory() const noexcept;
+    [[nodiscard]] IDWriteFactory& GetDWriteFactory() const noexcept;
+
     [[nodiscard]] float AspectRatio() const noexcept;
     [[nodiscard]] Vector2<int> Size() const noexcept;
     [[nodiscard]] float Width() const noexcept;
@@ -62,6 +66,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D11Device> pDevice_;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext_;
     Microsoft::WRL::ComPtr<ID2D1Factory> pFactory_;
+    Microsoft::WRL::ComPtr<IDWriteFactory> pDWriteFactory_;
 
     Microsoft::WRL::ComPtr<IDXGISwapChain1> pSwapChain_;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pRenderTarget_;

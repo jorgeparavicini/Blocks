@@ -15,13 +15,10 @@ World::World(std::weak_ptr<Actor> actor, std::weak_ptr<Transform> playerTransfor
              const uint8_t chunkLoadDistance)
     : Component{std::move(actor)},
       chunkViewDistance_{chunkLoadDistance},
-      playerTransform_{std::move(playerTransform)}
+      playerTransform_{std::move(playerTransform)},
+      loadingScreen_{GetActor()->AddComponent<LoadingScreen>()}
 {
     GenerateWorld();
-
-    ID2D1RenderTarget& renderTarget = GetGame()->Graphics().Get2DRenderTarget();
-    HRESULT hr;
-    GFX_THROW_INFO(renderTarget.CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Blue, 0.5f), &pBrush_));
 }
 
 void World::Update()
@@ -35,15 +32,6 @@ void World::Update()
         //UpdateChunks();
     }
 }
-
-void World::Draw2D()
-{
-    auto size = GetGame()->Graphics().Size();
-    ID2D1RenderTarget& renderTarget = GetGame()->Graphics().Get2DRenderTarget();
-    const D2D1_RECT_F rect = D2D1::RectF(0.0f, 0.0f, size.x - 1, size.y - 1);
-    renderTarget.FillRectangle(&rect, pBrush_.Get());
-}
-
 
 // TODO: Test if this could be moved
 void World::SetPlayerTransform(const std::shared_ptr<Transform> playerTransform) noexcept
@@ -158,9 +146,10 @@ void World::OnWorldGenerated()
     }
 }
 
-void World::OnWorldLoaded()
+void World::OnWorldLoaded() const
 {
     BOOST_LOG_TRIVIAL(info) << "World successfully loaded";
+    loadingScreen_->LevelLoaded();
 }
 
 std::vector<uint8_t> World::GenerateChunk(std::shared_ptr<Chunk> chunk) const

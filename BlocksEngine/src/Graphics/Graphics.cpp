@@ -2,12 +2,14 @@
 #include "BlocksEngine/Graphics.h"
 
 #include <d2d1.h>
+#include <dwrite.h>
 
 #include "BlocksEngine/DxgiInfoManager.h"
 #include "BlocksEngine/GraphicsException.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
 
 using Microsoft::WRL::ComPtr;
 using namespace BlocksEngine;
@@ -62,7 +64,12 @@ void Graphics::CreateDevice()
     options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
 #endif
 
-    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), &options, &pFactory_);
+    GFX_THROW_INFO(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), &options, &pFactory_));
+
+    // Create Direct Write Factory
+    GFX_THROW_INFO(
+        DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(
+            pDWriteFactory_.GetAddressOf())));
 }
 
 void Graphics::CreateResources()
@@ -200,6 +207,16 @@ ID3D11DeviceContext& Graphics::GetContext() const noexcept
 ID2D1RenderTarget& Graphics::Get2DRenderTarget() const noexcept
 {
     return *pRenderTarget2D_.Get();
+}
+
+ID2D1Factory& Graphics::Get2DFactory() const noexcept
+{
+    return *pFactory_.Get();
+}
+
+IDWriteFactory& Graphics::GetDWriteFactory() const noexcept
+{
+    return *pDWriteFactory_.Get();
 }
 
 float Graphics::AspectRatio() const noexcept

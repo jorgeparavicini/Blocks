@@ -41,7 +41,6 @@ int WINAPI WinMain(
     SetupLogging();
 
     auto game = BlocksEngine::Game::CreateGame();
-
     game->AddSignalGameStart([&game]
     {
         const auto worldActor = game->AddActor(L"World");
