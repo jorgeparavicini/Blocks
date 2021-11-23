@@ -1,5 +1,7 @@
 ﻿#include "Blocks/pch.h"
 
+#include <chrono>
+#include <thread>
 #include <Windows.h>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
@@ -8,7 +10,6 @@
 #include "Blocks/World.h"
 #include "BlocksEngine/Exception.h"
 #include "BlocksEngine/Game.h"
-#include "BlocksEngine/Renderer.h"
 
 void SetupLogging()
 {

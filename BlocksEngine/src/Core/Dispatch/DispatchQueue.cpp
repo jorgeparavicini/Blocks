@@ -29,14 +29,14 @@ DispatchQueue::~DispatchQueue()
     }
 }
 
-DispatchQueue& DispatchQueue::Background()
+std::shared_ptr<DispatchQueue> DispatchQueue::Background()
 {
-    static DispatchQueue instance{4}; // NOLINT(clang-diagnostic-exit-time-destructors)
+    static auto instance{std::make_shared<DispatchQueue>(4)};
 
     return instance;
 }
 
-void DispatchQueue::Async(std::function<void()> workItem)
+void DispatchQueue::Async(std::shared_ptr<DispatchWorkItem> workItem)
 {
     BaseDispatchQueue::Async(std::move(workItem));
     workingCondition_.notify_one();
@@ -57,13 +57,13 @@ void DispatchQueue::DispatchThreadHandler()
         // We own the lock after the wait
         if (!queue_.empty())
         {
-            std::function<void()> op = std::move(queue_.front());
+            std::shared_ptr<DispatchWorkItem> op = std::move(queue_.front());
             queue_.pop();
 
             // Unlock the mutex after we are done with messing with the queues
             lock.unlock();
 
-            op();
+            (*op)();
 
             lock.lock();
         }

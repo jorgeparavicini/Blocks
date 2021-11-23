@@ -19,13 +19,13 @@ void BlocksEngine::MainDispatchQueue::HandleQueue()
 
     while (!queue_.empty())
     {
-        std::function<void()> op = std::move(queue_.front());
+        auto op = queue_.front();
         queue_.pop();
 
         // Unlock the mutex after we are done with messing with the queues
         lock.unlock();
 
-        op();
+        (*op)();
 
         lock.lock();
     }

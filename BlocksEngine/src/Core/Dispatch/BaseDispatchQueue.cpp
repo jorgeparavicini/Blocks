@@ -1,12 +1,10 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/BaseDispatchQueue.h"
 
+using namespace BlocksEngine;
 
-BlocksEngine::BaseDispatchQueue::~BaseDispatchQueue()
-{
-}
 
-void BlocksEngine::BaseDispatchQueue::Async(std::function<void()> workItem)
+void BaseDispatchQueue::Async(std::shared_ptr<DispatchWorkItem> workItem)
 {
     std::unique_lock lock{lock_};
     queue_.push(std::move(workItem));

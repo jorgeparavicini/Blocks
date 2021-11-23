@@ -6,6 +6,7 @@
 
 #include "BlocksEngine/Actor.h"
 #include "BlocksEngine/DispatchQueue.h"
+#include "BlocksEngine/DispatchWorkGroup.h"
 #include "BlocksEngine/Game.h"
 
 using namespace Blocks;
@@ -19,6 +20,7 @@ World::World(std::weak_ptr<Actor> actor, std::weak_ptr<Transform> playerTransfor
       loadingScreen_{GetActor()->AddComponent<LoadingScreen>()}
 {
     GenerateWorld();
+    loadingScreen_->LevelLoaded();
 }
 
 void World::Update()
@@ -29,7 +31,7 @@ void World::Update()
 
     if (chunkCoords != lastChunkCoords_)
     {
-        //UpdateChunks();
+        UpdateChunks();
     }
 }
 
@@ -62,94 +64,51 @@ const Block& World::GetBlock(const Vector3<int> position) const noexcept
 void World::GenerateWorld() noexcept
 {
     BOOST_LOG_TRIVIAL(debug) << "Starting World Generator";
+    const auto workGroup{std::make_shared<DispatchWorkGroup>()};
+
     for (int i = 0; i < chunkViewDistance_; i++)
     {
         for (int j = 0; j < chunkViewDistance_; j++)
         {
             const auto chunk = CreateChunk({i - chunkViewDistance_ / 2, j - chunkViewDistance_ / 2});
-            InitializeChunk(chunk);
+            workGroup->AddWorkItem(std::make_shared<DispatchWorkItem>([this, chunk]
+            {
+                auto blocks = GenerateChunk(chunk);
+
+                BOOST_LOG_TRIVIAL(debug) << "Generating Chunk: " << chunk;
+
+                const auto workItem = std::make_shared<DispatchWorkItem>([chunk, blocks = move(blocks)]()
+                mutable
+                    {
+                        chunk->SetBlocks(std::move(blocks));
+                        BOOST_LOG_TRIVIAL(debug) << "Blocks assigned for chunk: " << chunk;
+                    });
+                GetGame()->MainDispatchQueue()->Async(workItem);
+            }), DispatchQueue::Background());
         }
     }
-}
 
-std::shared_ptr<Chunk> World::CreateChunk(Chunk::ChunkCoords coords)
-{
-    const std::shared_ptr<Actor> actor = GetGame()->AddActor(
-        L"Chunk: " + std::to_wstring(coords.x) + L", " + std::to_wstring(coords.y));
-    const std::shared_ptr<Chunk> chunk = actor->AddComponent<Chunk>(*this, coords);
-    chunkMap_[coords] = chunk;
-
-    return chunk;
-}
-
-void World::InitializeChunk(std::shared_ptr<Chunk> chunk)
-{
-    std::unique_lock lock{genLock_};
-
-    if (generatingChunks_.contains(chunk->GetCoords()))
-    {
-        BOOST_LOG_TRIVIAL(error)
-            << "Chunk initialization request received for a chunk that is already generating. Chunk "
-            << *chunk.get();
-        // Returning unlocks the lock again
-        return;
-    }
-
-    generatingChunks_.insert(chunk->GetCoords());
-    lock.unlock();
-
-    BOOST_LOG_TRIVIAL(trace) << "Queuing chunk generation for chunk at " << *chunk.get();
-    DispatchQueue::Background().Async([this, chunk]
-    {
-        BOOST_LOG_TRIVIAL(debug) << "Generating chunk at " << *chunk.get();
-
-        auto blocks = GenerateChunk(chunk);
-
-        GetGame()->MainDispatchQueue().Async([this, chunk, blocks = move(blocks)]()
-        mutable
-            {
-                chunk->SetBlocks(std::move(blocks));
-                OnChunkGenerated(chunk);
-            });
-    });
-}
-
-
-void World::OnChunkGenerated(const std::shared_ptr<Chunk> chunk)
-{
-    std::unique_lock dispatchLock{genLock_};
-
-    generatingChunks_.erase(chunk->GetCoords());
-    if (generatingChunks_.empty())
+    workGroup->AddCallback(GetGame()->MainDispatchQueue(), std::make_shared<DispatchWorkItem>([this]
     {
         OnWorldGenerated();
-    }
+    }));
+
+    workGroup->Execute();
 }
 
 void World::OnWorldGenerated()
 {
-    for (const auto& [_, snd] : chunkMap_)
-    {
-        std::unique_lock lock{meshLock_};
-        meshingChunks_.insert(snd->GetCoords());
-        lock.unlock();
-        // TODO: Extrapolate into function "RequestMeshingForChunk"
-        snd->RegenerateMesh([this, &snd]
-        {
-            std::unique_lock l{meshLock_};
-            meshingChunks_.erase(snd->GetCoords());
-            if (meshingChunks_.empty())
-            {
-                OnWorldLoaded();
-            }
-        });
-    }
-}
+    BOOST_LOG_TRIVIAL(info) << "World generated";
 
-void World::OnWorldLoaded() const
-{
-    BOOST_LOG_TRIVIAL(info) << "World successfully loaded";
-    loadingScreen_->LevelLoaded();
+    std::vector<std::shared_ptr<Chunk>> chunks(chunkMap_.size());
+    std::ranges::transform(chunkMap_, chunks.begin(), [](auto pair) { return pair.second; });
+    const auto meshRequestGroup = CreateMeshRequestForChunks(std::move(chunks));
+
+    meshRequestGroup->AddCallback(GetGame()->MainDispatchQueue(), std::make_shared<DispatchWorkItem>([this]
+    {
+        OnWorldLoaded();
+    }));
+    meshRequestGroup->Execute();
 }
 
 std::vector<uint8_t> World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
@@ -171,6 +130,35 @@ std::vector<uint8_t> World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
         }
     }
     return blocks;
+}
+
+std::shared_ptr<Chunk> World::CreateChunk(Chunk::ChunkCoords coords)
+{
+    const std::shared_ptr<Actor> actor = GetGame()->AddActor(
+        L"Chunk: " + std::to_wstring(coords.x) + L", " + std::to_wstring(coords.y));
+    const std::shared_ptr<Chunk> chunk = actor->AddComponent<Chunk>(*this, coords);
+    chunkMap_[coords] = chunk;
+
+    return chunk;
+}
+
+std::shared_ptr<DispatchWorkGroup> World::CreateMeshRequestForChunks(
+    const std::vector<std::shared_ptr<Chunk>> chunks) const
+{
+    auto workGroup = std::make_shared<DispatchWorkGroup>();
+
+    for (auto& chunk : chunks)
+    {
+        workGroup->AddWorkItem(chunk->RegenerateMesh(), DispatchQueue::Background());
+    }
+
+    return workGroup;
+}
+
+void World::OnWorldLoaded() const
+{
+    BOOST_LOG_TRIVIAL(info) << "World successfully loaded";
+    loadingScreen_->LevelLoaded();
 }
 
 void World::UpdateChunks()

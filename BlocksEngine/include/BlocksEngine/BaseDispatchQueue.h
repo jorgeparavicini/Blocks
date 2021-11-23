@@ -9,9 +9,10 @@
 
 #pragma once
 
-#include <functional>
 #include <mutex>
 #include <queue>
+
+#include "DispatchWorkItem.h"
 
 namespace BlocksEngine
 {
@@ -45,15 +46,15 @@ public:
     // Destructors
     //------------------------------------------------------------------------------
 
-    virtual ~BaseDispatchQueue();
+    virtual ~BaseDispatchQueue() = default;
 
     //------------------------------------------------------------------------------
     // Methods
     //------------------------------------------------------------------------------
 
-    virtual void Async(std::function<void()> workItem);
+    virtual void Async(std::shared_ptr<DispatchWorkItem> workItem);
 
 protected:
     std::mutex lock_;
-    std::queue<std::function<void()>> queue_{};
+    std::queue<std::shared_ptr<DispatchWorkItem>> queue_{};
 };

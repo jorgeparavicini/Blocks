@@ -50,7 +50,7 @@ public:
     [[nodiscard]] const Keyboard& Keyboard() const noexcept;
     [[nodiscard]] const Mouse& Mouse() const noexcept;
     [[nodiscard]] const Time& Time() const noexcept;
-    [[nodiscard]] BaseDispatchQueue& MainDispatchQueue() const noexcept;
+    [[nodiscard]] std::shared_ptr<BaseDispatchQueue> MainDispatchQueue() const noexcept;
 
 
     static void Exit() noexcept;
@@ -75,7 +75,7 @@ private:
     int totalActorCount_{0};
     bool shutdownForced_{false};
     std::unique_ptr<BlocksEngine::Window> pWindow_{};
-    std::unique_ptr<BlocksEngine::MainDispatchQueue> pMainDispatch_{};
+    std::shared_ptr<BlocksEngine::MainDispatchQueue> pMainDispatch_{};
     void Tick() noexcept;
     void Update();
     void Render() const;

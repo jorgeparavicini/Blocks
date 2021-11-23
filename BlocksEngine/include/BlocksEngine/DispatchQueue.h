@@ -20,7 +20,7 @@ namespace BlocksEngine
     class DispatchQueue;
 }
 
-class BlocksEngine::DispatchQueue final : BaseDispatchQueue
+class BlocksEngine::DispatchQueue final : public BaseDispatchQueue
 {
 public:
     //------------------------------------------------------------------------------
@@ -53,13 +53,13 @@ public:
     // Global Queues
     //------------------------------------------------------------------------------
 
-    static DispatchQueue& Background();
+    static std::shared_ptr<DispatchQueue> Background();
 
     //------------------------------------------------------------------------------
     // Methods
     //------------------------------------------------------------------------------
 
-    void Async(std::function<void()> workItem) override;
+    void Async(std::shared_ptr<DispatchWorkItem> workItem) override;
 
 
 private:

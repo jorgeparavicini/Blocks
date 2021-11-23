@@ -10,7 +10,7 @@ using namespace BlocksEngine;
 
 Game::Game(std::unique_ptr<WindowOptions> options)
     : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))},
-      pMainDispatch_{std::make_unique<BlocksEngine::MainDispatchQueue>()}
+      pMainDispatch_{std::make_shared<BlocksEngine::MainDispatchQueue>()}
 {
     // TODO: Catch potential error
     // TODO: If we do this here, only one game could be created.
@@ -132,9 +132,9 @@ const Time& Game::Time() const noexcept
     return time_;
 }
 
-BaseDispatchQueue& Game::MainDispatchQueue() const noexcept
+std::shared_ptr<BaseDispatchQueue> Game::MainDispatchQueue() const noexcept
 {
-    return *pMainDispatch_;
+    return pMainDispatch_;
 }
 
 std::shared_ptr<Actor> Game::AddActor()

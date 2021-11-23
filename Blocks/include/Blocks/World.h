@@ -10,6 +10,7 @@
 #pragma once
 #include <cstdint>
 #include <mutex>
+#include <queue>
 #include <unordered_map>
 #include <unordered_set>
 #include <boost/container_hash/hash.hpp>
@@ -17,6 +18,7 @@
 #include "Chunk.h"
 #include "LoadingScreen.h"
 #include "BlocksEngine/Component.h"
+#include "BlocksEngine/DispatchWorkGroup.h"
 #include "BlocksEngine/Transform.h"
 
 namespace Blocks
@@ -63,7 +65,10 @@ private:
     uint8_t chunkViewDistance_;
     std::unordered_map<Chunk::ChunkCoords, std::shared_ptr<Chunk>, ChunkHash> chunkMap_{};
     std::unordered_set<Chunk::ChunkCoords, ChunkHash> generatingChunks_{};
-    std::unordered_set<Chunk::ChunkCoords, ChunkHash> meshingChunks_{};
+    //std::unordered_set<Chunk::ChunkCoords, ChunkHash> meshingChunks_{};
+    std::queue<Chunk::ChunkCoords> meshRequestQueue_{};
+    int chunkMeshingCount_{};
+    bool didLoad_{false};
 
     // These are probably temporary variables. They track where the player is and whether chunks need to be updated.
     std::weak_ptr<BlocksEngine::Transform> playerTransform_;
@@ -88,12 +93,6 @@ private:
     std::shared_ptr<Chunk> CreateChunk(Chunk::ChunkCoords coords);
 
     /**
-     * \brief Creates a chunk generation request for a given chunk and notifies the world once the chunk has been generated.
-     * \param chunk The chunk to be initialized
-     */
-    void InitializeChunk(std::shared_ptr<Chunk> chunk);
-
-    /**
      * \brief Generates all blocks for a given chunk and initializes said chunk.
      * \param chunk The uninitialized Chunk to be initialized.
      * \return A list of all blocks in the chunk
@@ -101,11 +100,12 @@ private:
      */
     [[nodiscard]] std::vector<uint8_t> GenerateChunk(std::shared_ptr<Chunk> chunk) const;
 
-    void OnChunkGenerated(std::shared_ptr<Chunk> chunk);
-
     void OnWorldGenerated();
 
     void OnWorldLoaded() const;
+
+    std::shared_ptr<BlocksEngine::DispatchWorkGroup> CreateMeshRequestForChunks(
+        std::vector<std::shared_ptr<Chunk>> chunks) const;
 
     void UpdateChunks();
 

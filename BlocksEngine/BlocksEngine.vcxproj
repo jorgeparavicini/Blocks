@@ -72,12 +72,18 @@
     <ClInclude Include="include\BlocksEngine\DispatchQueue.h" />
     <ClInclude Include="include\BlocksEngine\BaseDispatchQueue.h" />
     <ClInclude Include="include\BlocksEngine\MainDispatchQueue.h" />
+    <ClInclude Include="include\BlocksEngine\DispatchWorkItem.h" />
+    <ClInclude Include="include\BlocksEngine\DispatchWorkGroup.h" />
+    <ClInclude Include="include\BlocksEngine\DispatchObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Actor.cpp" />
     <ClCompile Include="src\Core\Components\Component.cpp" />
     <ClCompile Include="src\Core\Components\Renderer.cpp" />
     <ClCompile Include="src\Core\Dispatch\BaseDispatchQueue.cpp" />
+    <ClCompile Include="src\Core\Dispatch\DispatchObject.cpp" />
+    <ClCompile Include="src\Core\Dispatch\DispatchWorkGroup.cpp" />
+    <ClCompile Include="src\Core\Dispatch\DispatchWorkItem.cpp" />
     <ClCompile Include="src\Core\Dispatch\MainDispatcher.cpp" />
     <ClCompile Include="src\Core\Input\Keyboard.cpp" />
     <ClCompile Include="src\Core\Input\Mouse.cpp" />
