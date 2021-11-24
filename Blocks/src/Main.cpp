@@ -7,9 +7,9 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
-#include "Blocks/World.h"
-#include "BlocksEngine/Exception.h"
-#include "BlocksEngine/Game.h"
+#include "Blocks/World/World.h"
+#include "BlocksEngine/Exceptions/Exception.h"
+#include "BlocksEngine/Main/Game.h"
 
 void SetupLogging()
 {

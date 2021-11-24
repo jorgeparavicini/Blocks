@@ -51,12 +51,12 @@
 #include <Windows.h>
 #include <wrl/client.h>
 
-#include "BlocksEngine/Matrix.h"
-#include "BlocksEngine/Plane.h"
-#include "BlocksEngine/Quaternion.h"
-#include "BlocksEngine/Vector3.h"
-#include "BlocksEngine/Vector4.h"
-#include "BlocksEngine/Vector2.h"
+#include "BlocksEngine/Core/Math/Matrix.h"
+#include "BlocksEngine/Core/Math/Plane.h"
+#include "BlocksEngine/Core/Math/Quaternion.h"
+#include "BlocksEngine/Core/Math/Vector2.h"
+#include "BlocksEngine/Core/Math/Vector3.h"
+#include "BlocksEngine/Core/Math/Vector4.h"
 
 namespace BlocksEngine::Com
 {

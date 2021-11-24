@@ -18,22 +18,19 @@
     <ClInclude Include="include\Blocks\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Blocks\Block.h">
+    <ClInclude Include="include\Blocks\World\Block.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Blocks\Chunk.h">
+    <ClInclude Include="include\Blocks\World\Chunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Blocks\World.h">
+    <ClInclude Include="include\Blocks\World\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Blocks\BlockRegistry.h">
+    <ClInclude Include="include\Blocks\World\BlockRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Blocks\ChunkAction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Blocks\LoadingScreen.h">
+    <ClInclude Include="include\Blocks\World\LoadingScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

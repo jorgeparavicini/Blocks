@@ -1,5 +1,5 @@
 ﻿#include "Blocks/pch.h"
-#include "Blocks/Block.h"
+#include "Blocks/World/Block.h"
 
 Blocks::Block::Block(const uint8_t id, std::array<uint8_t, 6> textures, const bool isSeeThrough) noexcept
     : id_{id},

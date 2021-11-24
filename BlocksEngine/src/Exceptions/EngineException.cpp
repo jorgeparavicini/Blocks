@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/EngineException.h"
+#include "BlocksEngine/Exceptions/EngineException.h"
 
 #include <sstream>
 

@@ -1,7 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
 
-#include "BlocksEngine/EngineException.h"
-#include "BlocksEngine/MainDispatchQueue.h"
+#include "BlocksEngine/Core/Dispatch/MainDispatchQueue.h"
+#include "BlocksEngine/Exceptions/EngineException.h"
 
 BlocksEngine::MainDispatchQueue::MainDispatchQueue()
     : mainThreadId_{std::this_thread::get_id()}

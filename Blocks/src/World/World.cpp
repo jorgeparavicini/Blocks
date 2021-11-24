@@ -1,13 +1,13 @@
 ﻿#include "Blocks/pch.h"
-#include "Blocks/World.h"
+#include "Blocks/World/World.h"
 
 #include <shared_mutex>
 #include <boost/log/trivial.hpp>
 
-#include "BlocksEngine/Actor.h"
-#include "BlocksEngine/DispatchQueue.h"
-#include "BlocksEngine/DispatchWorkGroup.h"
-#include "BlocksEngine/Game.h"
+#include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
+#include "BlocksEngine/Core/Dispatch/DispatchWorkGroup.h"
+#include "BlocksEngine/Main/Game.h"
 
 using namespace Blocks;
 using namespace BlocksEngine;

@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Keyboard.h"
+#include "BlocksEngine/Core/Input/Keyboard.h"
 
 using namespace BlocksEngine;
 

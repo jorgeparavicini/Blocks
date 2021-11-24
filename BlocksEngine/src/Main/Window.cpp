@@ -1,10 +1,12 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Window.h"
+#include "BlocksEngine/Main/Window.h"
 
 #include <Windows.h>
 #include <wingdi.h>
 
-#include "BlocksEngine/WindowException.h"
+#include "BlocksEngine/Exceptions/WindowException.h"
+#include "BlocksEngine/Graphics/Graphics.h"
+#include "BlocksEngine/Main/WindowOptions.h"
 
 BlocksEngine::Window::Window(std::unique_ptr<WindowOptions> options,
                              const std::wstring name,
@@ -148,7 +150,7 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
 {
     switch (uMsg)
     {
-        /************* Mouse Messages **************/
+    /************* Mouse Messages **************/
 
     case WM_MOUSEMOVE:
         {
@@ -226,9 +228,9 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
             break;
         }
 
-        /*********** End Mouse Messages ************/
+    /*********** End Mouse Messages ************/
 
-        /************ Keyboard Messages ************/
+    /************ Keyboard Messages ************/
 
     case WM_KEYDOWN:
         if (!(lParam & 0x40000000) || pKeyboard_->IsAutorepeatEnabled())
@@ -279,7 +281,7 @@ LRESULT BlocksEngine::Window::WindowProc(HWND hWnd, const UINT uMsg, const WPARA
         pKeyboard_->OnChar(static_cast<char>(wParam));
         break;
 
-        /********** End Keyboard Messages **********/
+    /********** End Keyboard Messages **********/
 
     case WM_DESTROY:
         PostQuitMessage(0);

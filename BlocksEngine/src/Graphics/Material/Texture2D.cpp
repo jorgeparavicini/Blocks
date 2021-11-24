@@ -1,18 +1,18 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Texture2D.h"
+#include "BlocksEngine/Graphics/Material/Texture2D.h"
 
 #include <DDSTextureLoader.h>
 
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/GraphicsException.h"
-#include "BlocksEngine/WICTextureLoader.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/EngineException.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 BlocksEngine::Texture2D::Texture2D(const Graphics& gfx, const std::wstring fileName)
 {
-    HRESULT hr;
+    // HRESULT hr;
 
-    GFX_THROW_INFO(
-        CreateWICTextureFromFile(&gfx.GetDevice(), &gfx.GetContext(), fileName.c_str(), nullptr, &pTextureView_));
+    throw ENGINE_EXCEPTION("Not implemented");
+    //GFX_THROW_INFO(CreateWICTextureFromFile(&gfx.GetDevice(), &gfx.GetContext(), fileName.c_str(), nullptr, &pTextureView_));
 }
 
 BlocksEngine::Texture2D::Texture2D(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView)

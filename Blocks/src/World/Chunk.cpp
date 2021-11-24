@@ -1,14 +1,14 @@
 ﻿#include "Blocks/pch.h"
-#include "Blocks/Chunk.h"
+#include "Blocks/World/Chunk.h"
 
-#include "Blocks/BlockRegistry.h"
-#include "Blocks/World.h"
-#include "BlocksEngine/Albedo.h"
-#include "BlocksEngine/DispatchQueue.h"
-#include "BlocksEngine/Game.h"
-#include "BlocksEngine/Renderer.h"
-#include "BlocksEngine/Terrain.h"
-#include "BlocksEngine/Vector3.h"
+#include "Blocks/World/BlockRegistry.h"
+#include "Blocks/World/World.h"
+#include "BlocksEngine/Core/Components/Renderer.h"
+#include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
+#include "BlocksEngine/Core/Math/Vector3.h"
+#include "BlocksEngine/Core/Math/Vertex.h"
+#include "BlocksEngine/Graphics/Material/Terrain/Terrain.h"
+#include "BlocksEngine/Main/Game.h"
 
 using namespace Blocks;
 using namespace BlocksEngine;

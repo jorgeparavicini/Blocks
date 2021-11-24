@@ -1,7 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Component.h"
+#include "BlocksEngine/Core/Components/Component.h"
 
-#include "BlocksEngine/Actor.h"
+#include "BlocksEngine/Core/Actor.h"
 
 using namespace BlocksEngine;
 

@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Vector4.h"
+#include "BlocksEngine/Core/Math/Vector4.h"
 
 using namespace DirectX;
 using namespace BlocksEngine;

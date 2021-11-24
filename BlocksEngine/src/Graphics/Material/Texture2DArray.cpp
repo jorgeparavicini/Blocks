@@ -1,11 +1,10 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Texture2DArray.h"
+#include "BlocksEngine/Graphics/Material/Texture2DArray.h"
 
 #include <DDSTextureLoader.h>
 
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/GraphicsException.h"
-#include "BlocksEngine/WICTextureLoader.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/EngineException.h"
 
 using namespace BlocksEngine;
 
@@ -13,11 +12,11 @@ Texture2DArray::Texture2DArray(const Graphics& gfx, const std::vector<std::wstri
 {
     std::vector<ID3D11ShaderResourceView*> textures(fileNames.size());
 
-    HRESULT hr;
+    throw ENGINE_EXCEPTION("Not Implemented");
+    //HRESULT hr;
     for (int i = 0; i < fileNames.size(); ++i)
     {
-        GFX_THROW_INFO(
-            CreateWICTextureFromFile(&gfx.GetDevice(), &gfx.GetContext(), fileNames[i].c_str(), nullptr, &textures[i]));
+        //GFX_THROW_INFO(CreateWICTextureFromFile(&gfx.GetDevice(), &gfx.GetContext(), fileNames[i].c_str(), nullptr, &textures[i]));
     }
 
     ppTextureViews_ = std::move(textures);

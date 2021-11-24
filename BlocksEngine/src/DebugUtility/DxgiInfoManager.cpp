@@ -1,9 +1,9 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/DxgiInfoManager.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
 
-#include <BlocksEngine/WindowException.h>
+#include <BlocksEngine/Exceptions/WindowException.h>
 
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 #pragma comment(lib, "dxguid.lib")
 

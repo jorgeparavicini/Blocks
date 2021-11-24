@@ -1,9 +1,9 @@
 ﻿#include "Blocks/pch.h"
-#include "Blocks/LoadingScreen.h"
+#include "Blocks/World/LoadingScreen.h"
 
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/Game.h"
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
+#include "BlocksEngine/Main/Game.h"
 
 using namespace BlocksEngine;
 using namespace Blocks;

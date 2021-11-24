@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Math.h"
+#include "BlocksEngine/Core/Math/Math.h"
 
 using namespace BlocksEngine;
 

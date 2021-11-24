@@ -1,10 +1,10 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/PixelShader.h"
+#include "BlocksEngine/Graphics/Material/PixelShader.h"
 
 #include <d3dcompiler.h>
 
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 #pragma comment(lib, "D3DCompiler.lib")
 

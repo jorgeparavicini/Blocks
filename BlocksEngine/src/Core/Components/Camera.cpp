@@ -1,9 +1,10 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Camera.h"
+#include "BlocksEngine/Core/Components/Camera.h"
 
 #include <boost/bind.hpp>
 
-#include "BlocksEngine/Game.h"
+#include "BlocksEngine/Core/Input/Keyboard.h"
+#include "BlocksEngine/Main/Game.h"
 
 using namespace BlocksEngine;
 

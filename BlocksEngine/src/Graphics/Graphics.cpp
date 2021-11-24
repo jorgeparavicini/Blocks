@@ -1,11 +1,11 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Graphics.h"
+#include "BlocksEngine/Graphics/Graphics.h"
 
 #include <d2d1.h>
 #include <dwrite.h>
 
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d2d1.lib")

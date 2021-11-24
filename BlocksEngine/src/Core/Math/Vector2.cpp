@@ -1,9 +1,9 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Vector2.h"
+#include "BlocksEngine/Core/Math/Vector2.h"
 
 #include <boost/container_hash/hash.hpp>
 
-#include "BlocksEngine/Quaternion.h"
+#include "BlocksEngine/Core/Math/Quaternion.h"
 
 using namespace BlocksEngine;
 using namespace DirectX;

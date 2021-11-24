@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/VertexBuffer.h"
+#include "BlocksEngine/Graphics/Mesh/VertexBuffer.h"
 
 void BlocksEngine::VertexBuffer::Bind(const Graphics& gfx) noexcept
 {

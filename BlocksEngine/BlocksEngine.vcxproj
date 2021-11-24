@@ -19,62 +19,61 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\BlocksEngine\ConstantBuffer.h" />
-    <ClInclude Include="include\BlocksEngine\ConstantBufferBase.h" />
-    <ClInclude Include="include\BlocksEngine\Exception.h" />
-    <ClInclude Include="include\BlocksEngine\GraphicsException.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\ConstantBufferBase.h" />
+    <ClInclude Include="include\BlocksEngine\Exceptions\Exception.h" />
+    <ClInclude Include="include\BlocksEngine\Exceptions\GraphicsException.h" />
     <ClInclude Include="include\BlocksEngine\pch.h" />
-    <ClInclude Include="include\BlocksEngine\PixelConstantBuffers.h" />
-    <ClInclude Include="include\BlocksEngine\VertexConstantBuffer.h" />
-    <ClInclude Include="include\BlocksEngine\WICTextureLoader.h" />
-    <ClInclude Include="include\BlocksEngine\Window.h" />
-    <ClInclude Include="include\BlocksEngine\WindowClass.h" />
-    <ClInclude Include="include\BlocksEngine\WindowException.h" />
-    <ClInclude Include="include\BlocksEngine\WindowOptions.h" />
-    <ClInclude Include="include\BlocksEngine\DxgiInfoManager.h" />
-    <ClInclude Include="include\BlocksEngine\DxgiInfoException.h" />
-    <ClInclude Include="include\BlocksEngine\DeviceRemovedException.h" />
-    <ClInclude Include="include\BlocksEngine\Graphics.h" />
-    <ClInclude Include="include\BlocksEngine\Game.h" />
-    <ClInclude Include="include\BlocksEngine\Bindable.h" />
-    <ClInclude Include="include\BlocksEngine\VertexShader.h" />
-    <ClInclude Include="include\BlocksEngine\PixelShader.h" />
-    <ClInclude Include="include\BlocksEngine\InputLayout.h" />
-    <ClInclude Include="include\BlocksEngine\Material.h" />
-    <ClInclude Include="include\BlocksEngine\VertexBuffer.h" />
-    <ClInclude Include="include\BlocksEngine\IndexBuffer.h" />
-    <ClInclude Include="include\BlocksEngine\Topology.h" />
-    <ClInclude Include="include\BlocksEngine\Mesh.h" />
-    <ClInclude Include="include\BlocksEngine\SolidColor.h" />
-    <ClInclude Include="include\BlocksEngine\Vertex.h" />
-    <ClInclude Include="include\BlocksEngine\Transform.h" />
-    <ClInclude Include="include\BlocksEngine\Actor.h" />
-    <ClInclude Include="include\BlocksEngine\Camera.h" />
-    <ClInclude Include="include\BlocksEngine\Component.h" />
-    <ClInclude Include="include\BlocksEngine\Renderer.h" />
-    <ClInclude Include="include\BlocksEngine\EngineException.h" />
-    <ClInclude Include="include\BlocksEngine\Mouse.h" />
-    <ClInclude Include="include\BlocksEngine\Keyboard.h" />
-    <ClInclude Include="include\BlocksEngine\Vector3.h" />
-    <ClInclude Include="include\BlocksEngine\Quaternion.h" />
-    <ClInclude Include="include\BlocksEngine\Matrix.h" />
-    <ClInclude Include="include\BlocksEngine\Vector4.h" />
-    <ClInclude Include="include\BlocksEngine\Vector2.h" />
-    <ClInclude Include="include\BlocksEngine\Plane.h" />
-    <ClInclude Include="include\BlocksEngine\Math.h" />
-    <ClInclude Include="include\BlocksEngine\Time.h" />
-    <ClInclude Include="include\BlocksEngine\BufferException.h" />
-    <ClInclude Include="include\BlocksEngine\Texture2D.h" />
-    <ClInclude Include="include\BlocksEngine\Albedo.h" />
-    <ClInclude Include="include\BlocksEngine\Sampler.h" />
-    <ClInclude Include="include\BlocksEngine\Terrain.h" />
-    <ClInclude Include="include\BlocksEngine\Texture2DArray.h" />
-    <ClInclude Include="include\BlocksEngine\DispatchQueue.h" />
-    <ClInclude Include="include\BlocksEngine\BaseDispatchQueue.h" />
-    <ClInclude Include="include\BlocksEngine\MainDispatchQueue.h" />
-    <ClInclude Include="include\BlocksEngine\DispatchWorkItem.h" />
-    <ClInclude Include="include\BlocksEngine\DispatchWorkGroup.h" />
-    <ClInclude Include="include\BlocksEngine\DispatchObject.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\PixelConstantBuffers.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\VertexConstantBuffer.h" />
+    <ClInclude Include="include\BlocksEngine\Main\Window.h" />
+    <ClInclude Include="include\BlocksEngine\Main\WindowClass.h" />
+    <ClInclude Include="include\BlocksEngine\Exceptions\WindowException.h" />
+    <ClInclude Include="include\BlocksEngine\Main\WindowOptions.h" />
+    <ClInclude Include="include\BlocksEngine\DebugUtility\DxgiInfoManager.h" />
+    <ClInclude Include="include\BlocksEngine\Exceptions\DxgiInfoException.h" />
+    <ClInclude Include="include\BlocksEngine\Exceptions\DeviceRemovedException.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Graphics.h" />
+    <ClInclude Include="include\BlocksEngine\Main\Game.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Bindable.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\VertexShader.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\PixelShader.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\InputLayout.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Material.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\VertexBuffer.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\IndexBuffer.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\Topology.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\Mesh.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\SolidColor\SolidColor.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Vertex.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Transform.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Actor.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Components\Camera.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Components\Component.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Components\Renderer.h" />
+    <ClInclude Include="include\BlocksEngine\Exceptions\EngineException.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Input\Mouse.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Input\Keyboard.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Vector3.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Quaternion.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Matrix.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Vector4.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Vector2.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Plane.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Math.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Time.h" />
+    <ClInclude Include="include\BlocksEngine\Exceptions\BufferException.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Texture2D.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Albedo\Albedo.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Sampler.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Terrain\Terrain.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Texture2DArray.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchQueue.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\BaseDispatchQueue.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\MainDispatchQueue.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkItem.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkGroup.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Actor.cpp" />
@@ -99,14 +98,23 @@
     <ClCompile Include="src\Exceptions\BufferException.cpp" />
     <ClCompile Include="src\Exceptions\EngineException.cpp" />
     <ClCompile Include="src\Core\Components\Camera.cpp" />
+    <ClCompile Include="src\Graphics\Bindable.cpp" />
+    <ClCompile Include="src\Graphics\Graphics.cpp" />
     <ClCompile Include="src\Graphics\Material\Albedo\Albedo.cpp" />
     <ClCompile Include="src\Graphics\Material\ConstantBuffer.cpp" />
-    <ClCompile Include="src\Graphics\Graphics.cpp" />
+    <ClCompile Include="src\Graphics\Material\InputLayout.cpp" />
+    <ClCompile Include="src\Graphics\Material\Material.cpp" />
+    <ClCompile Include="src\Graphics\Material\PixelShader.cpp" />
     <ClCompile Include="src\Graphics\Material\Sampler.cpp" />
+    <ClCompile Include="src\Graphics\Material\SolidColor\SolidColor.cpp" />
     <ClCompile Include="src\Graphics\Material\Terrain\Terrain.cpp" />
     <ClCompile Include="src\Graphics\Material\Texture2D.cpp" />
     <ClCompile Include="src\Graphics\Material\Texture2DArray.cpp" />
-    <ClCompile Include="src\Graphics\WICTextureLoader.cpp" />
+    <ClCompile Include="src\Graphics\Material\VertexShader.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\IndexBuffer.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\Mesh.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\Topology.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\VertexBuffer.cpp" />
     <ClCompile Include="src\Main\Window.cpp" />
     <ClCompile Include="src\Main\WindowClass.cpp" />
     <ClCompile Include="src\DebugUtility\DxgiInfoManager.cpp" />
@@ -116,16 +124,6 @@
     <ClCompile Include="src\Main\Game.cpp" />
     <ClCompile Include="src\Exceptions\GraphicsException.cpp" />
     <ClCompile Include="src\Exceptions\WindowException.cpp" />
-    <ClCompile Include="src\Graphics\Bindable.cpp" />
-    <ClCompile Include="src\Graphics\Material\InputLayout.cpp" />
-    <ClCompile Include="src\Graphics\Material\Material.cpp" />
-    <ClCompile Include="src\Graphics\Material\PixelShader.cpp" />
-    <ClCompile Include="src\Graphics\Material\SolidColor\SolidColor.cpp" />
-    <ClCompile Include="src\Graphics\Mesh\IndexBuffer.cpp" />
-    <ClCompile Include="src\Graphics\Mesh\Mesh.cpp" />
-    <ClCompile Include="src\Graphics\Mesh\Topology.cpp" />
-    <ClCompile Include="src\Graphics\Mesh\VertexBuffer.cpp" />
-    <ClCompile Include="src\Graphics\Material\VertexShader.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -145,56 +143,22 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoPS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType>Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
+      <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ShaderType>Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="src\Graphics\Material\Terrain\TerrainPS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ShaderType>Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="src\Graphics\Material\Terrain\TerrainVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType>Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,8 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/InputLayout.h"
+#include "BlocksEngine/Graphics/Material/InputLayout.h"
 
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 BlocksEngine::InputLayout::InputLayout(const Graphics& gfx, const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout,
                                        ID3DBlob* pVertexShaderByteCode)

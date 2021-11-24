@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Time.h"
+#include "BlocksEngine/Core/Time.h"
 
 BlocksEngine::Time::Time() noexcept(false)
     : deltaTicks_{0},

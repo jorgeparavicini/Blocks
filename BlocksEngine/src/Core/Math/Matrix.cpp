@@ -1,10 +1,10 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Matrix.h"
+#include "BlocksEngine/Core/Math/Matrix.h"
 
 #include <DirectXMath.h>
 
-#include "BlocksEngine/Plane.h"
-#include "BlocksEngine/Vector3.h"
+#include "BlocksEngine/Core/Math/Plane.h"
+#include "BlocksEngine/Core/Math/Vector3.h"
 
 using namespace BlocksEngine;
 using namespace DirectX;

@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Vector3.h"
+#include "BlocksEngine/Core/Math/Vector3.h"
 
 #include <boost/container_hash/hash.hpp>
 

@@ -1,8 +1,8 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Sampler.h"
+#include "BlocksEngine/Graphics/Material/Sampler.h"
 
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 BlocksEngine::Sampler::Sampler(const Graphics& gfx)
 {

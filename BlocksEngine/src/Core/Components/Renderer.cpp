@@ -1,11 +1,11 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Renderer.h"
+#include "BlocksEngine/Core/Components/Renderer.h"
 
 #include <DirectXMath.h>
 
-#include "BlocksEngine/Actor.h"
-#include "BlocksEngine/Game.h"
-#include "BlocksEngine/SolidColor.h"
+#include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Graphics/Material/SolidColor/SolidColor.h"
+#include "BlocksEngine/Main/Game.h"
 
 using namespace BlocksEngine;
 

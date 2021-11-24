@@ -1,5 +1,7 @@
 ﻿#include "Blocks/pch.h"
-#include "Blocks/BlockRegistry.h"
+#include "Blocks/World/BlockRegistry.h"
+
+#include "Blocks/World/Block.h"
 
 const Blocks::Block& Blocks::BlockRegistry::GetBlock(const uint8_t blockId)
 {

@@ -16,6 +16,7 @@
     </ClCompile>
     <FxCompile>
       <ObjectFileOutput>$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel>4.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup />

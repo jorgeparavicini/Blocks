@@ -1,9 +1,9 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/IndexBuffer.h"
+#include "BlocksEngine/Graphics/Mesh/IndexBuffer.h"
 
-#include "BlocksEngine/BufferException.h"
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/BufferException.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 // TODO: THIS REALLY NEEDS SOME UNIT TESTING
 

@@ -1,7 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/DispatchObject.h"
+#include "BlocksEngine/Core/Dispatch/DispatchObject.h"
 
-#include "BlocksEngine/BaseDispatchQueue.h"
+#include "BlocksEngine/Core/Dispatch/BaseDispatchQueue.h"
 
 using namespace BlocksEngine;
 

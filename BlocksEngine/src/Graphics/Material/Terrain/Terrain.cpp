@@ -1,7 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Terrain.h"
+#include "BlocksEngine/Graphics/Material/Terrain/Terrain.h"
 
-#include "BlocksEngine/Albedo.h"
+#include "BlocksEngine/Graphics/Material/Albedo/Albedo.h"
 
 using namespace BlocksEngine;
 

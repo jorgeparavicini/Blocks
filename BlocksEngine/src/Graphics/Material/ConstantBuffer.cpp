@@ -1,4 +1,4 @@
 #include "BlocksEngine/pch.h"
-#include "BlocksEngine/ConstantBuffer.h"
+#include "BlocksEngine/Graphics/Material/ConstantBuffer.h"
 
 using namespace BlocksEngine;

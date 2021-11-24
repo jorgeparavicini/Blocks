@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 #include <sstream>
 

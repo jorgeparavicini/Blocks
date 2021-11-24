@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/DeviceRemovedException.h"
+#include "BlocksEngine/Exceptions/DeviceRemovedException.h"
 
 BlocksEngine::DeviceRemovedException::DeviceRemovedException(const int line, const char* file, HRESULT hr,
                                                              const std::vector<std::string>& basicStrings):

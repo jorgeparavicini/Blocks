@@ -1,8 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Albedo.h"
+#include "BlocksEngine/Graphics/Material/Albedo/Albedo.h"
 
-#include "BlocksEngine/Sampler.h"
-#include "BlocksEngine/WICTextureLoader.h"
+#include "BlocksEngine/Graphics/Material/Sampler.h"
 
 using namespace BlocksEngine;
 

@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/DispatchWorkItem.h"
+#include "BlocksEngine/Core/Dispatch/DispatchWorkItem.h"
 
 BlocksEngine::DispatchWorkItem::DispatchWorkItem(WorkOperation operation)
     : operation_{operation}

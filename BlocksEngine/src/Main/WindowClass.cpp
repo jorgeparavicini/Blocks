@@ -1,7 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/WindowClass.h"
+#include "BlocksEngine/Main/WindowClass.h"
 
-#include "BlocksEngine/WindowOptions.h"
+#include "BlocksEngine/Main/WindowOptions.h"
 
 BlocksEngine::Internal::WindowClass::WindowClass(const std::wstring name,
                                                  std::unique_ptr<WindowOptions> options,

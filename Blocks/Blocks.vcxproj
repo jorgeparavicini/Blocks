@@ -171,13 +171,12 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Blocks\Chunk.h" />
-    <ClInclude Include="include\Blocks\ChunkAction.h" />
+    <ClInclude Include="include\Blocks\World\Chunk.h" />
     <ClInclude Include="include\Blocks\pch.h" />
-    <ClInclude Include="include\Blocks\Block.h" />
-    <ClInclude Include="include\Blocks\World.h" />
-    <ClInclude Include="include\Blocks\BlockRegistry.h" />
-    <ClInclude Include="include\Blocks\LoadingScreen.h" />
+    <ClInclude Include="include\Blocks\World\Block.h" />
+    <ClInclude Include="include\Blocks\World\World.h" />
+    <ClInclude Include="include\Blocks\World\BlockRegistry.h" />
+    <ClInclude Include="include\Blocks\World\LoadingScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\World\BlockRegistry.cpp" />

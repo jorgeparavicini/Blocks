@@ -1,10 +1,10 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/VertexShader.h"
+#include "BlocksEngine/Graphics/Material/VertexShader.h"
 
 #include <d3dcompiler.h>
 
-#include "BlocksEngine/DxgiInfoManager.h"
-#include "BlocksEngine/GraphicsException.h"
+#include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
+#include "BlocksEngine/Exceptions/GraphicsException.h"
 
 BlocksEngine::VertexShader::VertexShader(const Graphics& gfx, const std::wstring& path)
 {

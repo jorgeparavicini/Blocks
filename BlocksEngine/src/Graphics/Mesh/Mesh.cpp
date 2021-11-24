@@ -1,7 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Mesh.h"
+#include "BlocksEngine/Graphics/Mesh/Mesh.h"
 
-#include "BlocksEngine/Vertex.h"
+#include "BlocksEngine/Core/Math/Vertex.h"
 
 
 BlocksEngine::Mesh::Mesh(const Graphics& gfx)

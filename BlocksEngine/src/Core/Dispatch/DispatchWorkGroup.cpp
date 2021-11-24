@@ -1,7 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/DispatchWorkGroup.h"
+#include "BlocksEngine/Core/Dispatch/DispatchWorkGroup.h"
 
-#include "BlocksEngine/DispatchQueue.h"
+#include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
 
 using namespace BlocksEngine;
 

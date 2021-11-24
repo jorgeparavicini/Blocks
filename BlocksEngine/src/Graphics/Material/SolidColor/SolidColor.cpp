@@ -1,5 +1,7 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/SolidColor.h"
+#include "BlocksEngine/Graphics/Material/SolidColor/SolidColor.h"
+
+#include <vector>
 
 
 using namespace BlocksEngine;

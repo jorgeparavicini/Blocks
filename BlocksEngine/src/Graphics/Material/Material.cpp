@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Material.h"
+#include "BlocksEngine/Graphics/Material/Material.h"
 
 // TODO: This needs to be reworked to allow more flexibility
 // Currently if we make a material and share that for multiple objects,

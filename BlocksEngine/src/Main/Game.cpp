@@ -1,10 +1,10 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Game.h"
+#include "BlocksEngine/Main/Game.h"
 
-#include "BlocksEngine/Actor.h"
-#include "BlocksEngine/Camera.h"
-#include "BlocksEngine/EngineException.h"
-#include "BlocksEngine/Renderer.h"
+#include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Core/Components/Camera.h"
+#include "BlocksEngine/Core/Components/Renderer.h"
+#include "BlocksEngine/Exceptions/EngineException.h"
 
 using namespace BlocksEngine;
 

@@ -1,9 +1,9 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Quaternion.h"
+#include "BlocksEngine/Core/Math/Quaternion.h"
 
 #include <sstream>
 
-#include "BlocksEngine/Math.h"
+#include "BlocksEngine/Core/Math/Math.h"
 
 using namespace BlocksEngine;
 using namespace DirectX;

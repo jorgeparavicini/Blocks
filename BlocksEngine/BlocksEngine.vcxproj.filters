@@ -18,169 +18,166 @@
     <ClInclude Include="include\BlocksEngine\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Window.h">
+    <ClInclude Include="include\BlocksEngine\Main\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\WindowOptions.h">
+    <ClInclude Include="include\BlocksEngine\Main\WindowOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Exception.h">
+    <ClInclude Include="include\BlocksEngine\Exceptions\Exception.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\GraphicsException.h">
+    <ClInclude Include="include\BlocksEngine\Exceptions\GraphicsException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\WindowException.h">
+    <ClInclude Include="include\BlocksEngine\Exceptions\WindowException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\WindowClass.h">
+    <ClInclude Include="include\BlocksEngine\Main\WindowClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\DxgiInfoManager.h">
+    <ClInclude Include="include\BlocksEngine\DebugUtility\DxgiInfoManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\DxgiInfoException.h">
+    <ClInclude Include="include\BlocksEngine\Exceptions\DxgiInfoException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\DeviceRemovedException.h">
+    <ClInclude Include="include\BlocksEngine\Exceptions\DeviceRemovedException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Graphics.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Game.h">
+    <ClInclude Include="include\BlocksEngine\Main\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Bindable.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Bindable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\VertexShader.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\VertexShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\PixelShader.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\PixelShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\InputLayout.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\InputLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\ConstantBuffer.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\VertexConstantBuffer.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\VertexConstantBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\PixelConstantBuffers.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\PixelConstantBuffers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Material.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\VertexBuffer.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\VertexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\IndexBuffer.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\IndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Topology.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\Topology.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Mesh.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\SolidColor.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\SolidColor\SolidColor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Vertex.h">
+    <ClInclude Include="include\BlocksEngine\Core\Math\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Transform.h">
+    <ClInclude Include="include\BlocksEngine\Core\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Actor.h">
+    <ClInclude Include="include\BlocksEngine\Core\Actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Camera.h">
+    <ClInclude Include="include\BlocksEngine\Core\Components\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Component.h">
+    <ClInclude Include="include\BlocksEngine\Core\Components\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Renderer.h">
+    <ClInclude Include="include\BlocksEngine\Core\Components\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\EngineException.h">
+    <ClInclude Include="include\BlocksEngine\Exceptions\EngineException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\ConstantBufferBase.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\ConstantBufferBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Mouse.h">
+    <ClInclude Include="include\BlocksEngine\Core\Input\Mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Keyboard.h">
+    <ClInclude Include="include\BlocksEngine\Core\Input\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Vector3.h">
+    <ClInclude Include="include\BlocksEngine\Core\Math\Vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Quaternion.h">
+    <ClInclude Include="include\BlocksEngine\Core\Math\Quaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Matrix.h">
+    <ClInclude Include="include\BlocksEngine\Core\Math\Matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Vector4.h">
+    <ClInclude Include="include\BlocksEngine\Core\Math\Vector4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Vector2.h">
+    <ClInclude Include="include\BlocksEngine\Core\Math\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Plane.h">
+    <ClInclude Include="include\BlocksEngine\Core\Math\Plane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Math.h">
+    <ClInclude Include="include\BlocksEngine\Core\Math\Math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Time.h">
+    <ClInclude Include="include\BlocksEngine\Core\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\BufferException.h">
+    <ClInclude Include="include\BlocksEngine\Exceptions\BufferException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\WICTextureLoader.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Texture2D.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Albedo\Albedo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Albedo.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Sampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Sampler.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Terrain\Terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Terrain.h">
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Texture2DArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Texture2DArray.h">
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\DispatchQueue.h">
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\BaseDispatchQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\BaseDispatchQueue.h">
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\MainDispatchQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\MainDispatchQueue.h">
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\DispatchWorkItem.h">
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\DispatchWorkGroup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BlocksEngine\DispatchObject.h">
+    <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -212,40 +209,40 @@
     <ClCompile Include="src\Exceptions\WindowException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Graphics.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Main\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Bindable.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Bindable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\VertexShader.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\VertexShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\PixelShader.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\PixelShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\InputLayout.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\InputLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\Material.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Mesh\VertexBuffer.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Mesh\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Mesh\IndexBuffer.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Mesh\IndexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Mesh\Topology.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Mesh\Topology.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Mesh\Mesh.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Mesh\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\SolidColor\SolidColor.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\SolidColor\SolidColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Transform.cpp">
@@ -266,7 +263,7 @@
     <ClCompile Include="src\Exceptions\EngineException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\ConstantBuffer.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\ConstantBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Input\Keyboard.cpp">
@@ -302,22 +299,19 @@
     <ClCompile Include="src\Exceptions\BufferException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\WICTextureLoader.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\Texture2D.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Albedo\Albedo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\Albedo\Albedo.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Sampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\Sampler.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Terrain\Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Material\Terrain\Terrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Graphics\Material\Texture2DArray.cpp">
+    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Texture2DArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Dispatch\DispatchQueue.cpp">
@@ -338,6 +332,57 @@
     <ClCompile Include="src\Core\Dispatch\DispatchObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\Bindable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Graphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Albedo\Albedo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\ConstantBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\InputLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\PixelShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Sampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\SolidColor\SolidColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Terrain\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Texture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\Texture2DArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Material\VertexShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Mesh\IndexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Mesh\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Mesh\Topology.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Mesh\VertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
@@ -345,12 +390,18 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\SolidColor\SolidColorPS.hlsl" />
+    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\SolidColor\SolidColorVS.hlsl" />
+    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Albedo\AlbedoVS.hlsl" />
+    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Albedo\AlbedoPS.hlsl" />
+    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Terrain\TerrainVS.hlsl" />
+    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Terrain\TerrainPS.hlsl" />
+    <FxCompile Include="src\Graphics\Material\Albedo\AlbedoPS.hlsl" />
+    <FxCompile Include="src\Graphics\Material\Albedo\AlbedoVS.hlsl" />
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl" />
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorVS.hlsl" />
-    <FxCompile Include="src\Graphics\Material\Albedo\AlbedoVS.hlsl" />
-    <FxCompile Include="src\Graphics\Material\Albedo\AlbedoPS.hlsl" />
-    <FxCompile Include="src\Graphics\Material\Terrain\TerrainVS.hlsl" />
     <FxCompile Include="src\Graphics\Material\Terrain\TerrainPS.hlsl" />
+    <FxCompile Include="src\Graphics\Material\Terrain\TerrainVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />

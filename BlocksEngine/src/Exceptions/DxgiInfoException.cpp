@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/DxgiInfoException.h"
+#include "BlocksEngine/Exceptions/DxgiInfoException.h"
 
 #include <sstream>
 

@@ -1,5 +1,5 @@
 ﻿#include "BlocksEngine/pch.h"
-#include "BlocksEngine/Mouse.h"
+#include "BlocksEngine/Core/Input/Mouse.h"
 
 using namespace BlocksEngine;
 
