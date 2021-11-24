@@ -52,8 +52,8 @@ Vector2<int> World::ChunkCoordFromPosition(
 const Block& World::GetBlock(const Vector3<int> position) const noexcept
 {
     const Chunk::ChunkCoords coords = ChunkCoordFromPosition(position);
-    const auto chunk = chunkMap_.find(coords);
-    if (chunk == chunkMap_.end())
+    const auto chunk = chunks_.find(coords);
+    if (chunk == chunks_.end())
     {
         return Block::Air;
     }
@@ -71,20 +71,8 @@ void World::GenerateWorld() noexcept
         for (int j = 0; j < chunkViewDistance_; j++)
         {
             const auto chunk = CreateChunk({i - chunkViewDistance_ / 2, j - chunkViewDistance_ / 2});
-            workGroup->AddWorkItem(std::make_shared<DispatchWorkItem>([this, chunk]
-            {
-                auto blocks = GenerateChunk(chunk);
-
-                BOOST_LOG_TRIVIAL(debug) << "Generating Chunk: " << chunk;
-
-                const auto workItem = std::make_shared<DispatchWorkItem>([chunk, blocks = move(blocks)]()
-                mutable
-                    {
-                        chunk->SetBlocks(std::move(blocks));
-                        BOOST_LOG_TRIVIAL(debug) << "Blocks assigned for chunk: " << chunk;
-                    });
-                GetGame()->MainDispatchQueue()->Async(workItem);
-            }), DispatchQueue::Background());
+            activeChunkCoords_.insert(chunk->GetCoords());
+            workGroup->AddWorkItem(CreateGenerationRequestForChunk(chunk), DispatchQueue::Background());
         }
     }
 
@@ -100,9 +88,9 @@ void World::OnWorldGenerated()
 {
     BOOST_LOG_TRIVIAL(info) << "World generated";
 
-    std::vector<std::shared_ptr<Chunk>> chunks(chunkMap_.size());
-    std::ranges::transform(chunkMap_, chunks.begin(), [](auto pair) { return pair.second; });
-    const auto meshRequestGroup = CreateMeshRequestForChunks(std::move(chunks));
+    std::vector<std::shared_ptr<Chunk>> chunks(chunks_.size());
+    std::ranges::transform(chunks_, chunks.begin(), [](auto pair) { return pair.second; });
+    const auto meshRequestGroup = CreateMeshRequestGroup(std::move(chunks));
 
     meshRequestGroup->AddCallback(GetGame()->MainDispatchQueue(), std::make_shared<DispatchWorkItem>([this]
     {
@@ -137,12 +125,32 @@ std::shared_ptr<Chunk> World::CreateChunk(Chunk::ChunkCoords coords)
     const std::shared_ptr<Actor> actor = GetGame()->AddActor(
         L"Chunk: " + std::to_wstring(coords.x) + L", " + std::to_wstring(coords.y));
     const std::shared_ptr<Chunk> chunk = actor->AddComponent<Chunk>(*this, coords);
-    chunkMap_[coords] = chunk;
+    chunks_[coords] = chunk;
 
     return chunk;
 }
 
-std::shared_ptr<DispatchWorkGroup> World::CreateMeshRequestForChunks(
+// TODO: Notify will get called before the blocks are assigned which is wrong
+std::shared_ptr<DispatchWorkItem> World::CreateGenerationRequestForChunk(
+    std::shared_ptr<Chunk> chunk) const
+{
+    return std::make_shared<DispatchWorkItem>([this, chunk]
+    {
+        auto blocks = GenerateChunk(chunk);
+
+        BOOST_LOG_TRIVIAL(debug) << "Generating Chunk: " << chunk;
+
+        const auto workItem = std::make_shared<DispatchWorkItem>([chunk, blocks = move(blocks)]()
+        mutable
+            {
+                chunk->SetBlocks(std::move(blocks));
+                BOOST_LOG_TRIVIAL(debug) << "Blocks assigned for chunk: " << chunk;
+            });
+        GetGame()->MainDispatchQueue()->Async(workItem);
+    });
+}
+
+std::shared_ptr<DispatchWorkGroup> World::CreateMeshRequestGroup(
     const std::vector<std::shared_ptr<Chunk>> chunks) const
 {
     auto workGroup = std::make_shared<DispatchWorkGroup>();
@@ -163,20 +171,33 @@ void World::OnWorldLoaded() const
 
 void World::UpdateChunks()
 {
-    // TODO: This needs to be reowrked
+    const auto workGroup = std::make_shared<DispatchWorkGroup>();
     const Chunk::ChunkCoords playerCoords = ChunkCoordFromPosition(playerTransform_.lock()->GetPosition());
+    std::vector<std::shared_ptr<Chunk>> chunks{};
+
     for (int i = 0; i < chunkViewDistance_; i++)
     {
         for (int j = 0; j < chunkViewDistance_; j++)
         {
             const Chunk::ChunkCoords chunkCoords = Vector2(
                 i - chunkViewDistance_ / 2, j - chunkViewDistance_ / 2) + playerCoords;
-            const auto chunk = chunkMap_.find(chunkCoords);
-            if (chunk == chunkMap_.end())
+            const auto chunk = chunks_.find(chunkCoords);
+            if (chunk == chunks_.end())
             {
                 const auto c = CreateChunk(chunkCoords);
-                //c->RegenerateMesh();
+                chunks.push_back(c);
+                workGroup->AddWorkItem(CreateGenerationRequestForChunk(c), DispatchQueue::Background());
             }
         }
     }
+
+    workGroup->AddCallback(GetGame()->MainDispatchQueue(),
+                           std::make_shared<DispatchWorkItem>([this, chunks = move(chunks)]()
+                           mutable
+                               {
+                                   const auto meshRequestGroup = CreateMeshRequestGroup(std::move(chunks));
+                                   meshRequestGroup->Execute();
+                               }));
+
+    workGroup->Execute();
 }

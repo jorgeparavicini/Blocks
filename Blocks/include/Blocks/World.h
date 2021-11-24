@@ -63,21 +63,18 @@ private:
     // TODO: This is currently not a radius but just a square where the value is 2x in every x and y directions.
     // The view radius distance
     uint8_t chunkViewDistance_;
-    std::unordered_map<Chunk::ChunkCoords, std::shared_ptr<Chunk>, ChunkHash> chunkMap_{};
-    std::unordered_set<Chunk::ChunkCoords, ChunkHash> generatingChunks_{};
-    //std::unordered_set<Chunk::ChunkCoords, ChunkHash> meshingChunks_{};
-    std::queue<Chunk::ChunkCoords> meshRequestQueue_{};
-    int chunkMeshingCount_{};
-    bool didLoad_{false};
+    std::unordered_map<Chunk::ChunkCoords, std::shared_ptr<Chunk>, ChunkHash> chunks_{};
+    std::unordered_set<Chunk::ChunkCoords, ChunkHash> activeChunkCoords_{};
 
     // These are probably temporary variables. They track where the player is and whether chunks need to be updated.
     std::weak_ptr<BlocksEngine::Transform> playerTransform_;
     Chunk::ChunkCoords lastChunkCoords_{Chunk::ChunkCoords::Zero};
 
+    // TODO: We should add signals in order for other subjects to listen to world changes
 
     /**
      * \brief Generates the world.
-     * TODO: This could need some implementation @Sevi
+     * It first loads all chunks and creates their meshes once all have been generated.
      */
     void GenerateWorld() noexcept;
 
@@ -96,6 +93,7 @@ private:
      * \brief Generates all blocks for a given chunk and initializes said chunk.
      * \param chunk The uninitialized Chunk to be initialized.
      * \return A list of all blocks in the chunk
+     
      * TODO: This is the main chunk generation that needs to be implemented @Sevi
      */
     [[nodiscard]] std::vector<uint8_t> GenerateChunk(std::shared_ptr<Chunk> chunk) const;
@@ -104,8 +102,18 @@ private:
 
     void OnWorldLoaded() const;
 
-    std::shared_ptr<BlocksEngine::DispatchWorkGroup> CreateMeshRequestForChunks(
+    /**
+     * \brief A chunk generation request is a Dispatch Work Item that is responsible for calling GenerateChunk
+     * and assigning the result on the main thread to the chunk
+     * \param chunk The chunk to generate the blocks for
+     * \return A DispatchWorkItem that generates a chunk once executed.
+     */
+    [[nodiscard]] std::shared_ptr<BlocksEngine::DispatchWorkItem> CreateGenerationRequestForChunk(
+        std::shared_ptr<Chunk> chunk) const;
+
+    [[nodiscard]] std::shared_ptr<BlocksEngine::DispatchWorkGroup> CreateMeshRequestGroup(
         std::vector<std::shared_ptr<Chunk>> chunks) const;
+
 
     void UpdateChunks();
 

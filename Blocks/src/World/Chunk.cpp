@@ -11,16 +11,21 @@
 #include "BlocksEngine/Vector3.h"
 
 using namespace Blocks;
+using namespace BlocksEngine;
 
-Chunk::Chunk(std::weak_ptr<BlocksEngine::Actor> actor, const World& world, const ChunkCoords coords)
+Chunk::Chunk(std::weak_ptr<Actor> actor, const World& world, const ChunkCoords coords)
     : Component{std::move(actor)},
       world_{world},
       coords_{coords}
 {
+    if (!terrainTexture_)
+    {
+        terrainTexture_ = Texture2D::FromDds(GetGame()->Graphics(), L"resources/images/terrain.dds");
+    }
     GetTransform()->SetPosition({static_cast<float>(coords.x) * Width, 0, static_cast<float>(coords.y) * Depth});
 }
 
-const Block& Chunk::GetWorldBlock(const BlocksEngine::Vector3<int> position) const noexcept
+const Block& Chunk::GetWorldBlock(const Vector3<int> position) const noexcept
 {
     if (!IsInitialized())
     {
@@ -34,7 +39,7 @@ const Block& Chunk::GetWorldBlock(const BlocksEngine::Vector3<int> position) con
     return BlockRegistry::GetBlock(blockId);
 }
 
-const Block& Chunk::GetLocalBlock(const BlocksEngine::Vector3<int> position) const noexcept
+const Block& Chunk::GetLocalBlock(const Vector3<int> position) const noexcept
 {
     return GetWorldBlock({position.x + coords_.x * Width, position.y, position.z + coords_.y * Depth});
 }
@@ -59,9 +64,9 @@ void Chunk::SetBlocks(std::vector<uint8_t> blocks)
     blocks_ = std::move(blocks);
 }
 
-inline int Chunk::GetFlatIndex(BlocksEngine::Vector3<int> position)
+inline int Chunk::GetFlatIndex(Vector3<int> position)
 {
-    static constexpr auto MaxSize = BlocksEngine::Vector3{Width, Height, Depth};
+    static constexpr auto MaxSize = Vector3{Width, Height, Depth};
     // TODO: can this be optimized?
     position = position % MaxSize;
     if (position.x < 0) position.x += Width;
@@ -77,14 +82,14 @@ int Chunk::GetFlatIndex(const int x, const int y, const int z)
     return GetFlatIndex({x, y, z});
 }
 
-std::unique_ptr<BlocksEngine::DispatchWorkItem> Chunk::RegenerateMesh() const
+std::unique_ptr<DispatchWorkItem> Chunk::RegenerateMesh() const
 {
-    auto workItem = std::make_unique<BlocksEngine::DispatchWorkItem>([this]
+    auto workItem = std::make_unique<DispatchWorkItem>([this]
     {
         // Based on the post of: https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
         // and https://github.com/Vercidium/voxel-mesh-generation
 
-        std::vector<BlocksEngine::Vertex> vertices;
+        std::vector<Vertex> vertices;
         std::vector<int> indices;
 
         constexpr int dimensions[3] = {Width, Height, Depth};
@@ -213,7 +218,7 @@ std::unique_ptr<BlocksEngine::DispatchWorkItem> Chunk::RegenerateMesh() const
                             const Block& block = BlockRegistry::GetBlock(blockId);
 
                             int vertexCount = static_cast<int>(vertices.size());
-                            vertices.push_back(BlocksEngine::Vertex{
+                            vertices.push_back(Vertex{
                                 {
                                     static_cast<float>(x[0]),
                                     static_cast<float>(x[1]),
@@ -223,7 +228,7 @@ std::unique_ptr<BlocksEngine::DispatchWorkItem> Chunk::RegenerateMesh() const
                                 block.GetTextures()[faceId]
                             });
 
-                            vertices.push_back(BlocksEngine::Vertex{
+                            vertices.push_back(Vertex{
                                 {
                                     static_cast<float>(x[0] + du[0]),
                                     static_cast<float>(x[1] + du[1]),
@@ -233,7 +238,7 @@ std::unique_ptr<BlocksEngine::DispatchWorkItem> Chunk::RegenerateMesh() const
                                 block.GetTextures()[faceId]
                             });
 
-                            vertices.push_back(BlocksEngine::Vertex{
+                            vertices.push_back(Vertex{
                                 {
                                     static_cast<float>(x[0] + dv[0]),
                                     static_cast<float>(x[1] + dv[1]),
@@ -243,7 +248,7 @@ std::unique_ptr<BlocksEngine::DispatchWorkItem> Chunk::RegenerateMesh() const
                                 block.GetTextures()[faceId]
                             });
 
-                            vertices.push_back(BlocksEngine::Vertex{
+                            vertices.push_back(Vertex{
                                 {
                                     static_cast<float>(x[0] + du[0] + dv[0]),
                                     static_cast<float>(x[1] + du[1] + dv[1]),
@@ -285,22 +290,17 @@ std::unique_ptr<BlocksEngine::DispatchWorkItem> Chunk::RegenerateMesh() const
             }
         }
 
+        const Graphics& gfx = GetGame()->Graphics();
 
-        const BlocksEngine::Graphics& gfx = GetGame()->Graphics();
-
-        auto mesh = std::make_shared<BlocksEngine::Mesh>(
-            std::make_shared<BlocksEngine::VertexBuffer>(gfx, vertices),
-            std::make_shared<BlocksEngine::IndexBuffer>(gfx, indices));
+        auto mesh = std::make_shared<Mesh>(
+            std::make_shared<VertexBuffer>(gfx, vertices),
+            std::make_shared<IndexBuffer>(gfx, indices));
 
 
-        GetGame()->MainDispatchQueue()->Async(std::make_shared<BlocksEngine::DispatchWorkItem>([this, mesh]
+        GetGame()->MainDispatchQueue()->Async(std::make_shared<DispatchWorkItem>([this, mesh]
         {
-            GetActor()->AddComponent<BlocksEngine::Renderer>(
-                std::make_shared<BlocksEngine::Terrain>(GetActor()->GetGame()->Graphics(),
-                                                        BlocksEngine::Texture2D::FromDds(
-                                                            GetGame()->Graphics(),
-                                                            L"resources/images/terrain.dds")),
-                mesh);
+            auto terrainMaterial = std::make_shared<Terrain>(GetActor()->GetGame()->Graphics(), terrainTexture_);
+            GetActor()->AddComponent<Renderer>(terrainMaterial, mesh);
         }));
     });
 

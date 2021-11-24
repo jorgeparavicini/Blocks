@@ -13,6 +13,7 @@
 #include "BlocksEngine/Component.h"
 #include "BlocksEngine/DispatchWorkItem.h"
 #include "BlocksEngine/Mesh.h"
+#include "BlocksEngine/Terrain.h"
 #include "BlocksEngine/Vector2.h"
 
 namespace Blocks
@@ -47,13 +48,14 @@ public:
     [[nodiscard]] bool IsInitialized() const noexcept;
 
     void SetBlocks(std::vector<uint8_t> blocks);
-    std::unique_ptr<BlocksEngine::DispatchWorkItem> RegenerateMesh() const;
+    [[nodiscard]] std::unique_ptr<BlocksEngine::DispatchWorkItem> RegenerateMesh() const;
 
     [[nodiscard]] static int GetFlatIndex(BlocksEngine::Vector3<int> position);
     [[nodiscard]] static int GetFlatIndex(int x, int y, int z);
 
 
 private:
+    inline static std::shared_ptr<BlocksEngine::Texture2D> terrainTexture_;
     std::optional<std::vector<uint8_t>> blocks_;
     const World& world_;
     const ChunkCoords coords_;

@@ -5,7 +5,7 @@
 
 using namespace BlocksEngine;
 
-Terrain::Terrain(const Graphics& gfx, std::unique_ptr<Texture2D> texture)
+Terrain::Terrain(const Graphics& gfx, std::shared_ptr<Texture2D> texture)
     : Material{GetVertexShader(gfx), GetPixelShader(gfx), GetInputLayout(gfx)},
       pTexture_{std::move(texture)},
       pSampler_{std::make_unique<Sampler>(gfx)}

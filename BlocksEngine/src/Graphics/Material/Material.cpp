@@ -1,6 +1,10 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Material.h"
 
+// TODO: This needs to be reworked to allow more flexibility
+// Currently if we make a material and share that for multiple objects,
+// then setting a constant buffer will be shared for all objects.
+
 BlocksEngine::Material::Material(std::shared_ptr<VertexShader> vertexShader,
                                  std::shared_ptr<PixelShader> pixelShader,
                                  std::shared_ptr<InputLayout> inputLayout)
