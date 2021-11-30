@@ -39,6 +39,7 @@ void PlayerDebugs::Draw2D()
     std::wstringstream ss;
 
     ss << std::fixed << std::setprecision(2);
+    ss << "FPS: " << GetGame()->Time().FramesPerSecond() << '\n';
     ss << "Position: " << GetTransform()->GetPosition().x << ", " << GetTransform()->GetPosition().y << ", " <<
         GetTransform()->GetPosition().z << '\n';
 
