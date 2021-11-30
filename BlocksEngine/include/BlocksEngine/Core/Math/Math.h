@@ -40,4 +40,5 @@ class BlocksEngine::Math
 {
 public:
     static const float DegToRad;
+    static const float Pi;
 };

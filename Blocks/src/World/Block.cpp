@@ -23,6 +23,16 @@ bool Blocks::Block::IsSeeThrough() const noexcept
     return isSeeThrough_;
 }
 
+bool Blocks::Block::operator==(const Block& block) const
+{
+    return id_ == block.id_;
+}
+
+bool Blocks::Block::operator!=(const Block& block) const
+{
+    return id_ != block.id_;
+}
+
 const Blocks::Block Blocks::Block::Air = {
     0, {{0, 0, 0, 0, 0, 0}}, true
 };

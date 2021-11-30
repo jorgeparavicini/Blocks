@@ -5,11 +5,29 @@
 
 using namespace BlocksEngine;
 
-Actor::Actor(std::weak_ptr<Game> game, std::wstring name)
-    : name_{std::move(name)},
+constexpr uint32_t Actor::INDEX_BITS = 24;
+constexpr uint32_t Actor::INDEX_MASK = (1 << INDEX_BITS) - 1;
+constexpr uint32_t Actor::GENERATION_BITS = 8;
+constexpr uint32_t Actor::GENERATION_MASK = (1 << GENERATION_BITS) - 1;
+constexpr uint32_t Actor::MINIMUM_FREE_INDICES = 1024;
+
+Actor::Actor(std::weak_ptr<Game> game, uint32_t index, uint32_t generation, std::wstring name)
+    : id_{index & INDEX_MASK | (generation & GENERATION_MASK) << INDEX_BITS},
+      name_{std::move(name)},
       game_{std::move(game)},
       pTransform_{std::make_shared<Transform>()}
 {
+}
+
+
+inline bool Actor::operator==(const Actor& actor) const
+{
+    return id_ == actor.id_;
+}
+
+inline bool Actor::operator!=(const Actor& actor) const
+{
+    return id_ != actor.id_;
 }
 
 const std::wstring& Actor::GetName() const noexcept

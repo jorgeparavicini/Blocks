@@ -7,8 +7,10 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
+#include "Blocks/Player/PlayerDebugs.h"
 #include "Blocks/World/World.h"
 #include "BlocksEngine/Exceptions/Exception.h"
+#include "BlocksEngine/Graphics/Material/SolidColor/SolidColor.h"
 #include "BlocksEngine/Main/Game.h"
 
 void SetupLogging()
@@ -42,6 +44,8 @@ int WINAPI WinMain(
     SetupLogging();
 
     auto game = BlocksEngine::Game::CreateGame();
+    game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
+
     game->AddSignalGameStart([&game]
     {
         const auto worldActor = game->AddActor(L"World");

@@ -7,7 +7,7 @@
 // Author: Jorge Paravicini
 // File: Terrain.h
 
-#pragma
+#pragma once
 
 #include "BlocksEngine/Graphics/Graphics.h"
 #include "BlocksEngine/Graphics/Material/InputLayout.h"

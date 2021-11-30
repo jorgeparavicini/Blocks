@@ -25,6 +25,10 @@ public:
     [[nodiscard]] const std::array<uint8_t, 6>& GetTextures() const noexcept;
     [[nodiscard]] bool IsSeeThrough() const noexcept;
 
+    bool operator==(const Block& block) const;
+
+    bool operator!=(const Block& block) const;
+
 
     static const Block Air;
     static const Block Dirt;

@@ -32,6 +32,9 @@ public:
 
     void Draw() override;
 
+    void SetMesh(std::shared_ptr<Mesh> mesh);
+    void SetMaterial(std::shared_ptr<Material> material);
+
 private:
     bool enabled_{true};
     std::shared_ptr<Material> pMaterial_;

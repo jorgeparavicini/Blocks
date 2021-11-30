@@ -96,7 +96,7 @@ private:
      
      * TODO: This is the main chunk generation that needs to be implemented @Sevi
      */
-    [[nodiscard]] std::vector<uint8_t> GenerateChunk(std::shared_ptr<Chunk> chunk) const;
+    [[nodiscard]] Chunk::ChunkData GenerateChunk(std::shared_ptr<Chunk> chunk) const;
 
     void OnWorldGenerated();
 

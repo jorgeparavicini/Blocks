@@ -5,10 +5,12 @@
 
 using namespace BlocksEngine;
 
+// TODO: All pointers need to be checked for null, otherwise app go big crash
+
 // TODO: Analyze if lock and execution has started could be converted to std::atomic
 // probably not :v
 
-void DispatchWorkGroup::AddWorkItem(std::shared_ptr<DispatchWorkItem> workItem,
+void DispatchWorkGroup::AddWorkItem(std::shared_ptr<DispatchObject> workItem,
                                     std::shared_ptr<BaseDispatchQueue> queue)
 {
     std::unique_lock lock{lock_};
@@ -45,7 +47,6 @@ void DispatchWorkGroup::Execute()
 
     while (!workItems_.empty())
     {
-        // TODO: Move?
         const auto [queue, item] = workItems_.front();
         workItems_.pop();
 

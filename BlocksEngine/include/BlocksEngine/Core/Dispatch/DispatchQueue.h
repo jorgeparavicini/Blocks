@@ -58,7 +58,7 @@ public:
     // Methods
     //------------------------------------------------------------------------------
 
-    void Async(std::shared_ptr<DispatchWorkItem> workItem) override;
+    void Async(std::shared_ptr<DispatchObject> workItem) override;
 
 
 private:

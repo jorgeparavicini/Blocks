@@ -26,22 +26,42 @@ namespace BlocksEngine
     class Game;
 }
 
+// TODO: The game does not need to be shared as a shared_ptr tbh. It could just be a reference.
+// The actors however do need to be shared as shared_ptr.
+
 class BlocksEngine::Game : public std::enable_shared_from_this<Game>
 {
 public:
+    //------------------------------------------------------------------------------
+    // Type definitions
+    //------------------------------------------------------------------------------
+
     using GameStartSignal = boost::signals2::signal<void()>;
 
+    //------------------------------------------------------------------------------
+    // Destructors | Copy | Move
+    //------------------------------------------------------------------------------
+
     ~Game();
+
+    Game(const Game& game) = delete;
+    Game& operator=(const Game& game) = delete;
+
+    Game(const Game&& game) = delete;
+    Game& operator=(const Game&& game) = delete;
 
     static std::shared_ptr<Game> CreateGame(std::unique_ptr<WindowOptions> options = std::make_unique<WindowOptions>())
     {
         // Since a shared_ptr needs to be created to use a game, the constructor is private.
         // And since the constructor is private, make_shared cannot be used
-        // TODO: ????? don't allocate it yourself let the system create the game+
-        auto game = std::shared_ptr<Game>{new Game{std::move(options)}};
+        auto game = std::shared_ptr<Game>(new Game{std::move(options)});
         game->Initialize();
         return game;
     }
+
+    //------------------------------------------------------------------------------
+    // TODO: STUFF THAT NEEDS TO BE CLEANED UP (but not now :3)
+    //------------------------------------------------------------------------------
 
     /**
      * \brief Starts the blocking Main Loop. 
@@ -57,6 +77,8 @@ public:
     [[nodiscard]] const Time& Time() const noexcept;
     [[nodiscard]] std::shared_ptr<BaseDispatchQueue> MainDispatchQueue() const noexcept;
 
+    [[nodiscard]] std::thread::id GetMainThreadId() const noexcept;
+
 
     static void Exit() noexcept;
     void ForceExit() noexcept;
@@ -65,7 +87,12 @@ public:
     std::shared_ptr<Actor> AddActor();
     std::shared_ptr<Actor> AddActor(std::wstring actorName);
 
+    void DestroyActor(const Actor& actor);
+
+    //------------------------------------------------------------------------------
     // Signals
+    //------------------------------------------------------------------------------
+
     boost::signals2::connection AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept;
 
 private:
@@ -87,6 +114,8 @@ private:
     void Render2D() const;
     static std::optional<int> ProcessApplicationMessages() noexcept;
 
+    std::thread::id mainThreadId_;
+
     Camera* camera_{nullptr};
     std::vector<std::shared_ptr<Actor>> pActors_{};
     std::queue<std::shared_ptr<Actor>> pNewActorsQueue_{};
@@ -97,5 +126,9 @@ private:
     BlocksEngine::Time time_;
 
     // Signals
-    GameStartSignal gameStarted_;
+    GameStartSignal gameStarted_{};
+
+    // Actor states
+    std::vector<uint8_t> generations_{};
+    std::queue<uint32_t> freeIndices_{};
 };

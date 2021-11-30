@@ -180,6 +180,15 @@
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Physics\CollisionBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Physics\Collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Utility\Concepts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -209,40 +218,7 @@
     <ClCompile Include="src\Exceptions\WindowException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Main\Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Bindable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\VertexShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\PixelShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\InputLayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Material.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Mesh\VertexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Mesh\IndexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Mesh\Topology.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Mesh\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\SolidColor\SolidColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Transform.cpp">
@@ -261,9 +237,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Exceptions\EngineException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\ConstantBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Input\Keyboard.cpp">
@@ -297,21 +270,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Exceptions\BufferException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Texture2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Albedo\Albedo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Sampler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Terrain\Terrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Texture2DArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Dispatch\DispatchQueue.cpp">
@@ -383,6 +341,12 @@
     <ClCompile Include="src\Graphics\Mesh\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Physics\CollisionBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
@@ -390,12 +354,6 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\SolidColor\SolidColorPS.hlsl" />
-    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\SolidColor\SolidColorVS.hlsl" />
-    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Albedo\AlbedoVS.hlsl" />
-    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Albedo\AlbedoPS.hlsl" />
-    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Terrain\TerrainVS.hlsl" />
-    <FxCompile Include="include\BlocksEngine\Exceptions\Graphics\Material\Terrain\TerrainPS.hlsl" />
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoPS.hlsl" />
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoVS.hlsl" />
     <FxCompile Include="src\Graphics\Material\SolidColor\SolidColorPS.hlsl" />

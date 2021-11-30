@@ -39,6 +39,8 @@ public:
     */
     void AddCallback(std::shared_ptr<DispatchWorkItem> workItem);
 
+    virtual void operator()() = 0;
+
 protected:
     std::mutex lock_;
     bool hasExecutionStarted_{false};

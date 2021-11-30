@@ -4,7 +4,7 @@
 using namespace BlocksEngine;
 
 
-void BaseDispatchQueue::Async(std::shared_ptr<DispatchWorkItem> workItem)
+void BaseDispatchQueue::Async(std::shared_ptr<DispatchObject> workItem)
 {
     std::unique_lock lock{lock_};
     queue_.push(std::move(workItem));

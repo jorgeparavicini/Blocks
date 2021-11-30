@@ -13,86 +13,58 @@
 using namespace Blocks;
 using namespace BlocksEngine;
 
-Chunk::Chunk(std::weak_ptr<Actor> actor, const World& world, const ChunkCoords coords)
+//------------------------------------------------------------------------------
+// Chunk Section
+//------------------------------------------------------------------------------
+
+Chunk::ChunkSection::ChunkSection(std::weak_ptr<Actor> actor, const Chunk& chunk, const int section)
     : Component{std::move(actor)},
-      world_{world},
-      coords_{coords}
+      chunk_{chunk},
+      section_{section},
+      renderer_{std::move(GetActor()->AddComponent<Renderer>())}
 {
     if (!terrainTexture_)
     {
         terrainTexture_ = Texture2D::FromDds(GetGame()->Graphics(), L"resources/images/terrain.dds");
     }
-    GetTransform()->SetPosition({static_cast<float>(coords.x) * Width, 0, static_cast<float>(coords.y) * Depth});
+
+    auto material = std::make_shared<Terrain>(GetActor()->GetGame()->Graphics(), terrainTexture_);
+    renderer_->SetMaterial(std::move(material));
 }
 
-const Block& Chunk::GetWorldBlock(const Vector3<int> position) const noexcept
+std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
 {
-    if (!IsInitialized())
+    // Based on the post of: https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
+    // and https://github.com/Vercidium/voxel-mesh-generation
+
+    // TODO: Implement https://vercidium.com/blog/voxel-world-optimisations/
+    return std::make_unique<DispatchWorkItem>([this]
     {
-        // TODO: This needs to change
-        return Block::Air;
-    }
-    if (position.y < 0 || position.y > Height - 1) return Block::Air;
-    if (world_.ChunkCoordFromPosition(position) != coords_) return world_.GetBlock(position);
-
-    const uint8_t blockId = blocks_.value()[GetFlatIndex(position)];
-    return BlockRegistry::GetBlock(blockId);
-}
-
-const Block& Chunk::GetLocalBlock(const Vector3<int> position) const noexcept
-{
-    return GetWorldBlock({position.x + coords_.x * Width, position.y, position.z + coords_.y * Depth});
-}
-
-const World& Chunk::GetWorld() const noexcept
-{
-    return world_;
-}
-
-Chunk::ChunkCoords Chunk::GetCoords() const noexcept
-{
-    return coords_;
-}
-
-bool Chunk::IsInitialized() const noexcept
-{
-    return blocks_ != std::nullopt;
-}
-
-void Chunk::SetBlocks(std::vector<uint8_t> blocks)
-{
-    blocks_ = std::move(blocks);
-}
-
-inline int Chunk::GetFlatIndex(Vector3<int> position)
-{
-    static constexpr auto MaxSize = Vector3{Width, Height, Depth};
-    // TODO: can this be optimized?
-    position = position % MaxSize;
-    if (position.x < 0) position.x += Width;
-    if (position.y < 0) position.y += Height;
-    if (position.z < 0) position.z += Depth;
-
-
-    return position.x + Width * (position.y + Height * position.z);
-}
-
-int Chunk::GetFlatIndex(const int x, const int y, const int z)
-{
-    return GetFlatIndex({x, y, z});
-}
-
-std::unique_ptr<DispatchWorkItem> Chunk::RegenerateMesh() const
-{
-    auto workItem = std::make_unique<DispatchWorkItem>([this]
-    {
-        // Based on the post of: https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
-        // and https://github.com/Vercidium/voxel-mesh-generation
-
         std::vector<Vertex> vertices;
         std::vector<int> indices;
 
-        constexpr int dimensions[3] = {Width, Height, Depth};
+        constexpr int dimensions[3] = {Width, SectionHeight, Depth};
+
+        for (int i = 0; i < dimensions[0]; ++i)
+        {
+            for (int j = 0; j < dimensions[1]; ++j)
+            {
+                for (int k = 0; j < dimensions[2]; ++k)
+                {
+                    if (GetBlock({i, j, k}) != Block::Air)
+                    {
+                        goto mesh;
+                    }
+                }
+            }
+        }
+        GetGame()->MainDispatchQueue()->Async(std::make_shared<DispatchWorkItem>([this]
+        {
+            renderer_->SetMesh(nullptr);
+        }));
+        return;
+
+    mesh:
 
         // Loop over every axis (x, y, z)
         for (int dim = 0; dim < 3; ++dim)
@@ -116,8 +88,8 @@ std::unique_ptr<DispatchWorkItem> Chunk::RegenerateMesh() const
                 {
                     for (x[u] = 0; x[u] < dimensions[u]; ++x[u], ++n)
                     {
-                        const int a = GetLocalBlock({x[0], x[1], x[2]}).GetId();
-                        const int b = GetLocalBlock({x[0] + q[0], x[1] + q[1], x[2] + q[2]}).GetId();
+                        const int a = GetBlock({x[0], x[1], x[2]}).GetId();
+                        const int b = GetBlock({x[0] + q[0], x[1] + q[1], x[2] + q[2]}).GetId();
 
 
                         if (static_cast<bool>(a) == static_cast<bool>(b))
@@ -299,16 +271,112 @@ std::unique_ptr<DispatchWorkItem> Chunk::RegenerateMesh() const
 
         GetGame()->MainDispatchQueue()->Async(std::make_shared<DispatchWorkItem>([this, mesh]
         {
-            auto terrainMaterial = std::make_shared<Terrain>(GetActor()->GetGame()->Graphics(), terrainTexture_);
-            GetActor()->AddComponent<Renderer>(terrainMaterial, mesh);
+            renderer_->SetMesh(mesh);
         }));
     });
-
-    return workItem;
 }
 
-std::ostream& Blocks::operator<<(std::ostream& out, const Chunk& chunk)
+const Block& Chunk::ChunkSection::GetBlock(const Vector3<int> position) const noexcept
 {
-    out << chunk.coords_.x << ", " << chunk.coords_.y;
-    return out;
+    return chunk_.GetLocalBlock(position + Vector3{0, section_ * SectionHeight, 0});
+}
+
+
+//------------------------------------------------------------------------------
+// Chunk
+//------------------------------------------------------------------------------
+
+Chunk::Chunk(std::weak_ptr<Actor> actor, const World& world, const ChunkCoords coords)
+    : Component{std::move(actor)},
+      world_{world},
+      coords_{coords},
+      sections_(SectionsPerChunk)
+{
+    GetTransform()->SetPosition({static_cast<float>(coords.x) * Width, 0, static_cast<float>(coords.y) * Depth});
+    for (int i = 0; i < SectionsPerChunk; ++i)
+    {
+        const std::shared_ptr<Actor> sectorActor = GetGame()->AddActor();
+        const auto sectorPosition = GetTransform()->GetPosition() + Vector3<float>{
+            0, static_cast<float>(SectionHeight) * i, 0
+        };
+        sectorActor->GetTransform()->SetPosition(sectorPosition);
+        sections_[i] = std::move(sectorActor->AddComponent<ChunkSection>(*this, i));
+    }
+}
+
+const Block& Chunk::GetWorldBlock(const Vector3<int> position) const noexcept
+{
+    if (!IsInitialized())
+    {
+        // TODO: This needs to change
+        return Block::Air;
+    }
+    if (position.y < 0 || position.y > Height - 1) return Block::Air;
+    if (world_.ChunkCoordFromPosition(position) != coords_) return world_.GetBlock(position);
+
+    const uint8_t blockId = blocks_.value()[GetFlatIndex(position)];
+    return BlockRegistry::GetBlock(blockId);
+}
+
+const Block& Chunk::GetLocalBlock(const Vector3<int> position) const noexcept
+{
+    return GetWorldBlock({position.x + coords_.x * Width, position.y, position.z + coords_.y * Depth});
+}
+
+const World& Chunk::GetWorld() const noexcept
+{
+    return world_;
+}
+
+Chunk::ChunkCoords Chunk::GetCoords() const noexcept
+{
+    return coords_;
+}
+
+bool Chunk::IsInitialized() const noexcept
+{
+    return blocks_ != std::nullopt;
+}
+
+void Chunk::SetBlocks(ChunkData blocks)
+{
+    assert(blocks.size() == Size);
+    blocks_ = std::move(blocks);
+}
+
+inline int Chunk::GetFlatIndex(Vector3<int> position)
+{
+    static constexpr auto MaxSize = Vector3{Width, Height, Depth};
+    // TODO: can this be optimized?
+    position = position % MaxSize;
+    if (position.x < 0) position.x += Width;
+    if (position.y < 0) position.y += Height;
+    if (position.z < 0) position.z += Depth;
+
+
+    return position.x + Width * (position.y + Height * position.z);
+}
+
+int Chunk::GetFlatIndex(const int x, const int y, const int z)
+{
+    return GetFlatIndex({x, y, z});
+}
+
+std::unique_ptr<DispatchWorkGroup> Chunk::RegenerateMesh() const
+{
+    auto workGroup = std::make_unique<DispatchWorkGroup>();
+    for (int i = 0; i < SectionsPerChunk; ++i)
+    {
+        workGroup->AddWorkItem(sections_[i]->RegenerateMesh(), DispatchQueue::Background());
+    }
+    return workGroup;
+}
+
+namespace Blocks
+{
+    std::ostream& operator<<(std::ostream& out, const Chunk& chunk)
+    {
+        out << chunk.coords_.x << ", " << chunk.coords_.y;
+        return out;
+    }
 }

@@ -11,9 +11,7 @@ using namespace BlocksEngine;
 
 Renderer::Renderer(const std::weak_ptr<Actor> actor)
     : Renderer{
-        actor,
-        std::make_shared<SolidColor>(actor.lock()->GetGame()->Graphics()),
-        std::make_shared<Mesh>(actor.lock()->GetGame()->Graphics())
+        actor, nullptr, nullptr
     }
 {
 }
@@ -25,7 +23,10 @@ Renderer::Renderer(const std::weak_ptr<Actor> actor, std::shared_ptr<Material> p
       pMesh_{std::move(pMesh)},
       pConstantBuffer_{std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(actor.lock()->GetGame()->Graphics())}
 {
-    pMaterial_->AddConstantBuffer(pConstantBuffer_);
+    if (pMaterial_)
+    {
+        pMaterial_->AddConstantBuffer(pConstantBuffer_);
+    }
 }
 
 void Renderer::SetEnabled(const bool enabled) noexcept
@@ -40,6 +41,7 @@ bool Renderer::IsEnabled() const noexcept
 
 void Renderer::Draw()
 {
+    // TODO: Create default material to show a mesh when the material failed to load.
     if (!pMaterial_ || !pMesh_)
     {
         return;
@@ -54,4 +56,16 @@ void Renderer::Draw()
     pMaterial_->Bind(gfx);
     pMesh_->Bind(gfx);
     gfx.GetContext().DrawIndexed(pMesh_->GetCount(), 0, 0);
+}
+
+void Renderer::SetMesh(std::shared_ptr<Mesh> mesh)
+{
+    pMesh_ = std::move(mesh);
+}
+
+void Renderer::SetMaterial(std::shared_ptr<Material> material)
+{
+    pMaterial_ = std::move(material);
+    // TODO: This is not ideal at all
+    pMaterial_->AddConstantBuffer(pConstantBuffer_);
 }

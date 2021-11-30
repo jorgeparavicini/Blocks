@@ -13,7 +13,9 @@ Camera::Camera(std::weak_ptr<Actor> actor)
       projection_{std::move(CalculateProjection())},
       windowResizedConnection_{
           GetGame()->Window().AddSignalWindowResized(
-              bind(&Camera::OnWindowResized, this, _1, _2))
+              // ReSharper disable CppRedundantQualifier
+              bind(&Camera::OnWindowResized, this, boost::placeholders::_1, boost::placeholders::_2))
+          // ReSharper restore CppRedundantQualifier
       }
 {
 }

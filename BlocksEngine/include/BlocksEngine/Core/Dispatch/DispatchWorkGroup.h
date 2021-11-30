@@ -24,7 +24,7 @@ namespace BlocksEngine
 class BlocksEngine::DispatchWorkGroup : public DispatchObject
 {
 public:
-    void AddWorkItem(std::shared_ptr<DispatchWorkItem> workItem, std::shared_ptr<BaseDispatchQueue> queue);
+    void AddWorkItem(std::shared_ptr<DispatchObject> workItem, std::shared_ptr<BaseDispatchQueue> queue);
 
     [[nodiscard]] unsigned int Count();
 
@@ -35,5 +35,5 @@ private:
     int nrOfWorkItems_{0};
     int workItemsExecuted_{0};
 
-    std::queue<std::pair<std::shared_ptr<BaseDispatchQueue>, std::shared_ptr<DispatchWorkItem>>> workItems_{};
+    std::queue<std::pair<std::shared_ptr<BaseDispatchQueue>, std::shared_ptr<DispatchObject>>> workItems_{};
 };

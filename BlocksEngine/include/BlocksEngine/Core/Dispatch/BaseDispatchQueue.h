@@ -52,9 +52,9 @@ public:
     // Methods
     //------------------------------------------------------------------------------
 
-    virtual void Async(std::shared_ptr<DispatchWorkItem> workItem);
+    virtual void Async(std::shared_ptr<DispatchObject> workItem);
 
 protected:
     std::mutex lock_;
-    std::queue<std::shared_ptr<DispatchWorkItem>> queue_{};
+    std::queue<std::shared_ptr<DispatchObject>> queue_{};
 };

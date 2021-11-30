@@ -36,7 +36,7 @@ std::shared_ptr<DispatchQueue> DispatchQueue::Background()
     return instance;
 }
 
-void DispatchQueue::Async(std::shared_ptr<DispatchWorkItem> workItem)
+void DispatchQueue::Async(std::shared_ptr<DispatchObject> workItem)
 {
     BaseDispatchQueue::Async(std::move(workItem));
     workingCondition_.notify_one();
@@ -57,7 +57,7 @@ void DispatchQueue::DispatchThreadHandler()
         // We own the lock after the wait
         if (!queue_.empty())
         {
-            std::shared_ptr<DispatchWorkItem> op = std::move(queue_.front());
+            std::shared_ptr<DispatchObject> op = std::move(queue_.front());
             queue_.pop();
 
             // Unlock the mutex after we are done with messing with the queues

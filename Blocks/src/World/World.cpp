@@ -35,10 +35,9 @@ void World::Update()
     }
 }
 
-// TODO: Test if this could be moved
-void World::SetPlayerTransform(const std::shared_ptr<Transform> playerTransform) noexcept
+void World::SetPlayerTransform(std::shared_ptr<Transform> playerTransform) noexcept
 {
-    playerTransform_ = playerTransform;
+    playerTransform_ = std::move(playerTransform);
 }
 
 Vector2<int> World::ChunkCoordFromPosition(
@@ -99,21 +98,19 @@ void World::OnWorldGenerated()
     meshRequestGroup->Execute();
 }
 
-std::vector<uint8_t> World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
+Chunk::ChunkData World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
 {
-    std::vector<uint8_t> blocks(Chunk::Size);
+    auto blocks = std::vector<uint8_t>(Chunk::Size);
     for (int i = 0; i < Chunk::Width; i++)
     {
         for (int j = 0; j < Chunk::Height; j++)
         {
             for (int k = 0; k < Chunk::Depth; k++)
             {
-                blocks[Chunk::GetFlatIndex(i, j, k)] = j == Chunk::Height - 1 ? 2 : 1;
+                const int y = static_cast<int>(std::round(
+                    3.0 * std::sin(Math::Pi * i / 12.0 - Math::Pi * k * 0.1) + 20.0));
 
-                if (j == Chunk::Height - 1 && i % 2 == 0 && k % 2 == 0)
-                {
-                    blocks[Chunk::GetFlatIndex(i, j, k)] = 0;
-                }
+                blocks[Chunk::GetFlatIndex(i, j, k)] = j < y ? (j == y - 1 ? 2 : 1) : 0;
             }
         }
     }
@@ -140,7 +137,7 @@ std::shared_ptr<DispatchWorkItem> World::CreateGenerationRequestForChunk(
 
         BOOST_LOG_TRIVIAL(debug) << "Generating Chunk: " << chunk;
 
-        const auto workItem = std::make_shared<DispatchWorkItem>([chunk, blocks = move(blocks)]()
+        const auto workItem = std::make_shared<DispatchWorkItem>([chunk, blocks = std::move(blocks)]()
         mutable
             {
                 chunk->SetBlocks(std::move(blocks));

@@ -10,7 +10,8 @@ using namespace BlocksEngine;
 
 Game::Game(std::unique_ptr<WindowOptions> options)
     : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))},
-      pMainDispatch_{std::make_shared<BlocksEngine::MainDispatchQueue>()}
+      pMainDispatch_{std::make_shared<BlocksEngine::MainDispatchQueue>()},
+      mainThreadId_{std::this_thread::get_id()}
 {
     // TODO: Catch potential error
     // TODO: If we do this here, only one game could be created.
@@ -25,7 +26,7 @@ void Game::Initialize()
 {
     const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera");
     const std::shared_ptr<Camera> camera = cameraActor->AddComponent<Camera>();
-    camera->GetTransform()->SetPosition(Vector3<float>(0, 20, -10));
+    camera->GetTransform()->SetPosition(Vector3<float>(0, 30, -10));
     const Quaternion rot = Quaternion::Euler(0, 90, 90);
     camera->GetTransform()->SetRotation(rot);
     SetActiveCamera(*camera);
@@ -137,17 +138,58 @@ std::shared_ptr<BaseDispatchQueue> Game::MainDispatchQueue() const noexcept
     return pMainDispatch_;
 }
 
+std::thread::id Game::GetMainThreadId() const noexcept
+{
+    return mainThreadId_;
+}
+
 std::shared_ptr<Actor> Game::AddActor()
 {
-    std::wstring name = L"GetActor " + std::to_wstring(totalActorCount_++);
+    std::wstring name = L"Actor " + std::to_wstring(totalActorCount_);
     return AddActor(std::move(name));
 }
 
 std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
 {
-    auto actor = std::make_shared<Actor>(shared_from_this(), std::move(actorName));
+    uint32_t index;
+
+    // If there are already enough free indices to start using them
+    if (freeIndices_.size() > Actor::MINIMUM_FREE_INDICES)
+    {
+        index = freeIndices_.front();
+        freeIndices_.pop();
+    }
+    else
+    {
+        generations_.push_back(0);
+        index = static_cast<uint32_t>(generations_.size()) - 1;
+
+        assert(index < 1u << Actor::INDEX_BITS);
+    }
+
+    auto actor = std::shared_ptr<Actor>(new Actor{
+        shared_from_this(),
+        index,
+        static_cast<uint32_t>(generations_[index]),
+        std::move(actorName)
+    });
     pNewActorsQueue_.push(actor);
+
+    ++totalActorCount_;
     return std::move(actor);
+}
+
+void Game::DestroyActor(const Actor& actor)
+{
+    const uint32_t index = actor.GetIndex();
+
+    ++generations_[index];
+    freeIndices_.push(index);
+
+    // TODO: Find a better data structure than vector to hold all actors
+    // This will cause the vector to relocate.
+    // TODO: This really needs to be tested i'm just trying stuff out.
+    pActors_[index] = nullptr;
 }
 
 boost::signals2::connection Game::AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept
