@@ -13,7 +13,7 @@ const Blocks::Block& Blocks::BlockRegistry::GetBlock(const uint8_t blockId)
     throw; // TODO: Application exception
 }
 
-const std::unordered_map<uint8_t, const Blocks::Block&>& Blocks::BlockRegistry::Blocks()
+const robin_hood::unordered_map<uint8_t, const Blocks::Block&>& Blocks::BlockRegistry::Blocks()
 {
     return Instance().blocks_;
 }

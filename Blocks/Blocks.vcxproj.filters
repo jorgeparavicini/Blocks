@@ -36,6 +36,9 @@
     <ClInclude Include="include\Blocks\Player\PlayerDebugs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="external\robin_hood\include\robin_hood.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

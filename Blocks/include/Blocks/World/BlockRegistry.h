@@ -8,8 +8,8 @@
 // File: BlockRegistry.h
 
 #pragma once
-#include <unordered_map>
 
+#include "robin_hood.h"
 #include "Blocks/World/Block.h"
 
 namespace Blocks
@@ -29,11 +29,11 @@ public:
     ~BlockRegistry() = default;
 
     static const Block& GetBlock(uint8_t blockId);
-    static const std::unordered_map<uint8_t, const Block&>& Blocks();
+    static const robin_hood::unordered_map<uint8_t, const Block&>& Blocks();
 
 private:
     static BlockRegistry& Instance();
     BlockRegistry();
 
-    std::unordered_map<uint8_t, const Block&> blocks_;
+    robin_hood::unordered_map<uint8_t, const Block&> blocks_;
 };

@@ -171,6 +171,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="external\robin_hood\include\robin_hood.h" />
     <ClInclude Include="include\Blocks\World\Chunk.h" />
     <ClInclude Include="include\Blocks\pch.h" />
     <ClInclude Include="include\Blocks\World\Block.h" />

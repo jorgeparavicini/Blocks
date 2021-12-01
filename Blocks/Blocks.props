@@ -10,7 +10,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Blocks/pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/Dependencies/boost/include;$(SolutionDir)/BlocksEngine/include;$(SolutionDir)/Blocks/include;$(SolutionDir)/Blocks/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Blocks/external/robin_hood/include;$(SolutionDir)/Dependencies/boost/include;$(SolutionDir)/BlocksEngine/include;$(SolutionDir)/Blocks/include;$(SolutionDir)/Blocks/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <FxCompile>
       <ShaderModel>4.0</ShaderModel>
