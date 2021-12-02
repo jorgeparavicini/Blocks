@@ -11,6 +11,8 @@
 
 #include <memory>
 
+#include "BlocksEngine/Core/Entity.h"
+
 namespace BlocksEngine
 {
     class Transform;
@@ -20,13 +22,13 @@ namespace BlocksEngine
     class Component;
 }
 
-class BlocksEngine::Component
+class BlocksEngine::Component : public Entity
 {
 public:
     /**
      * Subclasses need to put GetActor& as first parameter.
      */
-    explicit Component(std::weak_ptr<Actor> actor);
+    explicit Component(std::weak_ptr<Actor> actor, uint32_t index, uint32_t generation);
 
     virtual ~Component() = default;
     Component(const Component&) = delete;
@@ -46,6 +48,15 @@ public:
     virtual void Update();
     virtual void Draw();
     virtual void Draw2D();
+
+    //------------------------------------------------------------------------------
+    // Friends
+    //------------------------------------------------------------------------------
+
+    friend bool operator==(const Component& component1, const Component& component2)
+    {
+        return component1.id_ == component2.id_ && component1.GetActor() == component2.GetActor();
+    }
 
 private:
     std::weak_ptr<Actor> actor_;

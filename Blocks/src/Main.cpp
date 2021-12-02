@@ -44,10 +44,12 @@ int WINAPI WinMain(
     SetupLogging();
 
     auto game = BlocksEngine::Game::CreateGame();
-    game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
 
     game->AddSignalGameStart([&game]
     {
+        game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
+        game->UpdateEventTypeForActor(*game->MainCamera().GetActor(), BlocksEngine::EventType::Render2D);
+
         const auto worldActor = game->AddActor(L"World");
         worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
     });

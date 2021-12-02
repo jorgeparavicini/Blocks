@@ -9,8 +9,11 @@
 
 #pragma once
 
+#include <boost/log/sources/logger.hpp>
 #include <boost/signals2/signal.hpp>
 
+#include "EventType.h"
+#include "robin_hood.h"
 #include "BlocksEngine/Core/Time.h"
 #include "BlocksEngine/Core/Components/Camera.h"
 #include "BlocksEngine/Core/Dispatch/BaseDispatchQueue.h"
@@ -26,6 +29,8 @@ namespace BlocksEngine
     class Game;
 }
 
+// TODO: Basically everything needs to be checked for multi threading :=)
+// TODO: A lot of friend stuff can be removed by using private headers
 // TODO: The game does not need to be shared as a shared_ptr tbh. It could just be a reference.
 // The actors however do need to be shared as shared_ptr.
 
@@ -78,6 +83,7 @@ public:
     [[nodiscard]] std::shared_ptr<BaseDispatchQueue> MainDispatchQueue() const noexcept;
 
     [[nodiscard]] std::thread::id GetMainThreadId() const noexcept;
+    [[nodiscard]] const boost::log::sources::logger_mt& Logger();
 
 
     static void Exit() noexcept;
@@ -87,13 +93,16 @@ public:
     std::shared_ptr<Actor> AddActor();
     std::shared_ptr<Actor> AddActor(std::wstring actorName);
 
-    void DestroyActor(const Actor& actor);
+    void UpdateEventTypeForActor(const Actor& actor, EventType eventTypes);
+
+    void DestroyActor(std::shared_ptr<Actor> actor);
 
     //------------------------------------------------------------------------------
     // Signals
     //------------------------------------------------------------------------------
 
     boost::signals2::connection AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept;
+    friend Actor;
 
 private:
     //------------------------------------------------------------------------------
@@ -103,12 +112,16 @@ private:
     explicit Game(std::unique_ptr<WindowOptions> options = std::make_unique<WindowOptions>());
 
     void Initialize();
+    void CreateLogger();
 
     int totalActorCount_{0};
     bool shutdownForced_{false};
+    boost::log::sources::logger_mt logger_;
+
     std::unique_ptr<BlocksEngine::Window> pWindow_{};
     std::shared_ptr<BlocksEngine::MainDispatchQueue> pMainDispatch_{};
     void Tick() noexcept;
+    void CreateComponents();
     void Update();
     void Render() const;
     void Render2D() const;
@@ -119,8 +132,17 @@ private:
     Camera* camera_{nullptr};
     std::vector<std::shared_ptr<Actor>> pActors_{};
     std::queue<std::shared_ptr<Actor>> pNewActorsQueue_{};
+    std::queue<std::shared_ptr<Actor>> pDestroyQueue_{};
+
+    // Event Sets
+    std::queue<uint32_t> createComponentsQueue_{};
+    robin_hood::unordered_set<uint32_t> updateQueue_{};
+    robin_hood::unordered_set<uint32_t> renderQueue_{};
+    robin_hood::unordered_set<uint32_t> render2DQueue_{};
 
     void LoadNewActors();
+    void DestroyRequestedActors();
+    void RequestCreationUpdate(const Actor& actor);
 
     // Rendering loop Timer
     BlocksEngine::Time time_;

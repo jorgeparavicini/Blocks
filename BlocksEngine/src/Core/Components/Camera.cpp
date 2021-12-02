@@ -18,6 +18,7 @@ Camera::Camera(std::weak_ptr<Actor> actor)
           // ReSharper restore CppRedundantQualifier
       }
 {
+    GetActor()->SetEventTypeForComponent(*this, EventType::Update);
 }
 
 Matrix Camera::ViewProjection() const noexcept

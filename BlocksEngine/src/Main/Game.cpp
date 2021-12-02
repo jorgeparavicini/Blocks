@@ -1,10 +1,17 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Main/Game.h"
 
+#include <boost/log/trivial.hpp>
+#include <boost/log/sources/severity_feature.hpp>
+#include <boost/log/sources/severity_logger.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/file.hpp>
+
 #include "BlocksEngine/Core/Actor.h"
 #include "BlocksEngine/Core/Components/Camera.h"
 #include "BlocksEngine/Core/Components/Renderer.h"
 #include "BlocksEngine/Exceptions/EngineException.h"
+#include "BlocksEngine/Main/EventType.h"
 
 using namespace BlocksEngine;
 
@@ -52,6 +59,25 @@ void Game::Initialize()
     HRESULT hr;
     GFX_THROW_INFO(Graphics().GetDevice().CreateRasterizerState(&rasterizerDesc, &rasterizer));
     //Graphics().GetContext().RSSetState(rasterizer.Get());
+}
+
+void Game::CreateLogger()
+{
+    // TODO: We need a logging abstraction. For now this will do, but in the future i don't want to need to call BOOST_*
+    namespace Logging = boost::log;
+    namespace Keywords = boost::log::keywords;
+
+    Logging::register_simple_formatter_factory<Logging::trivial::severity_level, char>("Severity");
+    Logging::add_file_log(
+        Keywords::file_name = "engine.log",
+        Keywords::format = "[%TimeStamp%] [%ThreadID%] [%Severity%] %Message%"
+    );
+
+    Logging::core::get()->set_filter(
+        Logging::trivial::severity >= Logging::trivial::trace
+    );
+
+    Logging::add_common_attributes();
 }
 
 Game::~Game()
@@ -143,6 +169,11 @@ std::thread::id Game::GetMainThreadId() const noexcept
     return mainThreadId_;
 }
 
+const boost::log::sources::logger_mt& Game::Logger()
+{
+    return logger_;
+}
+
 std::shared_ptr<Actor> Game::AddActor()
 {
     std::wstring name = L"Actor " + std::to_wstring(totalActorCount_);
@@ -176,20 +207,50 @@ std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
     pNewActorsQueue_.push(actor);
 
     ++totalActorCount_;
-    return std::move(actor);
+    return actor;
 }
 
-void Game::DestroyActor(const Actor& actor)
+void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
 {
-    const uint32_t index = actor.GetIndex();
+    if ((eventTypes & EventType::Update) == EventType::None)
+    {
+        updateQueue_.erase(actor.GetIndex());
+    }
 
-    ++generations_[index];
-    freeIndices_.push(index);
+    if ((eventTypes & EventType::Render) == EventType::None)
+    {
+        renderQueue_.erase(actor.GetIndex());
+    }
 
-    // TODO: Find a better data structure than vector to hold all actors
-    // This will cause the vector to relocate.
-    // TODO: This really needs to be tested i'm just trying stuff out.
-    pActors_[index] = nullptr;
+    if ((eventTypes & EventType::Render2D) == EventType::None)
+    {
+        render2DQueue_.erase(actor.GetIndex());
+    }
+
+    if ((eventTypes & EventType::Update) == EventType::Update)
+    {
+        updateQueue_.insert(actor.GetIndex());
+    }
+
+    if ((eventTypes & EventType::Render) == EventType::Render)
+    {
+        renderQueue_.insert(actor.GetIndex());
+    }
+
+    if ((eventTypes & EventType::Render2D) == EventType::Render2D)
+    {
+        render2DQueue_.insert(actor.GetIndex());
+    }
+}
+
+void Game::RequestCreationUpdate(const Actor& actor)
+{
+    createComponentsQueue_.push(actor.GetIndex());
+}
+
+void Game::DestroyActor(std::shared_ptr<Actor> actor)
+{
+    pDestroyQueue_.push(std::move(actor));
 }
 
 boost::signals2::connection Game::AddSignalGameStart(const GameStartSignal::slot_type& slot) noexcept
@@ -201,17 +262,40 @@ void Game::Tick() noexcept
 {
     time_.Tick([&]
     {
+        LoadNewActors();
+        DestroyRequestedActors();
         Update();
     });
     Render();
 }
 
+void Game::CreateComponents()
+{
+    while (!createComponentsQueue_.empty())
+    {
+        const int id = createComponentsQueue_.front();
+        createComponentsQueue_.pop();
+
+        // TODO: This could be null in the worst case so we should check that we haven't destroyed the actor yet.
+        pActors_[id]->CreateComponents();
+    }
+}
+
 void Game::Update()
 {
-    LoadNewActors();
-    for (const auto& pActor : pActors_)
+    for (const int actorId : updateQueue_)
     {
-        pActor->Update();
+        if (const auto& actor = pActors_[actorId])
+        {
+            actor->Update();
+        }
+        else
+        {
+            // TODO: Logging doesn't work at all
+
+            BOOST_LOG_SEV(logger_, boost::log::trivial::error) << "Tried updating deleted actor. Actor ID: " << actorId;
+            abort();
+        }
     }
 }
 
@@ -219,9 +303,16 @@ void Game::Render() const
 {
     pWindow_->Clear();
 
-    for (const auto& pActor : pActors_)
+    for (const int actorId : renderQueue_)
     {
-        pActor->Render();
+        if (const auto& actor = pActors_[actorId])
+        {
+            actor->Render();
+        }
+        else
+        {
+            abort();
+        }
     }
 
     Render2D();
@@ -234,9 +325,16 @@ void Game::Render2D() const
     ID2D1RenderTarget& renderTarget = Graphics().Get2DRenderTarget();
     renderTarget.BeginDraw();
 
-    for (const auto& pActor : pActors_)
+    for (const int actorId : render2DQueue_)
     {
-        pActor->Render2D();
+        if (const auto& actor = pActors_[actorId])
+        {
+            actor->Render2D();
+        }
+        else
+        {
+            abort();
+        }
     }
 
     renderTarget.EndDraw();
@@ -263,7 +361,47 @@ void Game::LoadNewActors()
 {
     while (!pNewActorsQueue_.empty())
     {
-        pActors_.push_back(std::move(pNewActorsQueue_.front()));
+        std::shared_ptr<Actor> actor = pNewActorsQueue_.front();
         pNewActorsQueue_.pop();
+
+        const int index = actor->GetIndex();
+
+        if (index == pActors_.size())
+        {
+            pActors_.push_back(std::move(actor));
+            continue;
+        }
+
+        if (index >= pActors_.size())
+        {
+            pActors_.resize(static_cast<unsigned long long>(index) + 1);
+        }
+
+        pActors_[index] = std::move(actor);
+    }
+}
+
+void Game::DestroyRequestedActors()
+{
+    while (!pDestroyQueue_.empty())
+    {
+        const std::shared_ptr<Actor> actor = pDestroyQueue_.front();
+        pDestroyQueue_.pop();
+
+        const uint32_t index = actor->GetIndex();
+
+        ++generations_[index];
+        freeIndices_.push(index);
+
+        // TODO: Find a better data structure than vector to hold all actors
+        // This will cause the vector to relocate.
+        // TODO: This really needs to be tested i'm just trying stuff out.
+        pActors_[index] = nullptr;
+
+        updateQueue_.erase(index);
+        renderQueue_.erase(index);
+        render2DQueue_.erase(index);
+
+        AddActor();
     }
 }

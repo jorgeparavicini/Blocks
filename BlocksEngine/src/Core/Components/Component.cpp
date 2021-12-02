@@ -4,13 +4,15 @@
 #include <thread>
 
 #include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Main/Game.h"
 
 using namespace BlocksEngine;
 
-Component::Component(std::weak_ptr<Actor> actor)
-    : actor_{std::move(actor)}
+Component::Component(std::weak_ptr<Actor> actor, const uint32_t index, const  uint32_t generation)
+    : Entity{index, generation},
+      actor_{std::move(actor)}
 {
-    assert("Component must be added on the main thread", GetGame()->GetMainThreadId() == std::this_thread::id);
+    assert("Component must be added on the main thread" && GetGame()->GetMainThreadId() == std::this_thread::get_id());
 }
 
 std::shared_ptr<Game> Component::GetGame() const noexcept

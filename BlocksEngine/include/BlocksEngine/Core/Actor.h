@@ -9,11 +9,15 @@
 
 #pragma once
 #include <memory>
+#include <queue>
 #include <unordered_set>
 
+#include "Entity.h"
+#include "robin_hood.h"
 #include "BlocksEngine/Core/Transform.h"
 #include "BlocksEngine/Core/Components/Component.h"
 #include "BlocksEngine/Graphics/Graphics.h"
+#include "BlocksEngine/Main/Game.h"
 #include "BlocksEngine/Utility/Concepts.h"
 
 namespace BlocksEngine
@@ -22,9 +26,17 @@ namespace BlocksEngine
     class Actor;
 }
 
-class BlocksEngine::Actor final : public std::enable_shared_from_this<Actor>
+class BlocksEngine::Actor final : public Entity, public std::enable_shared_from_this<Actor>
 {
 public:
+    struct ActorHash
+    {
+        std::size_t operator()(const Actor& actor) const
+        {
+            return robin_hood::hash<int>()(actor.id_);
+        }
+    };
+
     //------------------------------------------------------------------------------
     // Destructors | Copy | Move
     //------------------------------------------------------------------------------
@@ -57,16 +69,11 @@ public:
     // Events
     //------------------------------------------------------------------------------
 
+    void CreateComponents();
     void Update() const;
     void Render() const;
     void Render2D() const;
 
-    //------------------------------------------------------------------------------
-    // Methods
-    //------------------------------------------------------------------------------
-
-    [[nodiscard]] uint32_t GetIndex() const;
-    [[nodiscard]] uint32_t GetGeneration() const;
 
     //------------------------------------------------------------------------------
     // ECS
@@ -78,8 +85,29 @@ public:
     template <Derived<Component> T, class... Args>
     std::shared_ptr<T> AddComponent(Args&&... args)
     {
-        std::shared_ptr<T> component = std::make_shared<T>(shared_from_this(), std::forward<Args>(args)...);
-        pComponents_.insert(std::dynamic_pointer_cast<Component>(component));
+        uint32_t index;
+
+        // If there are already enough free indices to start using them
+        if (freeIndices_.size() > MINIMUM_FREE_INDICES)
+        {
+            index = freeIndices_.front();
+            freeIndices_.pop();
+        }
+        else
+        {
+            generations_.push_back(0);
+            index = static_cast<uint32_t>(generations_.size()) - 1;
+
+            assert(index < 1u << Actor::INDEX_BITS);
+        }
+
+        auto component = std::make_shared<T>(shared_from_this(), std::forward<Args>(args)...);
+        pNewComponentQueue_.push(std::dynamic_pointer_cast<Component>(component));
+
+        // TODO: This is shaky
+        // We need a separate event queue as users could disable update requests and hence disable component creation.
+        // Even if we momentarily enable the update queue, we either would have to disable multi threading or accept that there could be a race.
+        GetGame()->RequestCreationUpdate(*this);
         return component;
     }
 
@@ -110,38 +138,20 @@ public:
         return result;
     }
 
+    void SetEventTypeForComponent(const Component& component, EventType eventTypes);
+
     //------------------------------------------------------------------------------
     // Friends
     //------------------------------------------------------------------------------
 
     friend Game;
 
+    friend bool operator==(const Actor& actor1, const Actor& actor2)
+    {
+        return actor1.id_ == actor2.id_;
+    }
+
 private:
-    /**
-     * \brief Number of bits reserved for the index
-     */
-    static const uint32_t INDEX_BITS;
-
-    /**
-     * \brief Mask for the index part of the id
-     */
-    static const uint32_t INDEX_MASK;
-
-    /**
-     * \brief Number of bits reserved for teh generation number
-     */
-    static const uint32_t GENERATION_BITS;
-
-    /**
-     * \brief Mask for the generation part of the id
-     */
-    static const uint32_t GENERATION_MASK;
-
-    /**
-     * \brief Minimum of free indices in the queue before we reuse one from the queue
-     */
-    static const uint32_t MINIMUM_FREE_INDICES;
-
     //------------------------------------------------------------------------------
     // Constructors
     //------------------------------------------------------------------------------
@@ -152,19 +162,21 @@ private:
     // Fields
     //------------------------------------------------------------------------------
 
-    uint32_t id_;
     std::wstring name_;
     std::weak_ptr<Game> game_;
     std::shared_ptr<Transform> pTransform_{};
-    std::unordered_set<std::shared_ptr<Component>> pComponents_{};
+    std::vector<std::shared_ptr<Component>> pComponents_{};
+    std::queue<std::shared_ptr<Component>> pNewComponentQueue_{};
+    std::queue<std::shared_ptr<Component>> pDestroyQueue_{};
+
+    // Event Sets
+    // TODO: Rename as they are not queues per se
+    robin_hood::unordered_set<uint32_t> updateQueue_{};
+    robin_hood::unordered_set<uint32_t> renderQueue_{};
+    robin_hood::unordered_set<uint32_t> render2DQueue_{};
+
+    // Component states
+    // TODO: We basically repeat stuff from the game class. Maybe it can be refactored
+    std::vector<uint8_t> generations_{};
+    std::queue<uint32_t> freeIndices_{};
 };
-
-inline uint32_t BlocksEngine::Actor::GetIndex() const
-{
-    return id_ & INDEX_MASK;
-}
-
-inline uint32_t BlocksEngine::Actor::GetGeneration() const
-{
-    return id_ >> INDEX_BITS & GENERATION_MASK;
-}
