@@ -28,7 +28,7 @@ public:
     /**
      * Subclasses need to put GetActor& as first parameter.
      */
-    explicit Component(std::weak_ptr<Actor> actor, uint32_t index, uint32_t generation);
+    explicit Component();
 
     virtual ~Component() = default;
     Component(const Component&) = delete;
@@ -44,7 +44,12 @@ public:
 
     [[nodiscard]] std::shared_ptr<Transform> GetTransform() const noexcept;
 
+    // TODO: This method is private to the engine
+    // Do not call this method manually
+    void Initialize(std::weak_ptr<Actor> actor, uint32_t index, uint32_t generation);
+
     // Events
+    virtual void Start();
     virtual void Update();
     virtual void Draw();
     virtual void Draw2D();
@@ -60,5 +65,4 @@ public:
 
 private:
     std::weak_ptr<Actor> actor_;
-    bool isInitialized_{false};
 };

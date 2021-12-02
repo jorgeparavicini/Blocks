@@ -8,19 +8,6 @@
 
 using namespace BlocksEngine;
 
-Camera::Camera(std::weak_ptr<Actor> actor)
-    : Component{std::move(actor)},
-      projection_{std::move(CalculateProjection())},
-      windowResizedConnection_{
-          GetGame()->Window().AddSignalWindowResized(
-              // ReSharper disable CppRedundantQualifier
-              bind(&Camera::OnWindowResized, this, boost::placeholders::_1, boost::placeholders::_2))
-          // ReSharper restore CppRedundantQualifier
-      }
-{
-    GetActor()->SetEventTypeForComponent(*this, EventType::Update);
-}
-
 Matrix Camera::ViewProjection() const noexcept
 {
     return WorldView() * Projection();
@@ -45,6 +32,15 @@ Matrix Camera::Projection() const noexcept
 void Camera::OnWindowResized(const int width, const int height) noexcept
 {
     projection_ = std::move(CalculateProjection());
+}
+
+void Camera::Start()
+{
+    projection_ = std::move(CalculateProjection());
+    windowResizedConnection_ = GetGame()->Window().AddSignalWindowResized(
+        bind(&Camera::OnWindowResized, this, _1, _2));
+
+    GetActor()->SetEventTypeForComponent(*this, EventType::Update);
 }
 
 void Camera::Update()

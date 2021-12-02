@@ -60,6 +60,7 @@ void Actor::CreateComponents()
             pComponents_.reserve(static_cast<unsigned long long>(index) + 1);
         }
 
+        component->Start();
         pComponents_[index] = std::move(component);
     }
 }

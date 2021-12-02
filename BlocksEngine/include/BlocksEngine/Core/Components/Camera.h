@@ -25,14 +25,13 @@ namespace BlocksEngine
 class BlocksEngine::Camera final : public Component
 {
 public:
-    explicit Camera(std::weak_ptr<Actor> actor);
-
     [[nodiscard]] Matrix ViewProjection() const noexcept;
     [[nodiscard]] Matrix WorldView() const noexcept;
     [[nodiscard]] Matrix Projection() const noexcept;
 
     void OnWindowResized(int width, int height) noexcept;
 
+    void Start() override;
     void Update() override;
 
 
