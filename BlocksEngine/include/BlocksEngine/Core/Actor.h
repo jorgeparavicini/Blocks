@@ -101,7 +101,8 @@ public:
             assert(index < 1u << Actor::INDEX_BITS);
         }
 
-        auto component = std::make_shared<T>(shared_from_this(), std::forward<Args>(args)...);
+        std::shared_ptr<T> component = std::make_shared<T>(std::forward<Args>(args)...);
+        component->Initialize(shared_from_this(), index, static_cast<uint32_t>(generations_[index]));
         pNewComponentQueue_.push(std::dynamic_pointer_cast<Component>(component));
 
         // TODO: This is shaky

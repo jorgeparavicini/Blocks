@@ -22,13 +22,32 @@ namespace BlocksEngine
     class Component;
 }
 
+// TODO: We have 2 solutions to create components.
+// The first being the one where we pass a ComponentArgs struct to each constructor
+// this allows us to use constructors to initialize constants or other constructor only initializable variables
+// but we have to create a custom constructor for every component subclass which can be a pain in the ass.
+// Also we expose engine internals which is a big no no in my opinion.
+// The other approach is where the component constructor is empty and base classes can define their constructors as they want.
+// The upside is, we don't have to add ComponentArgs to every constructor but the downside is that some
+// variables can not be initialized at construction time, as the engine hasn't set up their internals (actor for example or game) yet
+// So we would have to be extra careful to not call engine dependent code inside the component constructors
+// For these use cases one could use the Start method
+
 class BlocksEngine::Component : public Entity
 {
 public:
+    // TODO: This approach is somewhat cleaner but also allows the end user to change fundamentals in the engine.
+    struct ComponentArgs
+    {
+        std::weak_ptr<Actor> actor;
+        uint32_t index;
+        uint32_t generation;
+    };
+
     /**
      * Subclasses need to put GetActor& as first parameter.
      */
-    explicit Component();
+    explicit Component(ComponentArgs args);
 
     virtual ~Component() = default;
     Component(const Component&) = delete;

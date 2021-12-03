@@ -8,8 +8,9 @@
 
 using namespace BlocksEngine;
 
-Component::Component()
-    : Entity{}
+Component::Component(const ComponentArgs args)
+    : Entity{args.index, args.generation},
+      actor_{std::move(args.actor)}
 {
     assert("Component must be added on the main thread" && GetGame()->GetMainThreadId() == std::this_thread::get_id());
 }
@@ -28,13 +29,6 @@ std::shared_ptr<Transform> Component::GetTransform() const noexcept
 {
     return GetActor()->GetTransform();
 }
-
-void Component::Initialize(std::weak_ptr<Actor> actor, const uint32_t index, const uint32_t generation)
-{
-    actor_ = std::move(actor);
-    SetId(index, generation);
-}
-
 
 void Component::Start()
 {

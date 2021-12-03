@@ -24,8 +24,8 @@ namespace BlocksEngine
 class BlocksEngine::Renderer final : public Component
 {
 public:
-    explicit Renderer(std::weak_ptr<Actor> actor);
-    Renderer(std::weak_ptr<Actor> actor, std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh);
+    explicit Renderer(ComponentArgs args);
+    Renderer(ComponentArgs args, std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh);
 
     void SetEnabled(bool enabled) noexcept;
     [[nodiscard]] bool IsEnabled() const noexcept;

@@ -212,6 +212,7 @@ std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
 
 void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
 {
+    // TODO: Replace with map?
     if ((eventTypes & EventType::Update) == EventType::None)
     {
         updateQueue_.erase(actor.GetIndex());

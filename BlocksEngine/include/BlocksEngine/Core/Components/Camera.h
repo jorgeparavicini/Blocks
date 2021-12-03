@@ -25,6 +25,8 @@ namespace BlocksEngine
 class BlocksEngine::Camera final : public Component
 {
 public:
+    Camera(ComponentArgs args);
+
     [[nodiscard]] Matrix ViewProjection() const noexcept;
     [[nodiscard]] Matrix WorldView() const noexcept;
     [[nodiscard]] Matrix Projection() const noexcept;

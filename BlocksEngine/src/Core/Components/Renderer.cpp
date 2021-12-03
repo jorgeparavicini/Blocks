@@ -9,19 +9,21 @@
 
 using namespace BlocksEngine;
 
-Renderer::Renderer(const std::weak_ptr<Actor> actor)
+Renderer::Renderer(ComponentArgs args)
     : Renderer{
-        actor, nullptr, nullptr
+        std::move(args), nullptr, nullptr
     }
 {
 }
 
-// TODO: These constructors could be optimized with move semantics
-Renderer::Renderer(const std::weak_ptr<Actor> actor, std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh)
-    : Component{actor},
+// TODO: These constructors could be optimized with move 
+Renderer::Renderer(ComponentArgs args, std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh)
+    : Component{std::move(args)},
       pMaterial_{std::move(pMaterial)},
       pMesh_{std::move(pMesh)},
-      pConstantBuffer_{std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(actor.lock()->GetGame()->Graphics())}
+      pConstantBuffer_{
+          std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(args.actor.lock()->GetGame()->Graphics())
+      }
 {
     if (pMaterial_)
     {

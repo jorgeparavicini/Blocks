@@ -12,6 +12,7 @@
 
 namespace BlocksEngine
 {
+    class Component;
     class Entity;
 }
 
