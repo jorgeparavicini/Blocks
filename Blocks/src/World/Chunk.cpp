@@ -295,7 +295,7 @@ void Chunk::ChunkSection::Disable() noexcept
 
 const Block& Chunk::ChunkSection::GetBlock(const Vector3<int> position) const noexcept
 {
-    return chunk_.GetLocalBlock(position + Vector3{0, section_ * SectionHeight, 0});
+    return chunk_.GetLocalBlock({position.x, position.y + section_ * SectionHeight, position.z});
 }
 
 
