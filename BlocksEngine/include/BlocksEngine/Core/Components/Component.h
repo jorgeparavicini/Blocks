@@ -12,9 +12,11 @@
 #include <memory>
 
 #include "BlocksEngine/Core/Entity.h"
+#include "BlocksEngine/Main/EventType.h"
 
 namespace BlocksEngine
 {
+    enum class EventType;
     class Transform;
     class Actor;
     class Game;
@@ -33,45 +35,38 @@ namespace BlocksEngine
 // So we would have to be extra careful to not call engine dependent code inside the component constructors
 // For these use cases one could use the Start method
 
-class BlocksEngine::Component : public Entity
+class BlocksEngine::Component : private Entity
 {
 public:
-    // TODO: This approach is somewhat cleaner but also allows the end user to change fundamentals in the engine.
-    struct ComponentArgs
-    {
-        std::weak_ptr<Actor> actor;
-        uint32_t index;
-        uint32_t generation;
-    };
-
-    /**
-     * Subclasses need to put GetActor& as first parameter.
-     */
-    explicit Component(ComponentArgs args);
-
+    Component() = default;
     virtual ~Component() = default;
     Component(const Component&) = delete;
     Component& operator=(const Component&) = delete;
     Component(const Component&&) = delete;
     Component& operator=(const Component&&) = delete;
 
-    [[nodiscard]] std::shared_ptr<Game> GetGame() const noexcept;
+    [[nodiscard]] std::shared_ptr<Game> GetGame() const;
     /**
      * Gets the actor this component is attached to.
      */
-    [[nodiscard]] std::shared_ptr<Actor> GetActor() const noexcept;
+    [[nodiscard]] std::shared_ptr<Actor> GetActor() const;
 
     [[nodiscard]] std::shared_ptr<Transform> GetTransform() const noexcept;
 
-    // TODO: This method is private to the engine
-    // Do not call this method manually
-    void Initialize(std::weak_ptr<Actor> actor, uint32_t index, uint32_t generation);
+    [[nodiscard]] bool IsEnabled() const noexcept;
+    void SetEnabled(bool enabled);
+
 
     // Events
     virtual void Start();
     virtual void Update();
     virtual void Draw();
     virtual void Draw2D();
+
+    [[nodiscard]] EventType GetEventTypes() const noexcept;
+    void SetEventTypes(EventType eventTypes);
+
+    // TODO: Destroy event when it gets disconnected from the engine
 
     //------------------------------------------------------------------------------
     // Friends
@@ -82,6 +77,12 @@ public:
         return component1.id_ == component2.id_ && component1.GetActor() == component2.GetActor();
     }
 
+    friend Actor;
+
 private:
     std::weak_ptr<Actor> actor_;
+    bool enabled_{true};
+    EventType eventTypes_{EventType::None};
+
+    void Initialize(std::weak_ptr<Actor> actor, uint32_t index, uint32_t generation);
 };

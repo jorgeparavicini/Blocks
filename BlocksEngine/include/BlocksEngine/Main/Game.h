@@ -121,7 +121,6 @@ private:
     std::unique_ptr<BlocksEngine::Window> pWindow_{};
     std::shared_ptr<BlocksEngine::MainDispatchQueue> pMainDispatch_{};
     void Tick() noexcept;
-    void CreateComponents();
     void Update();
     void Render() const;
     void Render2D() const;
@@ -135,14 +134,11 @@ private:
     std::queue<std::shared_ptr<Actor>> pDestroyQueue_{};
 
     // Event Sets
-    std::queue<uint32_t> createComponentsQueue_{};
     robin_hood::unordered_set<uint32_t> updateQueue_{};
     robin_hood::unordered_set<uint32_t> renderQueue_{};
     robin_hood::unordered_set<uint32_t> render2DQueue_{};
-
-    void LoadNewActors();
+    
     void DestroyRequestedActors();
-    void RequestCreationUpdate(const Actor& actor);
 
     // Rendering loop Timer
     BlocksEngine::Time time_;

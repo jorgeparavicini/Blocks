@@ -23,6 +23,7 @@ public:
     // Constructors
     //------------------------------------------------------------------------------
 
+    Entity();
     Entity(uint32_t index, uint32_t generation);
 
     //------------------------------------------------------------------------------
@@ -57,6 +58,8 @@ protected:
      * \brief Minimum of free indices in the queue before we reuse one from the queue
      */
     static const uint32_t MINIMUM_FREE_INDICES;
+
+    void SetId(uint32_t index, uint32_t generation);
 
     //------------------------------------------------------------------------------
     // Fields

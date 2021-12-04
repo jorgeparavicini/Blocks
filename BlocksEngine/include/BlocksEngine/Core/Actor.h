@@ -10,7 +10,6 @@
 #pragma once
 #include <memory>
 #include <queue>
-#include <unordered_set>
 
 #include "Entity.h"
 #include "robin_hood.h"
@@ -69,7 +68,6 @@ public:
     // Events
     //------------------------------------------------------------------------------
 
-    void CreateComponents();
     void Update() const;
     void Render() const;
     void Render2D() const;
@@ -85,6 +83,9 @@ public:
     template <Derived<Component> T, class... Args>
     std::shared_ptr<T> AddComponent(Args&&... args)
     {
+        assert(
+            "Components must be added on the main thread" && std::this_thread::get_id() == GetGame()->GetMainThreadId(
+            ));
         uint32_t index;
 
         // If there are already enough free indices to start using them
@@ -103,12 +104,21 @@ public:
 
         std::shared_ptr<T> component = std::make_shared<T>(std::forward<Args>(args)...);
         component->Initialize(shared_from_this(), index, static_cast<uint32_t>(generations_[index]));
-        pNewComponentQueue_.push(std::dynamic_pointer_cast<Component>(component));
 
-        // TODO: This is shaky
-        // We need a separate event queue as users could disable update requests and hence disable component creation.
-        // Even if we momentarily enable the update queue, we either would have to disable multi threading or accept that there could be a race.
-        GetGame()->RequestCreationUpdate(*this);
+        if (index == pComponents_.size())
+        {
+            pComponents_.push_back(component);
+            component->Start();
+            return component;
+        }
+
+        if (index >= pComponents_.size())
+        {
+            pComponents_.resize(static_cast<unsigned long long>(index) + 1);
+        }
+
+        pComponents_[index] = component;
+        component->Start();
         return component;
     }
 
@@ -139,13 +149,12 @@ public:
         return result;
     }
 
-    void SetEventTypeForComponent(const Component& component, EventType eventTypes);
-
     //------------------------------------------------------------------------------
     // Friends
     //------------------------------------------------------------------------------
 
     friend Game;
+    friend Component;
 
     friend bool operator==(const Actor& actor1, const Actor& actor2)
     {
@@ -167,7 +176,6 @@ private:
     std::weak_ptr<Game> game_;
     std::shared_ptr<Transform> pTransform_{};
     std::vector<std::shared_ptr<Component>> pComponents_{};
-    std::queue<std::shared_ptr<Component>> pNewComponentQueue_{};
     std::queue<std::shared_ptr<Component>> pDestroyQueue_{};
 
     // Event Sets
@@ -180,4 +188,7 @@ private:
     // TODO: We basically repeat stuff from the game class. Maybe it can be refactored
     std::vector<uint8_t> generations_{};
     std::queue<uint32_t> freeIndices_{};
+
+    void SetEventTypeForComponent(const Component& component, EventType eventTypes);
+    void SetComponentEnabled(const Component& component, bool enabled);
 };

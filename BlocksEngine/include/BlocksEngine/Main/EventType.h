@@ -8,13 +8,14 @@
 // File: EventType.h
 
 #pragma once
+#include "EventType.h"
 
 namespace BlocksEngine
 {
     enum class EventType;
 }
 
-enum class BlocksEngine::EventType : int
+enum class BlocksEngine::EventType
 {
     None = 0,
     Update = 1,
@@ -22,4 +23,17 @@ enum class BlocksEngine::EventType : int
     Render2D = 4
 };
 
-DEFINE_ENUM_FLAG_OPERATORS(BlocksEngine::EventType)
+inline BlocksEngine::EventType operator|(BlocksEngine::EventType a, BlocksEngine::EventType b)
+{
+    return static_cast<BlocksEngine::EventType>(static_cast<int>(a) | static_cast<int>(b));
+}
+
+inline BlocksEngine::EventType operator&(BlocksEngine::EventType a, BlocksEngine::EventType b)
+{
+    return static_cast<BlocksEngine::EventType>(static_cast<int>(a) & static_cast<int>(b));
+}
+
+inline BlocksEngine::EventType& operator|=(BlocksEngine::EventType& a, const BlocksEngine::EventType b)
+{
+    return a = a | b;
+}

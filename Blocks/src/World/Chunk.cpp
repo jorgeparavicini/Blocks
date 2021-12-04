@@ -3,6 +3,7 @@
 
 #include "Blocks/World/BlockRegistry.h"
 #include "Blocks/World/World.h"
+#include "BlocksEngine/Core/Actor.h"
 #include "BlocksEngine/Core/Components/Renderer.h"
 #include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
 #include "BlocksEngine/Core/Math/Vector3.h"
@@ -17,16 +18,20 @@ using namespace BlocksEngine;
 // Chunk Section
 //------------------------------------------------------------------------------
 
-Chunk::ChunkSection::ChunkSection(std::weak_ptr<Actor> actor, const Chunk& chunk, const int section)
-    : Component{std::move(actor)},
-      chunk_{chunk},
-      section_{section},
-      renderer_{std::move(GetActor()->AddComponent<Renderer>())}
+Chunk::ChunkSection::ChunkSection(const Chunk& chunk, const int section)
+    : chunk_{chunk},
+      section_{section}
+{
+}
+
+void Chunk::ChunkSection::Start()
 {
     if (!terrainTexture_)
     {
         terrainTexture_ = Texture2D::FromDds(GetGame()->Graphics(), L"resources/images/terrain.dds");
     }
+
+    renderer_ = std::move(GetActor()->AddComponent<Renderer>());
 
     auto material = std::make_shared<Terrain>(GetActor()->GetGame()->Graphics(), terrainTexture_);
     renderer_->SetMaterial(std::move(material));
@@ -276,6 +281,18 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
     });
 }
 
+void Chunk::ChunkSection::Enable() noexcept
+{
+    SetEnabled(true);
+    renderer_->SetEnabled(true);
+}
+
+void Chunk::ChunkSection::Disable() noexcept
+{
+    SetEnabled(false);
+    renderer_->SetEnabled(false);
+}
+
 const Block& Chunk::ChunkSection::GetBlock(const Vector3<int> position) const noexcept
 {
     return chunk_.GetLocalBlock(position + Vector3{0, section_ * SectionHeight, 0});
@@ -286,13 +303,35 @@ const Block& Chunk::ChunkSection::GetBlock(const Vector3<int> position) const no
 // Chunk
 //------------------------------------------------------------------------------
 
-Chunk::Chunk(std::weak_ptr<Actor> actor, const World& world, const ChunkCoords coords)
-    : Component{std::move(actor)},
-      world_{world},
+Chunk::Chunk(const World& world, const ChunkCoords coords)
+    : world_{world},
       coords_{coords},
       sections_(SectionsPerChunk)
 {
-    GetTransform()->SetPosition({static_cast<float>(coords.x) * Width, 0, static_cast<float>(coords.y) * Depth});
+}
+
+void Chunk::Enable() noexcept
+{
+    SetEnabled(true);
+    for (const auto& chunkSection : sections_)
+    {
+        chunkSection->Enable();
+    }
+}
+
+void Chunk::Disable() noexcept
+{
+    SetEnabled(false);
+    for (const auto& chunkSection : sections_)
+    {
+        chunkSection->Disable();
+    }
+}
+
+
+void Chunk::Start()
+{
+    GetTransform()->SetPosition({static_cast<float>(coords_.x) * Width, 0, static_cast<float>(coords_.y) * Depth});
     for (int i = 0; i < SectionsPerChunk; ++i)
     {
         const std::shared_ptr<Actor> sectorActor = GetGame()->AddActor();

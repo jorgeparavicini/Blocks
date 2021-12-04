@@ -24,19 +24,16 @@ namespace BlocksEngine
 class BlocksEngine::Renderer final : public Component
 {
 public:
-    explicit Renderer(ComponentArgs args);
-    Renderer(ComponentArgs args, std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh);
+    explicit Renderer();
+    Renderer(std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh);
 
-    void SetEnabled(bool enabled) noexcept;
-    [[nodiscard]] bool IsEnabled() const noexcept;
-
+    void Start() override;
     void Draw() override;
 
     void SetMesh(std::shared_ptr<Mesh> mesh);
     void SetMaterial(std::shared_ptr<Material> material);
 
 private:
-    bool enabled_{true};
     std::shared_ptr<Material> pMaterial_;
     std::shared_ptr<Mesh> pMesh_;
     std::shared_ptr<VertexConstantBuffer<DirectX::XMMATRIX>> pConstantBuffer_;

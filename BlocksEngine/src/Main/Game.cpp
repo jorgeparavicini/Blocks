@@ -204,14 +204,27 @@ std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
         static_cast<uint32_t>(generations_[index]),
         std::move(actorName)
     });
-    pNewActorsQueue_.push(actor);
 
     ++totalActorCount_;
+
+    if (index == pActors_.size())
+    {
+        pActors_.push_back(actor);
+        return actor;
+    }
+
+    if (index >= pActors_.size())
+    {
+        pActors_.resize(static_cast<unsigned long long>(index) + 1);
+    }
+
+    pActors_[index] = actor;
     return actor;
 }
 
 void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
 {
+    
     // TODO: Replace with map?
     if ((eventTypes & EventType::Update) == EventType::None)
     {
@@ -244,11 +257,6 @@ void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
     }
 }
 
-void Game::RequestCreationUpdate(const Actor& actor)
-{
-    createComponentsQueue_.push(actor.GetIndex());
-}
-
 void Game::DestroyActor(std::shared_ptr<Actor> actor)
 {
     pDestroyQueue_.push(std::move(actor));
@@ -263,29 +271,28 @@ void Game::Tick() noexcept
 {
     time_.Tick([&]
     {
-        LoadNewActors();
         DestroyRequestedActors();
         Update();
     });
     Render();
 }
 
-void Game::CreateComponents()
-{
-    while (!createComponentsQueue_.empty())
-    {
-        const int id = createComponentsQueue_.front();
-        createComponentsQueue_.pop();
-
-        // TODO: This could be null in the worst case so we should check that we haven't destroyed the actor yet.
-        pActors_[id]->CreateComponents();
-    }
-}
-
 void Game::Update()
 {
-    for (const int actorId : updateQueue_)
+    int count = 0;
+    for (const uint32_t actorId : updateQueue_)
     {
+        if (actorId > 1000)
+        {
+            int i = 0;
+            for (const uint32_t x : updateQueue_)
+            {
+                OutputDebugString((std::to_wstring(i) + L": " + std::to_wstring(x) + L"\n").c_str());
+                ++i;
+            }
+            OutputDebugStringW((L"Original count: " + std::to_wstring(count)).c_str());
+        }
+        ++count;
         if (const auto& actor = pActors_[actorId])
         {
             actor->Update();
@@ -356,30 +363,6 @@ std::optional<int> Game::ProcessApplicationMessages() noexcept
     }
 
     return {};
-}
-
-void Game::LoadNewActors()
-{
-    while (!pNewActorsQueue_.empty())
-    {
-        std::shared_ptr<Actor> actor = pNewActorsQueue_.front();
-        pNewActorsQueue_.pop();
-
-        const int index = actor->GetIndex();
-
-        if (index == pActors_.size())
-        {
-            pActors_.push_back(std::move(actor));
-            continue;
-        }
-
-        if (index >= pActors_.size())
-        {
-            pActors_.resize(static_cast<unsigned long long>(index) + 1);
-        }
-
-        pActors_[index] = std::move(actor);
-    }
 }
 
 void Game::DestroyRequestedActors()

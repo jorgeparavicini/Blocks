@@ -6,7 +6,7 @@
 using namespace BlocksEngine;
 
 
-Actor::Actor(std::weak_ptr<Game> game, const uint32_t index, uint32_t generation, std::wstring name)
+Actor::Actor(std::weak_ptr<Game> game, const uint32_t index, const uint32_t generation, std::wstring name)
     : Entity{index, generation},
       name_{std::move(name)},
       game_{std::move(game)},
@@ -40,33 +40,9 @@ std::shared_ptr<Transform> Actor::GetTransform() const noexcept
     return pTransform_;
 }
 
-void Actor::CreateComponents()
-{
-    while(!pNewComponentQueue_.empty())
-    {
-        std::shared_ptr<Component> component = pNewComponentQueue_.front();
-        pNewComponentQueue_.pop();
-
-        const uint32_t index = component->GetIndex();
-
-        if (index == pComponents_.size())
-        {
-            pComponents_.push_back(std::move(component));
-            continue;
-        }
-
-        if (index >= pComponents_.size())
-        {
-            pComponents_.reserve(static_cast<unsigned long long>(index) + 1);
-        }
-
-        component->Start();
-        pComponents_[index] = std::move(component);
-    }
-}
-
 void Actor::SetEventTypeForComponent(const Component& component, EventType eventTypes)
 {
+    assert("Main loop dependent methods must be called from the main thread" && std::this_thread::get_id() == GetGame()->GetMainThreadId());
     // TODO: This is ugly af
     if ((eventTypes & EventType::Update) == EventType::None)
     {
@@ -114,13 +90,24 @@ void Actor::SetEventTypeForComponent(const Component& component, EventType event
     GetGame()->UpdateEventTypeForActor(*this, componentEvent);
 }
 
+void Actor::SetComponentEnabled(const Component& component, const bool enabled)
+{
+    // TODO: Needs to be tested
+    if (!enabled)
+    {
+        updateQueue_.erase(component.GetIndex());
+        renderQueue_.erase(component.GetIndex());
+        render2DQueue_.erase(component.GetIndex());
+    } else
+    {
+        SetEventTypeForComponent(component, component.GetEventTypes());
+    }
+}
+
 // TODO: Destroy Actor request
 
 void Actor::Update() const
 {
-    // TODO: Maybe move to internal update? Not sure if this must be updated, if other actors modify this transform it could be a use case
-    pTransform_->UpdateMatrix();
-
     for (const int componentId : updateQueue_)
     {
         if (const auto& component = pComponents_[componentId])

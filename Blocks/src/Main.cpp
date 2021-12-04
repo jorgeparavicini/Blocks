@@ -9,8 +9,8 @@
 
 #include "Blocks/Player/PlayerDebugs.h"
 #include "Blocks/World/World.h"
+#include "BlocksEngine/Core/Actor.h"
 #include "BlocksEngine/Exceptions/Exception.h"
-#include "BlocksEngine/Graphics/Material/SolidColor/SolidColor.h"
 #include "BlocksEngine/Main/Game.h"
 
 void SetupLogging()
@@ -48,7 +48,6 @@ int WINAPI WinMain(
     game->AddSignalGameStart([&game]
     {
         game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
-        game->UpdateEventTypeForActor(*game->MainCamera().GetActor(), BlocksEngine::EventType::Render2D);
 
         const auto worldActor = game->AddActor(L"World");
         worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
