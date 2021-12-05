@@ -31,10 +31,10 @@ Graphics::Graphics(HWND hWnd, const int width, const int height)
 void Graphics::CreateDevice()
 {
     HRESULT hr;
-    UINT creationFlags = 0;
+    UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 #ifdef _DEBUG
-    creationFlags |= D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
     static constexpr D3D_FEATURE_LEVEL FeatureLevels[] = {
@@ -160,7 +160,7 @@ void Graphics::CreateResources()
         pDevice_->CreateRenderTargetView(backBuffer.Get(), nullptr, pRenderTarget_.ReleaseAndGetAddressOf()));
 
     // Create 2D Context
-    pSwapChain_->GetBuffer(0, IID_PPV_ARGS(&pSurface_));
+    GFX_THROW_INFO(pSwapChain_->GetBuffer(0, IID_PPV_ARGS(&pSurface_)));
 
     const auto dpi = static_cast<FLOAT>(GetDpiForWindow(window_));
     const D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT,
@@ -169,7 +169,7 @@ void Graphics::CreateResources()
                                                                                  D2D1_ALPHA_MODE_PREMULTIPLIED),
                                                                              dpi,
                                                                              dpi);
-    pFactory_->CreateDxgiSurfaceRenderTarget(pSurface_.Get(), &props, &pRenderTarget2D_);
+    GFX_THROW_INFO(pFactory_->CreateDxgiSurfaceRenderTarget(pSurface_.Get(), &props, &pRenderTarget2D_));
 
     // Allocate a 2D depth/stencil buffer
     const CD3D11_TEXTURE2D_DESC depthStencilDesc(depthBufferFormat, backBufferWidth, backBufferHeight, 1, 1,
