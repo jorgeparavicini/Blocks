@@ -395,6 +395,16 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
         return result;
     }
 
+    friend Vector3<T> operator*(const float s, const Vector3<T>& v) noexcept
+    {
+        const DirectX::XMVECTOR x1 = Vector3<T>::Load(&v);
+        const DirectX::XMVECTOR x = DirectX::XMVectorScale(x1, s);
+
+        Vector3<T> result;
+        Vector3<T>::Store(&result, x);
+        return result;
+    }
+
     friend Vector3<T> operator*(const Quaternion& q, const Vector3<T>& v) noexcept
     {
         const float x = q.x * 2.0f;
