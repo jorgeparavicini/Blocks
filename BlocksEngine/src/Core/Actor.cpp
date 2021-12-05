@@ -5,14 +5,9 @@
 
 using namespace BlocksEngine;
 
-constexpr uint32_t Actor::INDEX_BITS = 24;
-constexpr uint32_t Actor::INDEX_MASK = (1 << INDEX_BITS) - 1;
-constexpr uint32_t Actor::GENERATION_BITS = 8;
-constexpr uint32_t Actor::GENERATION_MASK = (1 << GENERATION_BITS) - 1;
-constexpr uint32_t Actor::MINIMUM_FREE_INDICES = 1024;
 
-Actor::Actor(std::weak_ptr<Game> game, uint32_t index, uint32_t generation, std::wstring name)
-    : id_{index & INDEX_MASK | (generation & GENERATION_MASK) << INDEX_BITS},
+Actor::Actor(std::weak_ptr<Game> game, const uint32_t index, const uint32_t generation, std::wstring name)
+    : Entity{index, generation},
       name_{std::move(name)},
       game_{std::move(game)},
       pTransform_{std::make_shared<Transform>()}
@@ -45,29 +40,116 @@ std::shared_ptr<Transform> Actor::GetTransform() const noexcept
     return pTransform_;
 }
 
+void Actor::SetEventTypeForComponent(const Component& component, EventType eventTypes)
+{
+    assert("Main loop dependent methods must be called from the main thread" && std::this_thread::get_id() == GetGame()->GetMainThreadId());
+    // TODO: This is ugly af
+    if ((eventTypes & EventType::Update) == EventType::None)
+    {
+        updateQueue_.erase(component.GetIndex());
+    }
+    if ((eventTypes & EventType::Render) == EventType::None)
+    {
+        renderQueue_.erase(component.GetIndex());
+    }
+
+    if ((eventTypes & EventType::Render2D) == EventType::None)
+    {
+        render2DQueue_.erase(component.GetIndex());
+    }
+
+    if ((eventTypes & EventType::Update) == EventType::Update)
+    {
+        updateQueue_.insert(component.GetIndex());
+    }
+
+    if ((eventTypes & EventType::Render) == EventType::Render)
+    {
+        renderQueue_.insert(component.GetIndex());
+    }
+
+    if ((eventTypes & EventType::Render2D) == EventType::Render2D)
+    {
+        render2DQueue_.insert(component.GetIndex());
+    }
+
+    auto componentEvent = EventType::None;
+    if (!updateQueue_.empty())
+    {
+        componentEvent |= EventType::Update;
+    }
+    if (!renderQueue_.empty())
+    {
+        componentEvent |= EventType::Render;
+    }
+    if (!render2DQueue_.empty())
+    {
+        componentEvent |= EventType::Render2D;
+    }
+
+    GetGame()->UpdateEventTypeForActor(*this, componentEvent);
+}
+
+void Actor::SetComponentEnabled(const Component& component, const bool enabled)
+{
+    // TODO: Needs to be tested
+    if (!enabled)
+    {
+        updateQueue_.erase(component.GetIndex());
+        renderQueue_.erase(component.GetIndex());
+        render2DQueue_.erase(component.GetIndex());
+    } else
+    {
+        SetEventTypeForComponent(component, component.GetEventTypes());
+    }
+}
+
+// TODO: Destroy Actor request
 
 void Actor::Update() const
 {
-    pTransform_->UpdateMatrix();
-
-    for (auto& pComponent : pComponents_)
+    for (const int componentId : updateQueue_)
     {
-        pComponent->Update();
+        if (const auto& component = pComponents_[componentId])
+        {
+            component->Update();
+        }
+        else
+        {
+            // TODO: Same as in game don't abort...
+            abort();
+        }
     }
 }
 
 void Actor::Render() const
 {
-    for (auto& pComponent : pComponents_)
+    for (const int componentId : renderQueue_)
     {
-        pComponent->Draw();
+        if (const auto& component = pComponents_[componentId])
+        {
+            component->Draw();
+        }
+        else
+        {
+            // TODO: Same as in game don't abort...
+            abort();
+        }
     }
 }
 
 void Actor::Render2D() const
 {
-    for (auto& pComponent : pComponents_)
+    for (const int componentId : render2DQueue_)
     {
-        pComponent->Draw2D();
+        if (const auto& component = pComponents_[componentId])
+        {
+            component->Draw2D();
+        }
+        else
+        {
+            // TODO: Same as in game don't abort...
+            abort();
+        }
     }
 }

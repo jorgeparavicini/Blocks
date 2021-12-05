@@ -12,14 +12,20 @@
 using namespace Blocks;
 using namespace BlocksEngine;
 
-World::World(std::weak_ptr<Actor> actor, std::weak_ptr<Transform> playerTransform,
+World::World(std::weak_ptr<Transform> playerTransform,
              const uint8_t chunkLoadDistance)
-    : Component{std::move(actor)},
-      chunkViewDistance_{chunkLoadDistance},
-      playerTransform_{std::move(playerTransform)},
-      loadingScreen_{GetActor()->AddComponent<LoadingScreen>()}
+    : chunkViewDistance_{chunkLoadDistance},
+      playerTransform_{std::move(playerTransform)}
 {
+}
+
+void World::Start()
+{
+    SetEventTypes(EventType::Update);
+    loadingScreen_ = GetActor()->AddComponent<LoadingScreen>();
     GenerateWorld();
+
+    // Comment this to show a loading screen whilst world is loading.
     loadingScreen_->LevelLoaded();
 }
 
@@ -32,6 +38,7 @@ void World::Update()
     if (chunkCoords != lastChunkCoords_)
     {
         UpdateChunks();
+        lastChunkCoords_ = chunkCoords;
     }
 }
 
@@ -170,7 +177,9 @@ void World::UpdateChunks()
 {
     const auto workGroup = std::make_shared<DispatchWorkGroup>();
     const Chunk::ChunkCoords playerCoords = ChunkCoordFromPosition(playerTransform_.lock()->GetPosition());
-    std::vector<std::shared_ptr<Chunk>> chunks{};
+
+    const std::unordered_set<Chunk::ChunkCoords, ChunkHash> previousActiveChunks = std::move(activeChunkCoords_);
+    std::vector<std::shared_ptr<Chunk>> newChunks{};
 
     for (int i = 0; i < chunkViewDistance_; i++)
     {
@@ -178,21 +187,36 @@ void World::UpdateChunks()
         {
             const Chunk::ChunkCoords chunkCoords = Vector2(
                 i - chunkViewDistance_ / 2, j - chunkViewDistance_ / 2) + playerCoords;
+
+            activeChunkCoords_.insert(chunkCoords);
+
+            // Check if chunk already exists. If it doesn't create a new one. 
             const auto chunk = chunks_.find(chunkCoords);
             if (chunk == chunks_.end())
             {
                 const auto c = CreateChunk(chunkCoords);
-                chunks.push_back(c);
+                newChunks.push_back(c);
                 workGroup->AddWorkItem(CreateGenerationRequestForChunk(c), DispatchQueue::Background());
             }
+
+            // If it does enable the chunk and add it to active chunks
+            chunks_[chunkCoords]->Enable();
+        }
+    }
+
+    for (auto& coords : previousActiveChunks)
+    {
+        if (!activeChunkCoords_.contains(coords))
+        {
+                chunks_[coords]->Disable();
         }
     }
 
     workGroup->AddCallback(GetGame()->MainDispatchQueue(),
-                           std::make_shared<DispatchWorkItem>([this, chunks = move(chunks)]()
+                           std::make_shared<DispatchWorkItem>([this, newChunks = move(newChunks)]()
                            mutable
                                {
-                                   const auto meshRequestGroup = CreateMeshRequestGroup(std::move(chunks));
+                                   const auto meshRequestGroup = CreateMeshRequestGroup(std::move(newChunks));
                                    meshRequestGroup->Execute();
                                }));
 

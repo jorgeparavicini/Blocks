@@ -9,34 +9,27 @@
 
 using namespace BlocksEngine;
 
-Renderer::Renderer(const std::weak_ptr<Actor> actor)
-    : Renderer{
-        actor, nullptr, nullptr
-    }
+Renderer::Renderer()
+    : Renderer{nullptr, nullptr}
 {
 }
 
-// TODO: These constructors could be optimized with move semantics
-Renderer::Renderer(const std::weak_ptr<Actor> actor, std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh)
-    : Component{actor},
-      pMaterial_{std::move(pMaterial)},
-      pMesh_{std::move(pMesh)},
-      pConstantBuffer_{std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(actor.lock()->GetGame()->Graphics())}
+Renderer::Renderer(std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh)
+    : pMaterial_{std::move(pMaterial)},
+      pMesh_{std::move(pMesh)}
 {
+}
+
+void Renderer::Start()
+{
+    SetEventTypes(EventType::Render);
+
+    pConstantBuffer_ = std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(GetGame()->Graphics());
     if (pMaterial_)
     {
+        // TODO: Maybe a copy needs to be created so not all references get the constant buffer
         pMaterial_->AddConstantBuffer(pConstantBuffer_);
     }
-}
-
-void Renderer::SetEnabled(const bool enabled) noexcept
-{
-    enabled_ = enabled;
-}
-
-bool Renderer::IsEnabled() const noexcept
-{
-    return enabled_;
 }
 
 void Renderer::Draw()
@@ -47,7 +40,7 @@ void Renderer::Draw()
         return;
     }
 
-    const auto wvp = GetActor()->GetTransform()->GetMatrix() * GetGame()->MainCamera().ViewProjection();
+    const auto wvp = GetActor()->GetTransform()->GetMatrix() * GetGame()->MainCamera().WorldViewProjection();
 
     const Graphics& gfx = GetGame()->Graphics();
 

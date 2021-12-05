@@ -3,6 +3,8 @@
 
 #include <iomanip>
 
+#include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Core/Transform.h"
 #include "BlocksEngine/DebugUtility/DxgiInfoManager.h"
 #include "BlocksEngine/Exceptions/GraphicsException.h"
 #include "BlocksEngine/Main/Game.h"
@@ -10,9 +12,11 @@
 using namespace Blocks;
 using namespace BlocksEngine;
 
-PlayerDebugs::PlayerDebugs(std::weak_ptr<Actor> actor)
-    : Component{std::move(actor)}
+
+void PlayerDebugs::Start()
 {
+    SetEventTypes(EventType::Render2D);
+
     ID2D1RenderTarget& renderTarget = GetGame()->Graphics().Get2DRenderTarget();
 
     HRESULT hr;
@@ -45,8 +49,7 @@ void PlayerDebugs::Draw2D()
 
     const auto size = GetGame()->Graphics().Size();
     const float x = static_cast<float>(size.x);
-    const float y = static_cast<float>(size.y);
-    const D2D1_RECT_F rect = D2D1::RectF((x - 500.0f), 0.0f, x, 200.0f);
+    const D2D1_RECT_F rect = D2D1::RectF((x - 500.0f), 0.0f, 0.0f, 200.0f);
 
     ID2D1RenderTarget& renderTarget = GetGame()->Graphics().Get2DRenderTarget();
 

@@ -21,11 +21,10 @@ namespace Blocks
 class Blocks::LoadingScreen final : public BlocksEngine::Component
 {
 public:
-    LoadingScreen(std::weak_ptr<BlocksEngine::Actor> actor);
+    void Start() override;
+    void Draw2D() override;
 
     void LevelLoaded();
-
-    void Draw2D() override;
 
 private:
     bool isLoading_{true};

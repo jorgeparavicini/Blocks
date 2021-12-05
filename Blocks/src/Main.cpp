@@ -9,8 +9,8 @@
 
 #include "Blocks/Player/PlayerDebugs.h"
 #include "Blocks/World/World.h"
+#include "BlocksEngine/Core/Actor.h"
 #include "BlocksEngine/Exceptions/Exception.h"
-#include "BlocksEngine/Graphics/Material/SolidColor/SolidColor.h"
 #include "BlocksEngine/Main/Game.h"
 
 void SetupLogging()
@@ -43,17 +43,17 @@ int WINAPI WinMain(
 
     SetupLogging();
 
-    auto game = BlocksEngine::Game::CreateGame();
-    game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
-
-    game->AddSignalGameStart([&game]
-    {
-        const auto worldActor = game->AddActor(L"World");
-        worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
-    });
-
     try
     {
+        auto game = BlocksEngine::Game::CreateGame();
+
+        game->AddSignalGameStart([&game]
+            {
+                game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
+
+                const auto worldActor = game->AddActor(L"World");
+                worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
+            });
         return game->Start();
     }
     catch (const BlocksEngine::Exception& e)

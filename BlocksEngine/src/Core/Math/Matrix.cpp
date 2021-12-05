@@ -81,7 +81,7 @@ Matrix::Matrix(const XMFLOAT4X3& m) noexcept
 {
 }
 
-Matrix::Matrix(const float* pArray) noexcept
+Matrix::Matrix(_In_reads_(16) const float* pArray) noexcept
     : XMFLOAT4X4(pArray)
 {
 }

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\robin_hood\include\robin_hood.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Entity.h" />
     <ClInclude Include="include\BlocksEngine\Utility\Concepts.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\ConstantBufferBase.h" />
@@ -76,8 +77,8 @@
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkItem.h" />
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkGroup.h" />
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchObject.h" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="include\BlocksEngine\Main\EventType.h" />
+    <ClCompile Include="src\Core\Entity.cpp" />
     <ClCompile Include="src\Core\Actor.cpp" />
     <ClCompile Include="src\Core\Components\Component.cpp" />
     <ClCompile Include="src\Core\Components\Renderer.cpp" />
@@ -314,6 +315,9 @@
     <Import Project="..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets" Condition="Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" />
     <Import Project="..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets" Condition="Exists('..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets')" />
   </ImportGroup>
+  <PropertyGroup Condition="'$(Language)'=='C++'">
+    <CAExcludePath>..\packages;external;$(CAExcludePath)</CAExcludePath>
+  </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

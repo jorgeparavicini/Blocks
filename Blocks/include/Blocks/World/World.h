@@ -35,13 +35,13 @@ public:
     // Constructors
     //------------------------------------------------------------------------------
 
-    World(std::weak_ptr<BlocksEngine::Actor> actor, std::weak_ptr<BlocksEngine::Transform> playerTransform,
-          uint8_t chunkLoadDistance = 8);
+    World(std::weak_ptr<BlocksEngine::Transform> playerTransform, uint8_t chunkLoadDistance = 8);
 
     //------------------------------------------------------------------------------
     // Engine Events
     //------------------------------------------------------------------------------
 
+    void Start() override;
     void Update() override;
 
     //------------------------------------------------------------------------------

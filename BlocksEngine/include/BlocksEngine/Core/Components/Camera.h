@@ -12,7 +12,6 @@
 #include <DirectXMath.h>
 #include <boost/signals2/connection.hpp>
 
-#include "BlocksEngine/Core/Actor.h"
 #include "BlocksEngine/Core/Components/Component.h"
 #include "BlocksEngine/Core/Math/Matrix.h"
 #include "BlocksEngine/Core/Math/Vector3.h"
@@ -25,14 +24,13 @@ namespace BlocksEngine
 class BlocksEngine::Camera final : public Component
 {
 public:
-    explicit Camera(std::weak_ptr<Actor> actor);
-
-    [[nodiscard]] Matrix ViewProjection() const noexcept;
+    [[nodiscard]] Matrix WorldViewProjection() const noexcept;
     [[nodiscard]] Matrix WorldView() const noexcept;
     [[nodiscard]] Matrix Projection() const noexcept;
 
     void OnWindowResized(int width, int height) noexcept;
 
+    void Start() override;
     void Update() override;
 
 
@@ -46,6 +44,8 @@ private:
     float keyboardRotationSpeed_{10.0f};
     float x_{0.1f};
     Matrix projection_;
+    Matrix worldView_;
+    Matrix wvp_;
     boost::signals2::connection windowResizedConnection_;
 
     [[nodiscard]] float ClampAngle(float angle, float min, float max) const;

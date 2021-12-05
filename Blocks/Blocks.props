@@ -11,6 +11,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Blocks/pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Blocks/external/robin_hood/include;$(SolutionDir)/Dependencies/boost/include;$(SolutionDir)/BlocksEngine/include;$(SolutionDir)/Blocks/include;$(SolutionDir)/Blocks/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <FxCompile>
       <ShaderModel>4.0</ShaderModel>

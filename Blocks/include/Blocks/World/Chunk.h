@@ -78,7 +78,7 @@ public:
         // Constructors
         //------------------------------------------------------------------------------
 
-        ChunkSection(std::weak_ptr<BlocksEngine::Actor> actor, const Chunk& chunk, int section);
+        ChunkSection(const Chunk& chunk, int section);
 
 
         //------------------------------------------------------------------------------
@@ -98,7 +98,10 @@ public:
         // Methods
         //------------------------------------------------------------------------------
 
+        void Start() override;
         std::unique_ptr<BlocksEngine::DispatchWorkItem> RegenerateMesh();
+        void Enable() noexcept;
+        void Disable() noexcept;
 
     private:
         inline static std::shared_ptr<BlocksEngine::Texture2D> terrainTexture_;
@@ -123,15 +126,21 @@ public:
     // Constructor
     //------------------------------------------------------------------------------
 
-    Chunk(std::weak_ptr<BlocksEngine::Actor> actor, const World& world,
-          ChunkCoords coords = ChunkCoords::Zero);
+    Chunk(const World& world, ChunkCoords coords = ChunkCoords::Zero);
 
+    //------------------------------------------------------------------------------
+    // Methods
+    //------------------------------------------------------------------------------
+
+    void Enable() noexcept;
+    void Disable() noexcept;
 
     //------------------------------------------------------------------------------
     // Operators
     //------------------------------------------------------------------------------
     friend std::ostream& operator<<(std::ostream& out, const Chunk& chunk);
 
+    void Start() override;
     [[nodiscard]] const Block& GetWorldBlock(BlocksEngine::Vector3<int> position) const noexcept;
     [[nodiscard]] const Block& GetLocalBlock(BlocksEngine::Vector3<int> position) const noexcept;
     [[nodiscard]] const World& GetWorld() const noexcept;

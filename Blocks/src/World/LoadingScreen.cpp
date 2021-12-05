@@ -8,8 +8,8 @@
 using namespace BlocksEngine;
 using namespace Blocks;
 
-LoadingScreen::LoadingScreen(std::weak_ptr<Actor> actor)
-    : Component{std::move(actor)}
+
+void LoadingScreen::Start()
 {
     ID2D1RenderTarget& renderTarget = GetGame()->Graphics().Get2DRenderTarget();
     HRESULT hr;
@@ -31,11 +31,6 @@ LoadingScreen::LoadingScreen(std::weak_ptr<Actor> actor)
     pTextFormat_->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 }
 
-void LoadingScreen::LevelLoaded()
-{
-    isLoading_ = false;
-}
-
 void LoadingScreen::Draw2D()
 {
     if (!isLoading_) return;
@@ -50,4 +45,9 @@ void LoadingScreen::Draw2D()
 
     renderTarget.DrawTextW(message.c_str(), static_cast<UINT32>(message.size()), pTextFormat_.Get(), &rect,
                            pTextBrush_.Get());
+}
+
+void LoadingScreen::LevelLoaded()
+{
+    isLoading_ = false;
 }

@@ -21,8 +21,7 @@ namespace Blocks
 class Blocks::PlayerDebugs final : public BlocksEngine::Component
 {
 public:
-    PlayerDebugs(std::weak_ptr<BlocksEngine::Actor> actor);
-
+    void Start() override;
     void Draw2D() override;
 
 private:
