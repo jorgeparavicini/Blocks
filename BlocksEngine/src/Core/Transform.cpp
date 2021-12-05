@@ -18,17 +18,18 @@ const Matrix& Transform::GetMatrix() const noexcept
     return matrix_;
 }
 
-const Vector3<float>& Transform::GetPosition() noexcept
+const Vector3<float>& Transform::GetPosition() const noexcept
 {
     return position_;
 }
 
-const Quaternion& Transform::GetRotation() noexcept
+// TODO: Quaternion should be renamed orientation. Euler angles are rotation
+const Quaternion& Transform::GetRotation() const noexcept
 {
     return rotation_;
 }
 
-const Vector3<float>& Transform::GetScale() noexcept
+const Vector3<float>& Transform::GetScale() const noexcept
 {
     return scale_;
 }

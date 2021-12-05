@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <algorithm>
+
 namespace BlocksEngine
 {
     struct Plane;
@@ -23,9 +25,6 @@ namespace BlocksEngine
 
     template <class T = float>
     struct Vector4;
-
-
-    class Math;
 }
 
 #include "BlocksEngine/Core/Math/Matrix.h"
@@ -35,10 +34,19 @@ namespace BlocksEngine
 #include "BlocksEngine/Core/Math/Vector3.h"
 #include "BlocksEngine/Core/Math/Vector4.h"
 
-
-class BlocksEngine::Math
+namespace BlocksEngine::Math
 {
-public:
-    static const float DegToRad;
-    static const float Pi;
-};
+    constexpr float DEG_TO_RAD = 0.0174533f;
+    constexpr float PI = 3.14159265359;
+    constexpr float EPSILON = std::numeric_limits<float>::epsilon();
+
+    inline float Max(const float a, const float b, const float c)
+    {
+        return std::max(std::max(a, b), c);
+    }
+
+    inline float Min(const float a, const float b, const float c)
+    {
+        return std::min(std::min(a, b), c);
+    }
+}

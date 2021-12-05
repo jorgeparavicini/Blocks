@@ -26,9 +26,9 @@ public:
                        Vector3<float> scale = Vector3<float>::One);
 
     [[nodiscard]] const Matrix& GetMatrix() const noexcept;
-    [[nodiscard]] const Vector3<float>& GetPosition() noexcept;
-    [[nodiscard]] const Quaternion& GetRotation() noexcept;
-    [[nodiscard]] const Vector3<float>& GetScale() noexcept;
+    [[nodiscard]] const Vector3<float>& GetPosition() const noexcept;
+    [[nodiscard]] const Quaternion& GetRotation() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetScale() const noexcept;
 
     void SetPosition(Vector3<float> position) noexcept;
     void SetRotation(Quaternion rotation) noexcept;
