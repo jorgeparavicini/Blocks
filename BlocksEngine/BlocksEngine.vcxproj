@@ -22,7 +22,6 @@
     <ClInclude Include="external\robin_hood\include\robin_hood.h" />
     <ClInclude Include="include\BlocksEngine\Core\Entity.h" />
     <ClInclude Include="include\BlocksEngine\Utility\Concepts.h" />
-    <ClInclude Include="include\BlocksEngine\Physics\CollisionBody.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\ConstantBufferBase.h" />
     <ClInclude Include="include\BlocksEngine\Exceptions\Exception.h" />
@@ -78,13 +77,8 @@
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkItem.h" />
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkGroup.h" />
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchObject.h" />
-    <ClInclude Include="include\BlocksEngine\Physics\Collider.h" />
     <ClInclude Include="include\BlocksEngine\Main\EventType.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\Core\Entity.cpp" />
-    <ClCompile Include="src\Physics\Collider.cpp" />
-    <ClCompile Include="src\Physics\CollisionBody.cpp" />
     <ClCompile Include="src\Core\Actor.cpp" />
     <ClCompile Include="src\Core\Components\Component.cpp" />
     <ClCompile Include="src\Core\Components\Renderer.cpp" />
