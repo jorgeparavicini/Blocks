@@ -155,6 +155,12 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
     friend std::size_t hash_value(const Vector3<T>& v);
 
     //------------------------------------------------------------------------------
+    // Methods
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::string ToString() const;
+
+    //------------------------------------------------------------------------------
     // Vector operations
     //------------------------------------------------------------------------------
     template <class U>
@@ -202,7 +208,11 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
 
     void Abs(Vector3<T>& result) const noexcept;
 
-    // Static functions
+
+    //------------------------------------------------------------------------------
+    // Static Methods
+    //------------------------------------------------------------------------------
+
     template <class U, class V>
     static float Distance(const Vector3<U>& v1, const Vector3<V>& v2) noexcept;
 
@@ -571,4 +581,11 @@ inline void BlocksEngine::Vector3<uint32_t>::Store(Vector3Base<uint32_t>::Base* 
                                                    DirectX::FXMVECTOR v) noexcept
 {
     XMStoreUInt3(pDestination, v);
+}
+
+
+template <typename T>
+std::string BlocksEngine::Vector3<T>::ToString() const
+{
+    return "Vector3(" + std::to_string(this->x) + ", " + std::to_string(this->y) + ", " + std::to_string(this->z) + ")";
 }
