@@ -21,6 +21,15 @@
   <ItemGroup>
     <ClInclude Include="external\robin_hood\include\robin_hood.h" />
     <ClInclude Include="include\BlocksEngine\Core\Entity.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Ray.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Broadphase\DynamicAABBTree.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\HalfEdgeStructure.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\BoxShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\CollisionShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\ConcaveMeshShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\ConcaveShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\TriangleShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Engine\Material.h" />
     <ClInclude Include="include\BlocksEngine\Utility\Concepts.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\ConstantBufferBase.h" />
@@ -77,6 +86,30 @@
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkItem.h" />
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchWorkGroup.h" />
     <ClInclude Include="include\BlocksEngine\Core\Dispatch\DispatchObject.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Collider.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Body\CollisionBody.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Math\Matrix3X3.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\AABB.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\ConvexShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\ConvexPolyhedronShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\CapsuleShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\RaycastInfo.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Physics.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Physics\Collision\Shapes\TriangleShape.cpp" />
+    <ClCompile Include="src\Physics\Collision\Shapes\ConcaveShape.cpp" />
+    <ClCompile Include="src\Physics\Collision\Shapes\ConcaveMeshShape.cpp" />
+    <ClCompile Include="src\Physics\Collision\Broadphase\DynamicAABBTree.cpp" />
+    <ClCompile Include="src\Physics\Engine\Material.cpp" />
+    <ClCompile Include="src\Physics\Collision\RaycastInfo.cpp" />
+    <ClCompile Include="src\Physics\Collision\Shapes\BoxShape.cpp" />
+    <ClCompile Include="src\Physics\Collision\HalfEdgeStructure.cpp" />
+    <ClCompile Include="src\Core\Math\Ray.cpp" />
+    <ClCompile Include="src\Core\Math\Matrix3X3.cpp" />
+    <ClCompile Include="src\Physics\Collision\Collider.cpp" />
+    <ClCompile Include="src\Physics\Body\CollisionBody.cpp" />
+    <ClCompile Include="src\Physics\Physics.cpp" />
     <ClInclude Include="include\BlocksEngine\Main\EventType.h" />
     <ClCompile Include="src\Core\Entity.cpp" />
     <ClCompile Include="src\Core\Actor.cpp" />
@@ -89,7 +122,6 @@
     <ClCompile Include="src\Core\Dispatch\MainDispatcher.cpp" />
     <ClCompile Include="src\Core\Input\Keyboard.cpp" />
     <ClCompile Include="src\Core\Input\Mouse.cpp" />
-    <ClCompile Include="src\Core\Math\Math.cpp" />
     <ClCompile Include="src\Core\Math\Matrix.cpp" />
     <ClCompile Include="src\Core\Math\Plane.cpp" />
     <ClCompile Include="src\Core\Math\Quaternion.cpp" />
@@ -138,6 +170,11 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BlocksEngine/pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="src\Core\Transform.cpp" />
+    <ClCompile Include="src\Physics\Collision\Shapes\AABB.cpp" />
+    <ClCompile Include="src\Physics\Collision\Shapes\CapsuleShape.cpp" />
+    <ClCompile Include="src\Physics\Collision\Shapes\CollisionShape.cpp" />
+    <ClCompile Include="src\Physics\Collision\Shapes\ConvexPolyhedronShape.cpp" />
+    <ClCompile Include="src\Physics\Collision\Shapes\ConvexShape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />

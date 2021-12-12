@@ -23,6 +23,7 @@
 #include "BlocksEngine/Graphics/Graphics.h"
 #include "BlocksEngine/Main/Window.h"
 #include "BlocksEngine/Main/WindowOptions.h"
+#include "BlocksEngine/Physics/Physics.h"
 
 namespace BlocksEngine
 {
@@ -75,6 +76,8 @@ public:
     [[nodiscard]] int Start();
     [[nodiscard]] Window& Window() const noexcept;
     [[nodiscard]] const Graphics& Graphics() const noexcept;
+    [[nodiscard]] const Physics& GetPhysics() const noexcept;
+    [[nodiscard]] Physics& GetPhysics() noexcept;
     [[nodiscard]] Camera& MainCamera() const noexcept;
     [[nodiscard]] bool HasCamera() const noexcept;
     [[nodiscard]] const Keyboard& Keyboard() const noexcept;
@@ -119,7 +122,9 @@ private:
     boost::log::sources::logger_mt logger_;
 
     std::unique_ptr<BlocksEngine::Window> pWindow_{};
+    std::unique_ptr<Physics> pPhysics_{};
     std::shared_ptr<BlocksEngine::MainDispatchQueue> pMainDispatch_{};
+
     void Tick() noexcept;
     void Update();
     void Render() const;
@@ -150,3 +155,13 @@ private:
     std::vector<uint8_t> generations_{};
     std::queue<uint32_t> freeIndices_{};
 };
+
+inline const BlocksEngine::Physics& BlocksEngine::Game::GetPhysics() const noexcept
+{
+    return *pPhysics_;
+}
+
+inline BlocksEngine::Physics& BlocksEngine::Game::GetPhysics() noexcept
+{
+    return *pPhysics_;
+}

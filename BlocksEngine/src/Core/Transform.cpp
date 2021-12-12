@@ -4,13 +4,25 @@
 using namespace DirectX;
 using namespace BlocksEngine;
 
+Transform::Transform()
+    : Transform{Vector3<float>::Zero, Quaternion::Identity, Vector3<float>::One}
+{
+}
 
-Transform::Transform(Vector3<float> position, Quaternion rotation, Vector3<float> scale)
-    : position_{std::move(position)},
-      rotation_{std::move(rotation)},
-      scale_{std::move(scale)}
+
+Transform::Transform(const Vector3<float>& position, const Quaternion& orientation, const Vector3<float>& scale)
+    : position_{position},
+      rotation_{orientation},
+      scale_{scale}
 {
     UpdateMatrix();
+}
+
+Transform::Transform(const Vector3<>& position, const Quaternion& orientation)
+    : position_{position},
+      rotation_{orientation},
+      scale_{Vector3<float>::One}
+{
 }
 
 const Matrix& Transform::GetMatrix() const noexcept

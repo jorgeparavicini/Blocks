@@ -5,48 +5,44 @@
 // This source code is licensed under the MIT-style license found in LICENSE file in the root directory of this source tree.
 // 
 // Author: Jorge Paravicini
-// File: Ray.h
+// File: ConcaveShape.h
 
 #pragma once
 
+#include "CollisionShape.h"
+#include "BlocksEngine/Core/Math/Math.h"
+
 namespace BlocksEngine
 {
-    struct Ray;
+    class TriangleCallback;
+    class ConcaveShape;
 }
 
-struct BlocksEngine::Ray
+
+class BlocksEngine::TriangleCallback
 {
+public:
     //------------------------------------------------------------------------------
     // Constructors, Destructors, Assignment & Move
     //------------------------------------------------------------------------------
 
-    Ray(const Vector3<float>& p1, const Vector3<float>& p2, float maxFraction = 1.0f);
+    virtual ~TriangleCallback() = default;
 
-    Ray(const Ray& ray);
-    Ray& operator=(const Ray& ray);
+    //------------------------------------------------------------------------------
+    // Methods
+    //------------------------------------------------------------------------------
 
-    Ray(Ray&& ray) noexcept;
-    Ray& operator=(Ray&& ray) noexcept;
+    virtual void TestTriangle(const Vector3<float>* trianglePoints, const Vector3<float>* verticesNormals,
+                              int shapeId) = 0;
+};
 
-    ~Ray() = default;
-
-
+class BlocksEngine::ConcaveShape : public CollisionShape
+{
+public:
+protected:
     //------------------------------------------------------------------------------
     // Fields
     //------------------------------------------------------------------------------
 
-    /**
-     * \brief The first point of the ray (origin) in world-space
-     */
-    Vector3<float> point1;
-
-    /**
-     * \brief Second point of the ray in (target) world-space
-     */
-    Vector3<float> point2;
-
-    /**
-     * \brief The maximum fraction value
-     */
-    float maxFraction;
+    TriangleRaycastSide raycastTestType_;
 };
