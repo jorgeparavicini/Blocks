@@ -7,6 +7,7 @@
 // Author: Jorge Paravicini
 // File: Vector3.h
 
+// ReSharper disable CppUnusedIncludeDirective
 #pragma once
 
 #include <DirectXMath.h>
@@ -207,6 +208,11 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
     void Abs() noexcept;
 
     void Abs(Vector3<T>& result) const noexcept;
+
+    float Max() noexcept
+    {
+        return std::max(std::max(this->x, this->y), this->z);
+    }
 
 
     //------------------------------------------------------------------------------
