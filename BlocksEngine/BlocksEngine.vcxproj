@@ -29,6 +29,7 @@
     <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\ConcaveMeshShape.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\ConcaveShape.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\TriangleShape.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\TriangleMesh.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Engine\Material.h" />
     <ClInclude Include="include\BlocksEngine\Utility\Concepts.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h" />
@@ -97,6 +98,7 @@
     <ClInclude Include="include\BlocksEngine\Physics\Physics.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\BlocksEngine\Physics\Collision\TriangleMesh.cpp" />
     <ClCompile Include="src\Physics\Collision\Shapes\TriangleShape.cpp" />
     <ClCompile Include="src\Physics\Collision\Shapes\ConcaveShape.cpp" />
     <ClCompile Include="src\Physics\Collision\Shapes\ConcaveMeshShape.cpp" />

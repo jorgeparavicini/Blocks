@@ -44,7 +44,7 @@ private:
 };
 
 
-class BlocksEngine::ConcaveMeshRaycastCallback : public DynamicAABBTreeRaycastCallback
+class BlocksEngine::ConcaveMeshRaycastCallback final : public DynamicAABBTreeRaycastCallback
 {
 public:
     //------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ public:
 
     void RaycastTriangles();
 
-    bool IsHit() const;
+    [[nodiscard]] bool IsHit() const;
 
 private:
     //------------------------------------------------------------------------------
@@ -87,6 +87,13 @@ private:
 class BlocksEngine::ConcaveMeshShape
 {
 public:
+
+protected:
+    //------------------------------------------------------------------------------
+    // Constructors, Destructors, Assignment & Move
+    //------------------------------------------------------------------------------
+
+    ConcaveMeshShape(TriangleMesh* triangleMesh, const Vector3<float>& scaling = Vector3<float>::One);
 };
 
 
