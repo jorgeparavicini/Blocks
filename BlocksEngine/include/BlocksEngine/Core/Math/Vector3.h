@@ -209,9 +209,24 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
 
     void Abs(Vector3<T>& result) const noexcept;
 
+    float Min() noexcept
+    {
+        return std::min(std::min(this->x, this->y), this->z);
+    }
+
     float Max() noexcept
     {
         return std::max(std::max(this->x, this->y), this->z);
+    }
+
+    int MinAxis() noexcept
+    {
+        return this->x < this->y ? (this->x < this->z ? 0 : 2) : this->y < this->z ? 1 : 2;
+    }
+
+    int MaxAxis() noexcept
+    {
+        return this->x < this->y ? (this->y < this->z ? 2 : 1) : this->x < this->z ? 2 : 0;
     }
 
 
