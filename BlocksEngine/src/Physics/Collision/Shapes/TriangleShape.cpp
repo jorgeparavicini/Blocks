@@ -2,6 +2,8 @@
 #include "BlocksEngine/Physics/Collision/Shapes/TriangleShape.h"
 
 #include "BlocksEngine/Core/Transform.h"
+#include "BlocksEngine/Physics/Collision/RaycastInfo.h"
+#include "BlocksEngine/Physics/Collision/Shapes/AABB.h"
 
 using namespace BlocksEngine;
 
@@ -147,5 +149,114 @@ void TriangleShape::ComputeSmoothMeshContact(const Vector3<> localContactPointTr
 
 Vector3<> TriangleShape::ComputeSmoothLocalContactNormalForTriangle(const Vector3<>& localContactPoint) const
 {
-    float u, v, w;
+    // TODO: This is quite possibly wrong
+    const Vector3 barycentric = Vector3<float>::Barycentric(points_[0], points_[1], points_[2], localContactPoint.x,
+                                                            localContactPoint.y);
+
+    if (barycentric.x > Math::EPSILON && barycentric.y > Math::EPSILON && barycentric.z > Math::EPSILON)
+    {
+        return normal_;
+    }
+
+    Vector3 interpolatedNormal = barycentric.x * vertexNormals_[0]
+        + barycentric.y * vertexNormals_[1]
+        + barycentric.z * vertexNormals_[2];
+
+    if (interpolatedNormal.LengthSquared() < Math::EPSILON)
+    {
+        return normal_;
+    }
+
+    interpolatedNormal.Normalize();
+    return interpolatedNormal;
+}
+
+void TriangleShape::ComputeAABB(AABB& aabb, const Transform& transform) const
+{
+    const Vector3 worldPoint1 = transform * points_[0];
+    const Vector3 worldPoint2 = transform * points_[1];
+    const Vector3 worldPoint3 = transform * points_[2];
+
+    const Vector3 xAxis{worldPoint1.x, worldPoint2.x, worldPoint3.x};
+    const Vector3 yAxis{worldPoint1.y, worldPoint2.y, worldPoint3.y};
+    const Vector3 zAxis{worldPoint1.z, worldPoint2.z, worldPoint3.z};
+
+    aabb.SetMin(Vector3{xAxis.Min(), yAxis.Min(), zAxis.Min()});
+    aabb.SetMax(Vector3{xAxis.Max(), yAxis.Max(), zAxis.Max()});
+}
+
+bool TriangleShape::Raycast(const Ray& ray, RaycastInfo& raycastInfo, std::shared_ptr<Collider> collider) const
+{
+    const Vector3 pq = ray.point2 - ray.point1;
+    const Vector3 pa = points_[0] - ray.point1;
+    const Vector3 pb = points_[1] - ray.point1;
+    const Vector3 pc = points_[2] - ray.point1;
+
+    // Test if the line PQ is inside the edges BC, CA and AB. We use the triple
+    // product for this test.
+    const Vector3 m = pq.Cross(pc);
+    float u = pb.Dot(m);
+    if (raycastTestType_ == TriangleRaycastSide::Front)
+    {
+        if (u < 0.0f) return false;
+    }
+    else if (raycastTestType_ == TriangleRaycastSide::Back)
+    {
+        if (u > 0.0f) return false;
+    }
+
+    float v = -pa.Dot(m);
+    if (raycastTestType_ == TriangleRaycastSide::Front)
+    {
+        if (v < 0.0f) return false;
+    }
+    else if (raycastTestType_ == TriangleRaycastSide::Back)
+    {
+        if (v > 0.0f) return false;
+    }
+    else if (raycastTestType_ == TriangleRaycastSide::FrontAndBack)
+    {
+        if (!(u < 0) == v < 0) return false;
+    }
+
+    float w = pa.Dot(pq.Cross(pb));
+    if (raycastTestType_ == TriangleRaycastSide::Front)
+    {
+        if (w < 0.0) return false;
+    }
+    else if (raycastTestType_ == TriangleRaycastSide::Back)
+    {
+        if (w > 0.0f) return false;
+    }
+    else if (raycastTestType_ == TriangleRaycastSide::FrontAndBack)
+    {
+        if (!(u < 0) == w < 0) return false;
+    }
+
+    // If the line PQ is in the triangle plane (case where u=v=w=0)
+    if (std::abs(u) < Math::EPSILON && std::abs(v) < Math::EPSILON && std::abs(w) < Math::EPSILON) return false;
+
+    // Compute the barycentric coordinates (u, v, w) to determine the
+    // intersection point R, R = u * a + v * b + w * c
+    const float denominator = 1.0f / (u + v + w);
+    u *= denominator;
+    v *= denominator;
+    w *= denominator;
+
+    // Compute the local hit point using the barycentric coordinates
+    const Vector3 localHitPoint = u * points_[0] + v * points_[1] + w * points_[2];
+    const float hitFraction = (localHitPoint - ray.point1).Length() / pq.Length();
+
+    if (hitFraction < 0.0f || hitFraction > ray.maxFraction) return false;
+
+    Vector3 localHitNormal = (points_[1] - points_[0]).Cross(points_[2] - points_[0]);
+    if (localHitNormal.Dot(pq) > 0.0f) localHitNormal = -localHitNormal;
+
+    raycastInfo.body = collider->GetBody();
+    raycastInfo.collider = collider;
+    raycastInfo.worldPoint = localHitPoint;
+    raycastInfo.hitFraction = hitFraction;
+    raycastInfo.worldNormal = localHitNormal;
+
+    return true;
 }
