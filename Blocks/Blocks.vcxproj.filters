@@ -39,6 +39,75 @@
     <ClInclude Include="external\robin_hood\include\robin_hood.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_C.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Export.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Metadata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\SmartNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\BasicGenerators.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Blends.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Cellular.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarpFractal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Fractal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Modifiers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Perlin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Simplex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Export.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FunctionList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\InlInclude.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\SIMDTypeList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

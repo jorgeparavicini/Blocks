@@ -179,6 +179,29 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_C.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Config.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Export.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\BasicGenerators.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Blends.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Cellular.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarp.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarpFractal.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Fractal.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Generator.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Modifiers.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Perlin.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Simplex.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Value.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Metadata.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\SmartNode.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Config.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Export.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FunctionList.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\InlInclude.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\SIMDTypeList.h" />
     <ClInclude Include="external\robin_hood\include\robin_hood.h" />
     <ClInclude Include="include\Blocks\World\Chunk.h" />
     <ClInclude Include="include\Blocks\pch.h" />
