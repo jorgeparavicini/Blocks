@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <boost/container_hash/hash.hpp>
+#include <FastNoise/FastNoise.h>
 
 #include "Chunk.h"
 #include "LoadingScreen.h"
@@ -69,6 +70,8 @@ private:
     // These are probably temporary variables. They track where the player is and whether chunks need to be updated.
     std::weak_ptr<BlocksEngine::Transform> playerTransform_;
     Chunk::ChunkCoords lastChunkCoords_{Chunk::ChunkCoords::Zero};
+
+    FastNoise::SmartNode<FastNoise::Perlin> fnGenerator_;
 
     // TODO: We should add signals in order for other subjects to listen to world changes
 

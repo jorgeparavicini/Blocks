@@ -3,6 +3,7 @@
 
 #include <shared_mutex>
 #include <boost/log/trivial.hpp>
+#include <FastNoise/FastNoise.h>
 
 #include "BlocksEngine/Core/Actor.h"
 #include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
@@ -17,6 +18,7 @@ World::World(std::weak_ptr<Transform> playerTransform,
     : chunkViewDistance_{chunkLoadDistance},
       playerTransform_{std::move(playerTransform)}
 {
+
 }
 
 void World::Start()
@@ -105,8 +107,23 @@ void World::OnWorldGenerated()
     meshRequestGroup->Execute();
 }
 
-Chunk::ChunkData World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
+Chunk::ChunkData World::GenerateChunk(const std::shared_ptr<Chunk> chunk) const
 {
+    auto fnPerlin = FastNoise::New<FastNoise::Perlin>();
+    const Chunk::ChunkCoords coords = chunk->GetCoords();
+    std::vector<float> noiseOutput(Chunk::Width * Chunk::Depth);
+    fnPerlin->GenUniformGrid2D(noiseOutput.data(),
+                               coords.x * Chunk::Width,
+                               coords.y * Chunk::Depth,
+                               Chunk::Width,
+                               Chunk::Depth,
+                               0.05f,
+                               1234);
+
+
+    constexpr int center = 30;
+    constexpr int delta = 10;
+
     auto blocks = std::vector<uint8_t>(Chunk::Size);
     for (int i = 0; i < Chunk::Width; i++)
     {
@@ -114,10 +131,8 @@ Chunk::ChunkData World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
         {
             for (int k = 0; k < Chunk::Depth; k++)
             {
-                const int y = static_cast<int>(std::round(
-                    3.0 * std::sin(Math::Pi * i / 12.0 - Math::Pi * k * 0.1) + 20.0));
-
-                blocks[Chunk::GetFlatIndex(i, j, k)] = j < y ? (j == y - 1 ? 2 : 1) : 0;
+                const int targetHeight = center + static_cast<int>(std::round(noiseOutput[k * Chunk::Depth + i] * delta));
+                blocks[Chunk::GetFlatIndex(i, j, k)] = j < targetHeight ? (j == targetHeight - 1 ? 2 : 1) : 0;
             }
         }
     }
@@ -208,7 +223,7 @@ void World::UpdateChunks()
     {
         if (!activeChunkCoords_.contains(coords))
         {
-                chunks_[coords]->Disable();
+            chunks_[coords]->Disable();
         }
     }
 

@@ -48,12 +48,12 @@ int WINAPI WinMain(
         auto game = BlocksEngine::Game::CreateGame();
 
         game->AddSignalGameStart([&game]
-            {
-                game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
+        {
+            game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
 
-                const auto worldActor = game->AddActor(L"World");
-                worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
-            });
+            const auto worldActor = game->AddActor(L"World");
+            worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
+        });
         return game->Start();
     }
     catch (const BlocksEngine::Exception& e)

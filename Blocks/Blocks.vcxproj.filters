@@ -157,4 +157,10 @@
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="external\FastNoise2\lib\FastNoise.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="external\FastNoise2\lib\FastNoise.lib" />
+  </ItemGroup>
 </Project>
