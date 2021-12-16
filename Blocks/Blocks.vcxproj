@@ -243,6 +243,8 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\stone.png" />
+    <Image Include="..\..\..\..\terrain2.dds" />
     <Image Include="resources\images\dirt.png" />
     <Image Include="resources\images\dirt_2.png" />
     <Image Include="resources\images\grass.png" />

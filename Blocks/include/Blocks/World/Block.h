@@ -33,6 +33,7 @@ public:
     static const Block Air;
     static const Block Dirt;
     static const Block Grass;
+    static const Block Stone;
 
 private:
     uint8_t id_;

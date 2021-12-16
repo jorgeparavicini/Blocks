@@ -150,6 +150,10 @@
     <Image Include="resources\images\grass.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\..\..\stone.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\terrain2.dds" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
