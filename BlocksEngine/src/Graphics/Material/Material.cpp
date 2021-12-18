@@ -29,3 +29,8 @@ void BlocksEngine::Material::AddConstantBuffer(std::shared_ptr<ConstantBufferBas
 {
     constantBuffers_.push_back(std::move(constantBuffer));
 }
+
+ID3DBlob* BlocksEngine::Material::GetShaderBlob() const
+{
+    return pVertexShader_->GetByteCode();
+}

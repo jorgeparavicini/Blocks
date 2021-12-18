@@ -23,6 +23,10 @@ class BlocksEngine::IndexBuffer final : public Bindable
 {
 public:
     IndexBuffer(const Graphics& gfx, UINT allocationSize, bool isStatic = true);
+
+    IndexBuffer(const Graphics& gfx, const std::shared_ptr<void>& indices, size_t vertexSize, int vertexCount,
+                bool isDynamic = false);
+
     IndexBuffer(const Graphics& gfx, const std::vector<int>& indices, UINT allocationSize = 0u,
                 bool isStatic = true);
 
@@ -35,10 +39,10 @@ public:
 
 protected:
     // Number of indices
-    UINT count_;
+    int count_;
 
     // Allocated size
-    UINT size_;
+    size_t size_;
     bool isStatic_;
 
     Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer_;

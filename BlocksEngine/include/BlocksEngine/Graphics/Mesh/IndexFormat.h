@@ -5,17 +5,17 @@
 // This source code is licensed under the MIT-style license found in LICENSE file in the root directory of this source tree.
 // 
 // Author: Jorge Paravicini
-// File: Material.h
+// File: IndexFormat.h
 
 #pragma once
 
 namespace BlocksEngine
 {
-    class Material;
+    enum class IndexFormat;
 }
 
-class BlocksEngine::Material
+enum class BlocksEngine::IndexFormat
 {
-public:
-    
+    UInt16,
+    UInt32
 };

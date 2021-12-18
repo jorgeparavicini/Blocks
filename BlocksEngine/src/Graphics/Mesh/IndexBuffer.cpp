@@ -5,7 +5,7 @@
 #include "BlocksEngine/Exceptions/BufferException.h"
 #include "BlocksEngine/Exceptions/GraphicsException.h"
 
-// TODO: THIS REALLY NEEDS SOME UNIT TESTING
+// TODO: THIS REALLY NEEDS SOME TESTING
 
 BlocksEngine::IndexBuffer::IndexBuffer(const Graphics& gfx, const UINT allocationSize, const bool isStatic)
     : count_{0},
@@ -13,6 +13,28 @@ BlocksEngine::IndexBuffer::IndexBuffer(const Graphics& gfx, const UINT allocatio
       isStatic_{isStatic}
 {
     CreateBuffer(gfx);
+}
+
+BlocksEngine::IndexBuffer::IndexBuffer(const Graphics& gfx, const std::shared_ptr<void>& indices,
+                                       const size_t vertexSize, const int vertexCount, const bool isDynamic)
+    : count_{vertexCount},
+      size_{vertexSize},
+      isStatic_{!isDynamic}
+{
+    HRESULT hr;
+
+    D3D11_BUFFER_DESC ibd{};
+    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    ibd.Usage = isDynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
+    ibd.CPUAccessFlags = isStatic_ ? 0u : D3D11_CPU_ACCESS_WRITE;
+    ibd.MiscFlags = 0u;
+    ibd.ByteWidth = size_;
+    ibd.StructureByteStride = sizeof(int);
+
+    D3D11_SUBRESOURCE_DATA isd{};
+    isd.pSysMem = indices.get();
+
+    GFX_THROW_INFO(gfx.GetDevice().CreateBuffer(&ibd, &isd, &pIndexBuffer_));
 }
 
 BlocksEngine::IndexBuffer::IndexBuffer(const Graphics& gfx, const std::vector<int>& indices,

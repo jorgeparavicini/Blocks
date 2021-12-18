@@ -31,6 +31,8 @@ public:
     void Bind(const Graphics& gfx) noexcept override;
     void AddConstantBuffer(std::shared_ptr<ConstantBufferBase> constantBuffer);
 
+    [[nodiscard]] ID3DBlob* GetShaderBlob() const;
+
 private:
     std::shared_ptr<VertexShader> pVertexShader_;
     std::shared_ptr<PixelShader> pPixelShader_;

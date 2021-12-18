@@ -81,9 +81,6 @@
     <ClInclude Include="include\BlocksEngine\Graphics\Mesh\IndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\Topology.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\BlocksEngine\Graphics\Mesh\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -228,7 +225,7 @@
     <ClInclude Include="include\BlocksEngine\Physics\Collision\RaycastInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BlocksEngine\Physics\Engine\Material.h">
+    <ClInclude Include="include\BlocksEngine\Physics\Engine\PhysicsMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BlocksEngine\Physics\Physics.h">
@@ -247,6 +244,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BlocksEngine\Physics\Collision\TriangleMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\TriangleVertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\VertexAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\MeshTopology.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\IndexFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -392,9 +401,6 @@
     <ClCompile Include="src\Graphics\Mesh\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Mesh\Topology.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Graphics\Mesh\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -437,7 +443,7 @@
     <ClCompile Include="src\Physics\Collision\RaycastInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Physics\Engine\Material.cpp">
+    <ClCompile Include="src\Physics\Engine\PhysicsMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics\Physics.cpp">
@@ -455,7 +461,13 @@
     <ClCompile Include="src\Physics\Collision\Shapes\TriangleShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\BlocksEngine\Physics\Collision\TriangleMesh.cpp">
+    <ClCompile Include="src\Physics\Collision\TriangleMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Collision\TriangleVertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Mesh\VertexAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

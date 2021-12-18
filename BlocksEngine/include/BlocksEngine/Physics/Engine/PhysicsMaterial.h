@@ -5,28 +5,30 @@
 // This source code is licensed under the MIT-style license found in LICENSE file in the root directory of this source tree.
 // 
 // Author: Jorge Paravicini
-// File: Material.h
+// File: PhysicsMaterial.h
 
 #pragma once
 
 #include <sstream>
 
+#include "BlocksEngine/Graphics/Material/Material.h"
+
 namespace BlocksEngine
 {
-    class Material;
+    class PhysicsMaterial;
 }
 
-class BlocksEngine::Material
+class BlocksEngine::PhysicsMaterial
 {
 public:
     //------------------------------------------------------------------------------
     // Constructors, Destructors, Assignment & Move
     //------------------------------------------------------------------------------
 
-    Material& operator=(const Material& material);
-    Material& operator=(Material&& material) noexcept;
+    PhysicsMaterial& operator=(const PhysicsMaterial& material);
+    PhysicsMaterial& operator=(PhysicsMaterial&& material) noexcept;
 
-    ~Material() = default;
+    ~PhysicsMaterial() = default;
 
     //------------------------------------------------------------------------------
     // Methods
@@ -55,9 +57,9 @@ private:
     // Constructors, Destructors, Assignment & Move
     //------------------------------------------------------------------------------
 
-    Material(float frictionCoefficient, float rollingResistance, float bounciness, float massDensity = 1.0f);
-    Material(const Material& material);
-    Material(Material&& material) noexcept;
+    PhysicsMaterial(float frictionCoefficient, float rollingResistance, float bounciness, float massDensity = 1.0f);
+    PhysicsMaterial(const PhysicsMaterial& material);
+    PhysicsMaterial(PhysicsMaterial&& material) noexcept;
 
     //------------------------------------------------------------------------------
     // Fields
@@ -73,51 +75,51 @@ private:
 };
 
 
-inline float BlocksEngine::Material::GetBounciness() const
+inline float BlocksEngine::PhysicsMaterial::GetBounciness() const
 {
     return bounciness_;
 }
 
 
-inline void BlocksEngine::Material::SetBounciness(const float bounciness)
+inline void BlocksEngine::PhysicsMaterial::SetBounciness(const float bounciness)
 {
     assert(bounciness >= 0.0f && bounciness <= 1.0f);
     bounciness_ = bounciness;
 }
 
-inline float BlocksEngine::Material::GetFrictionCoefficient() const
+inline float BlocksEngine::PhysicsMaterial::GetFrictionCoefficient() const
 {
     return frictionCoefficient_;
 }
 
-inline void BlocksEngine::Material::SetFrictionCoefficient(const float frictionCoefficient)
+inline void BlocksEngine::PhysicsMaterial::SetFrictionCoefficient(const float frictionCoefficient)
 {
     assert(frictionCoefficient >= 0.0f);
     frictionCoefficient_ = frictionCoefficient;
 }
 
-inline float BlocksEngine::Material::GetRollingResistance() const
+inline float BlocksEngine::PhysicsMaterial::GetRollingResistance() const
 {
     return rollingResistance_;
 }
 
-inline void BlocksEngine::Material::SetRollingResistance(const float rollingResistance)
+inline void BlocksEngine::PhysicsMaterial::SetRollingResistance(const float rollingResistance)
 {
     assert(rollingResistance >= 0.0f);
     rollingResistance_ = rollingResistance;
 }
 
-inline float BlocksEngine::Material::GetMassDensity() const
+inline float BlocksEngine::PhysicsMaterial::GetMassDensity() const
 {
     return massDensity_;
 }
 
-inline void BlocksEngine::Material::SetMassDensity(const float massDensity)
+inline void BlocksEngine::PhysicsMaterial::SetMassDensity(const float massDensity)
 {
     massDensity_ = massDensity;
 }
 
-inline std::string BlocksEngine::Material::ToString() const
+inline std::string BlocksEngine::PhysicsMaterial::ToString() const
 {
     std::stringstream ss;
 
@@ -128,7 +130,7 @@ inline std::string BlocksEngine::Material::ToString() const
     return ss.str();
 }
 
-inline BlocksEngine::Material& BlocksEngine::Material::operator=(const Material& material)
+inline BlocksEngine::PhysicsMaterial& BlocksEngine::PhysicsMaterial::operator=(const PhysicsMaterial& material)
 {
     if (this != &material)
     {
@@ -140,7 +142,7 @@ inline BlocksEngine::Material& BlocksEngine::Material::operator=(const Material&
     return *this;
 }
 
-inline BlocksEngine::Material& BlocksEngine::Material::operator=(Material&& material) noexcept
+inline BlocksEngine::PhysicsMaterial& BlocksEngine::PhysicsMaterial::operator=(PhysicsMaterial&& material) noexcept
 {
     if (this != &material)
     {

@@ -9,56 +9,57 @@
 
 using namespace BlocksEngine;
 
-Renderer::Renderer()
-    : Renderer{nullptr, nullptr}
-{
-}
-
 Renderer::Renderer(std::shared_ptr<Material> pMaterial, std::shared_ptr<Mesh> pMesh)
-    : pMaterial_{std::move(pMaterial)},
-      pMesh_{std::move(pMesh)}
+    : material_{std::move(pMaterial)},
+      mesh_{std::move(pMesh)}
 {
+    ListenToMeshLayoutChanges();
 }
 
 void Renderer::Start()
 {
     SetEventTypes(EventType::Render);
 
-    pConstantBuffer_ = std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(GetGame()->Graphics());
-    if (pMaterial_)
-    {
-        // TODO: Maybe a copy needs to be created so not all references get the constant buffer
-        pMaterial_->AddConstantBuffer(pConstantBuffer_);
-    }
+    wvpBuffer_ = std::make_shared<VertexConstantBuffer<DirectX::XMMATRIX>>(GetGame()->Graphics());
 }
 
 void Renderer::Draw()
 {
     // TODO: Create default material to show a mesh when the material failed to load.
-    if (!pMaterial_ || !pMesh_)
+    if (!material_ || !mesh_)
     {
         return;
     }
 
-    const auto wvp = GetActor()->GetTransform()->GetMatrix() * GetGame()->MainCamera().WorldViewProjection();
-
     const Graphics& gfx = GetGame()->Graphics();
 
-    pConstantBuffer_->Update(gfx, XMMatrixTranspose(wvp));
+    if (mesh_->RequiresUpload())
+    {
+        mesh_->Upload(gfx);
+    }
 
-    pMaterial_->Bind(gfx);
-    pMesh_->Bind(gfx);
-    gfx.GetContext().DrawIndexed(pMesh_->GetCount(), 0, 0);
+    const auto wvp = GetActor()->GetTransform()->GetMatrix() * GetGame()->MainCamera().WorldViewProjection();
+
+
+    wvpBuffer_->Update(gfx, XMMatrixTranspose(wvp));
+    wvpBuffer_->Bind(gfx);
+
+    material_->Bind(gfx);
+    mesh_->Bind(gfx);
+    gfx.GetContext().DrawIndexed(mesh_->GetVertexCount(), 0, 0);
 }
 
 void Renderer::SetMesh(std::shared_ptr<Mesh> mesh)
 {
-    pMesh_ = std::move(mesh);
+    mesh_ = std::move(mesh);
+    if (meshChangesConnection_)
+    {
+        meshChangesConnection_->disconnect();
+    }
+    ListenToMeshLayoutChanges();
 }
 
 void Renderer::SetMaterial(std::shared_ptr<Material> material)
 {
-    pMaterial_ = std::move(material);
-    // TODO: This is not ideal at all
-    pMaterial_->AddConstantBuffer(pConstantBuffer_);
+    material_ = std::move(material);
 }

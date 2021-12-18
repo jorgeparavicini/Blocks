@@ -22,6 +22,8 @@
     <ClInclude Include="external\robin_hood\include\robin_hood.h" />
     <ClInclude Include="include\BlocksEngine\Core\Entity.h" />
     <ClInclude Include="include\BlocksEngine\Core\Math\Ray.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\IndexFormat.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\MeshTopology.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Collision\Broadphase\DynamicAABBTree.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Collision\HalfEdgeStructure.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\BoxShape.h" />
@@ -30,7 +32,8 @@
     <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\ConcaveShape.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\TriangleShape.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Collision\TriangleMesh.h" />
-    <ClInclude Include="include\BlocksEngine\Physics\Engine\Material.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Collision\TriangleVertexArray.h" />
+    <ClInclude Include="include\BlocksEngine\Physics\Engine\PhysicsMaterial.h" />
     <ClInclude Include="include\BlocksEngine\Utility\Concepts.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\ConstantBufferBase.h" />
@@ -55,7 +58,6 @@
     <ClInclude Include="include\BlocksEngine\Graphics\Material\Material.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Mesh\VertexBuffer.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Mesh\IndexBuffer.h" />
-    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\Topology.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Material\SolidColor\SolidColor.h" />
     <ClInclude Include="include\BlocksEngine\Core\Math\Vertex.h" />
@@ -96,14 +98,17 @@
     <ClInclude Include="include\BlocksEngine\Physics\Collision\Shapes\CapsuleShape.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Collision\RaycastInfo.h" />
     <ClInclude Include="include\BlocksEngine\Physics\Physics.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Mesh\VertexAttribute.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\BlocksEngine\Physics\Collision\TriangleMesh.cpp" />
+    <ClCompile Include="src\Graphics\Mesh\VertexAttribute.cpp" />
+    <ClCompile Include="src\Physics\Collision\TriangleVertexArray.cpp" />
+    <ClCompile Include="src\Physics\Collision\TriangleMesh.cpp" />
     <ClCompile Include="src\Physics\Collision\Shapes\TriangleShape.cpp" />
     <ClCompile Include="src\Physics\Collision\Shapes\ConcaveShape.cpp" />
     <ClCompile Include="src\Physics\Collision\Shapes\ConcaveMeshShape.cpp" />
     <ClCompile Include="src\Physics\Collision\Broadphase\DynamicAABBTree.cpp" />
-    <ClCompile Include="src\Physics\Engine\Material.cpp" />
+    <ClCompile Include="src\Physics\Engine\PhysicsMaterial.cpp" />
     <ClCompile Include="src\Physics\Collision\RaycastInfo.cpp" />
     <ClCompile Include="src\Physics\Collision\Shapes\BoxShape.cpp" />
     <ClCompile Include="src\Physics\Collision\HalfEdgeStructure.cpp" />
@@ -150,7 +155,6 @@
     <ClCompile Include="src\Graphics\Material\VertexShader.cpp" />
     <ClCompile Include="src\Graphics\Mesh\IndexBuffer.cpp" />
     <ClCompile Include="src\Graphics\Mesh\Mesh.cpp" />
-    <ClCompile Include="src\Graphics\Mesh\Topology.cpp" />
     <ClCompile Include="src\Graphics\Mesh\VertexBuffer.cpp" />
     <ClCompile Include="src\Main\Window.cpp" />
     <ClCompile Include="src\Main\WindowClass.cpp" />
