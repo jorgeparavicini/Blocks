@@ -11,7 +11,7 @@
 
 #include "BlocksEngine/Physics/Body/CollisionBody.h"
 #include "BlocksEngine/Physics/Collision/Shapes/CollisionShape.h"
-#include "BlocksEngine/Physics/Engine/Material.h"
+#include "BlocksEngine/Physics/Engine/PhysicsMaterial.h"
 #include "Shapes/AABB.h"
 
 namespace BlocksEngine
@@ -26,7 +26,7 @@ public:
     // Constructors, Destructors, Assignment & Move
     //------------------------------------------------------------------------------
 
-    Collider(std::shared_ptr<CollisionBody> body);
+    explicit Collider(std::shared_ptr<CollisionBody> body);
 
     Collider(const Collider&) = delete;
     Collider& operator=(const Collider&) = delete;
@@ -82,9 +82,9 @@ public:
     [[nodiscard]] int GetBroadPhaseId() const;
 
     // TODO: probably shouldn't return a reference here. Maybe smart pointer?
-    Material& GetMaterial();
+    PhysicsMaterial& GetMaterial();
 
-    void SetMaterial(const Material& material);
+    void SetMaterial(const PhysicsMaterial& material);
 
     [[nodiscard]] bool GetIsTrigger() const;
 
@@ -97,7 +97,7 @@ protected:
     //------------------------------------------------------------------------------
 
     std::shared_ptr<CollisionBody> body_;
-    Material material_;
+    PhysicsMaterial material_;
 
     void* userData_;
 
@@ -133,7 +133,7 @@ inline bool BlocksEngine::Collider::TestAABBOverlap(const AABB& worldAABB) const
     return worldAABB.TestCollision(GetWorldAABB());
 }
 
-inline BlocksEngine::Material& BlocksEngine::Collider::GetMaterial()
+inline BlocksEngine::PhysicsMaterial& BlocksEngine::Collider::GetMaterial()
 {
     return material_;
 }

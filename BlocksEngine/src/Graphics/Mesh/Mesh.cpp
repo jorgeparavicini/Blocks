@@ -12,6 +12,15 @@ Mesh::Mesh(const bool isReadable, const bool isDynamic)
 void Mesh::SetVertexBufferParams(std::vector<VertexAttributeDescriptor> attributeDescriptors)
 {
     attributeDescriptors_ = std::move(attributeDescriptors);
+
+    vertexElements_.clear();
+    size_t size{0};
+    for (auto& attrDesc : attributeDescriptors)
+    {
+        vertexElements_[attrDesc.GetAttribute()] = VertexElement{size, attrDesc};
+        size += attrDesc.GetFormatSize();
+    }
+
     vertexLayoutChanged_(attributeDescriptors_.value());
 }
 
@@ -23,38 +32,95 @@ void Mesh::SetIndexBufferParams(int indexCount, IndexFormat indexFormat)
 
 int Mesh::GetVertexCount() const noexcept
 {
+    return vertexCount_ ? vertexCount_.value() : pVertexBuffer_->GetCount();
+}
+
+int Mesh::GetIndexCount() const noexcept
+{
+    return indexCount_ ? indexCount_.value() : pIndexBuffer_->GetCount();
 }
 
 int Mesh::GetTriangleCount() const
 {
+    const int count = GetIndexCount();
+    // TODO: Verify that this is even an error. Maybe the system truncates it to a multiple of 3.
+    assert("The index count is not a multiple of 3" && count % 3 == 0);
+    return count / 3;
 }
 
-size_t Mesh::GetVerticesStride() const
+size_t Mesh::GetVertexStride() const
 {
+    // TODO: This really needs to be cached
+    if (attributeDescriptors_)
+    {
+        size_t size{0};
+        for (auto& attrDesc : attributeDescriptors_.value())
+        {
+            size += attrDesc.GetFormatSize() * attrDesc.GetDimension();
+        }
+        return size;
+    }
+
+    if (!pVertexBuffer_)
+    {
+        throw ENGINE_EXCEPTION("Must set the attributes descriptors before trying to get the vertex stride");
+    }
+
+    return pVertexBuffer_->GetSize();
 }
 
-size_t Mesh::GetVerticesNormalsStride() const
+size_t Mesh::GetIndexStride() const
 {
+    // TODO: Caching
+    if (indexFormat_)
+    {
+        return indexFormat_.value() == IndexFormat::UInt16 ? 2 : 4;
+    }
+
+    if (!pIndexBuffer_)
+    {
+        throw ENGINE_EXCEPTION("Must set the index format before trying to get the index stride");
+    }
+
+    return pIndexBuffer_->GetSize();
 }
 
-size_t Mesh::GetIndicesStride() const
+const void* Mesh::GetVertex(const size_t index) const
 {
+    if (!isReadable_)
+    {
+        throw ENGINE_EXCEPTION("Only readable meshes can be read from the cpu");
+    }
+
+    const uintptr_t start = reinterpret_cast<uintptr_t>(vertexData_.get());
+    return reinterpret_cast<void*>(start + index * GetVertexStride());
 }
 
-const void* Mesh::GetVertex(size_t index) const
+const void* Mesh::GetIndex(const size_t index) const
 {
+    if (!isReadable_)
+    {
+        throw ENGINE_EXCEPTION("Only readable meshes can be read from the cpu");
+    }
+
+    const uintptr_t start = reinterpret_cast<uintptr_t>(indexData_.get());
+    return reinterpret_cast<void*>(start + index * GetIndexStride());
 }
 
-const void* Mesh::GetVertexNormal(size_t index) const
+std::optional<Mesh::VertexElement> Mesh::GetVertexElement(const VertexAttribute attribute) const
 {
-}
+    const auto search = vertexElements_.find(attribute);
+    if (search != vertexElements_.end())
+    {
+        return search->second;
+    }
 
-const void* Mesh::GetIndex(size_t index) const
-{
+    return std::nullopt;
 }
 
 bool Mesh::RequiresUpload() const
 {
+    // TODO: Basically these 2 are not needed. Whenever any optional variable is set the mesh needs to be uploaded.
     return didVertexBufferDataChange_ || didIndexBufferDataChange_;
 }
 
@@ -86,6 +152,7 @@ void Mesh::Upload(const Graphics& gfx)
         indexData_ = nullptr;
     }
 
+    // Reset data that needed to be uploaded
     attributeDescriptors_ = std::nullopt;
     indexCount_ = std::nullopt;
     indexFormat_ = std::nullopt;
@@ -151,13 +218,29 @@ void Mesh::Bind(const Graphics& gfx) noexcept
     pIndexBuffer_->Bind(gfx);
 }
 
+
+void Mesh::BindTopology(const Graphics& gfx) const
+{
+    gfx.GetContext().IASetPrimitiveTopology(topology_);
+}
+
 boost::signals2::connection Mesh::AddSignalVertexLayoutChanged(
     const VertexLayoutChangedSignal::slot_type& slot) noexcept
 {
     return vertexLayoutChanged_.connect(slot);
 }
 
-void Mesh::BindTopology(const Graphics& gfx) const
+Mesh::VertexElement::VertexElement(const size_t stride, VertexAttributeDescriptor descriptor)
+    : stride{stride}, descriptor{descriptor}
 {
-    gfx.GetContext().IASetPrimitiveTopology(topology_);
+}
+
+Mesh::VertexElement& Mesh::VertexElement::operator=(const VertexElement& element)
+{
+    if (this != &element)
+    {
+        this->descriptor = element.descriptor;
+        this->stride = element.stride;
+    }
+    return *this;
 }

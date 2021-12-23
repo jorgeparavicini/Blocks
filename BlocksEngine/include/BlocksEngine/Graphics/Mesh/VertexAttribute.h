@@ -13,7 +13,6 @@
 #include <string>
 
 #include "VertexAttribute.h"
-#include "VertexAttribute.h"
 
 namespace BlocksEngine
 {
@@ -43,17 +42,9 @@ enum class BlocksEngine::VertexAttribute
 
 enum class BlocksEngine::VertexAttributeFormat
 {
-    Float16,
+    Bool,
     Float32,
-    UNorm8,
-    UNorm16,
-    SNorm8,
-    SNorm16,
-    UInt8,
-    UInt16,
     UInt32,
-    SInt8,
-    SInt16,
     SInt32
 };
 
@@ -67,6 +58,9 @@ public:
     VertexAttributeDescriptor(VertexAttribute attribute, VertexAttributeFormat format, int dimension);
     VertexAttributeDescriptor(std::string semantic, VertexAttributeFormat format, int dimension);
 
+    // TODO: Implement rest of these thingies
+    VertexAttributeDescriptor& operator=(VertexAttributeDescriptor descriptor);
+
     [[nodiscard]] VertexAttribute GetAttribute() const noexcept;
 
     [[nodiscard]] const std::string& GetSemantic() const noexcept;
@@ -77,7 +71,7 @@ public:
 
     [[nodiscard]] size_t GetFormatSize() const noexcept;
 
-    [[nodiscard]] operator D3D11_INPUT_ELEMENT_DESC() const;
+    [[nodiscard]] explicit operator D3D11_INPUT_ELEMENT_DESC() const;
 
 private:
     //------------------------------------------------------------------------------
@@ -96,7 +90,7 @@ private:
     VertexAttributeFormat format_;
     int dimension_;
 
-    const robin_hood::unordered_map<VertexAttribute, const char*> attributeToSemantic_{
+    const robin_hood::unordered_flat_map<VertexAttribute, const char*> attributeToSemantic_{
         {VertexAttribute::Position, "POSITION"},
         {VertexAttribute::Normal, "NORMAL"},
         {VertexAttribute::Tangent, "TANGENT"},

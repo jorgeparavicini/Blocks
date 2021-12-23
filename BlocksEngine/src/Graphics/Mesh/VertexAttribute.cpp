@@ -1,6 +1,8 @@
 ﻿#include "BlocksEngine/pch.h"
 #include "BlocksEngine/Graphics/Mesh/VertexAttribute.h"
 
+#include "BlocksEngine/Exceptions/EngineException.h"
+
 using namespace BlocksEngine;
 
 
@@ -16,6 +18,19 @@ VertexAttributeDescriptor::VertexAttributeDescriptor(std::string semantic,
                                                      const int dimension)
     : VertexAttributeDescriptor{VertexAttribute::Custom, std::move(semantic), format, dimension}
 {
+}
+
+VertexAttributeDescriptor& VertexAttributeDescriptor::operator=(VertexAttributeDescriptor descriptor)
+{
+    if (this != &descriptor)
+    {
+        attribute_ = descriptor.attribute_;
+        semantic_ = descriptor.semantic_;
+        format_ = descriptor.format_;
+        dimension_ = descriptor.dimension_;
+    }
+
+    return *this;
 }
 
 VertexAttributeDescriptor::VertexAttributeDescriptor(const VertexAttribute attribute,
@@ -68,5 +83,13 @@ size_t VertexAttributeDescriptor::GetFormatSize() const noexcept
 
     case VertexAttributeFormat::SInt32:
         return 4;
+
+    default:
+        throw ENGINE_EXCEPTION("Invalid Vertex Attribute Format");
     }
+}
+
+VertexAttributeDescriptor::operator D3D11_INPUT_ELEMENT_DESC() const
+{
+    // TODO: Implement
 }
