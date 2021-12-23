@@ -18,7 +18,7 @@ void Mesh::SetVertexBufferParams(std::vector<VertexAttributeDescriptor> attribut
     for (auto& attrDesc : attributeDescriptors)
     {
         vertexElements_[attrDesc.GetAttribute()] = VertexElement{size, attrDesc};
-        size += attrDesc.GetFormatSize();
+        size += attrDesc.GetFormatSize() * attrDesc.GetDimension();
     }
 
     vertexLayoutChanged_(attributeDescriptors_.value());
@@ -69,6 +69,31 @@ size_t Mesh::GetVertexStride() const
     return pVertexBuffer_->GetSize();
 }
 
+IndexFormat Mesh::GetIndexFormat() const
+{
+    if (indexFormat_)
+    {
+        return indexFormat_.value();
+    }
+
+    if (!pIndexBuffer_)
+    {
+        throw ENGINE_EXCEPTION("Must set the index format before trying to get the index stride");
+    }
+
+    const auto size = pIndexBuffer_->GetSize();
+    if (size == 2)
+    {
+        return IndexFormat::UInt16;
+    }
+    if (size == 4)
+    {
+        return IndexFormat::UInt32;
+    }
+
+    throw ENGINE_EXCEPTION("Invalid index format with size: " + std::to_string(size));
+}
+
 size_t Mesh::GetIndexStride() const
 {
     // TODO: Caching
@@ -85,7 +110,34 @@ size_t Mesh::GetIndexStride() const
     return pIndexBuffer_->GetSize();
 }
 
-const void* Mesh::GetVertex(const size_t index) const
+std::array<Vector3<float>, 3> Mesh::GetTriangle(const int index) const
+{
+    assert(index < GetTriangleCount());
+    std::array<Vector3<float>, 3> result;
+    for (int i = 0; i < 3; ++i)
+    {
+        auto vertex = GetVertexValue<float>(index * 3 + i, VertexAttribute::Position);
+        if (vertex.size() != 3)
+        {
+            throw ENGINE_EXCEPTION("The position vertices must be 3-dimensional");
+        }
+        result[i] = Vector3{vertex[0], vertex[1], vertex[2]};
+    }
+
+    return result;
+}
+
+std::array<int, 3> Mesh::GetTriangleIndices(const int index) const
+{
+    assert(index < GetTriangleCount());
+    return {
+        GetIndexValue<int>(index * 3 + 0),
+        GetIndexValue<int>(index * 3 + 1),
+        GetIndexValue<int>(index * 3 + 2)
+    };
+}
+
+const void* Mesh::GetVertex(const int index) const
 {
     if (!isReadable_)
     {
@@ -96,7 +148,7 @@ const void* Mesh::GetVertex(const size_t index) const
     return reinterpret_cast<void*>(start + index * GetVertexStride());
 }
 
-const void* Mesh::GetIndex(const size_t index) const
+const void* Mesh::GetIndex(const int index) const
 {
     if (!isReadable_)
     {

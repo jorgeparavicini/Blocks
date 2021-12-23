@@ -81,7 +81,7 @@ public:
     // Static Methods
     //------------------------------------------------------------------------------
 
-    static AABB CreateFromTriangle(const Vector3<float>* trianglePoints);
+    static AABB CreateFromTriangle(const std::array<Vector3<float>, 3>& trianglePoints);
 
     static AABB Merge(const AABB& aabb1, const AABB& aabb2);
 

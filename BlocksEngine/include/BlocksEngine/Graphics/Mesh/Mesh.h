@@ -70,14 +70,23 @@ public:
 
     [[nodiscard]] size_t GetVertexStride() const;
 
+    [[nodiscard]] IndexFormat GetIndexFormat() const;
+
     [[nodiscard]] size_t GetIndexStride() const;
 
-    [[nodiscard]] const void* GetVertex(size_t index) const;
+    [[nodiscard]] std::array<Vector3<float>, 3> GetTriangle(int index) const;
 
-    [[nodiscard]] const void* GetIndex(size_t index) const;
+    [[nodiscard]] std::array<int, 3> GetTriangleIndices(int index) const;
+
+    [[nodiscard]] const void* GetVertex(int index) const;
+
+    [[nodiscard]] const void* GetIndex(int index) const;
 
     template <class T>
-    [[nodiscard]] T GetVertexValue(size_t index, VertexAttribute attribute) const;
+    [[nodiscard]] std::vector<T> GetVertexValue(int index, VertexAttribute attribute) const;
+
+    template <class T>
+    [[nodiscard]] T GetIndexValue(int index) const;
 
     void SetTopology(MeshTopology topology);
 
@@ -185,28 +194,52 @@ void BlocksEngine::Mesh::SetIndexBufferData(std::unique_ptr<std::vector<T>> data
 }
 
 template <class T>
-T BlocksEngine::Mesh::GetVertexValue(const size_t index, const VertexAttribute attribute) const
+std::vector<T> BlocksEngine::Mesh::GetVertexValue(const int index, const VertexAttribute attribute) const
 {
     const uintptr_t vertexStart = reinterpret_cast<uintptr_t>(GetVertex(index));
 
     if (const std::optional<VertexElement> element = GetVertexElement(attribute))
     {
-        const void* elementPos = reinterpret_cast<void*>(vertexStart + element->stride);
-        switch (element->descriptor.GetFormat())
+        std::vector<T> result(element->descriptor.GetDimension());
+
+        for (int i = 0; i < element->descriptor.GetDimension(); ++i)
         {
-        case VertexAttributeFormat::Bool:
-            return static_cast<T>(*static_cast<const bool*>(elementPos));
+            const void* elementPos = reinterpret_cast<void*>(
+                vertexStart + element->stride + element->descriptor.GetFormatSize() * i);
+            switch (element->descriptor.GetFormat())
+            {
+            case VertexAttributeFormat::Bool:
+                result[i] = static_cast<T>(*static_cast<const bool*>(elementPos));
+                break;
 
-        case VertexAttributeFormat::Float32:
-            return static_cast<T>(*static_cast<const float*>(elementPos));
+            case VertexAttributeFormat::Float32:
+                result[i] = static_cast<T>(*static_cast<const float*>(elementPos));
+                break;
 
-        case VertexAttributeFormat::UInt32:
-            return static_cast<T>(*static_cast<const uint32_t*>(elementPos));
+            case VertexAttributeFormat::UInt32:
+                result[i] = static_cast<T>(*static_cast<const uint32_t*>(elementPos));
+                break;
 
-        case VertexAttributeFormat::SInt32:
-            return static_cast<T>(*static_cast<const int32_t*>(elementPos));
+            case VertexAttributeFormat::SInt32:
+                result[i] = static_cast<T>(*static_cast<const int32_t*>(elementPos));
+                break;
+            }
         }
+        return result;
     }
 
     throw ENGINE_EXCEPTION("The attribute is not in the mesh");
+}
+
+template <class T>
+T BlocksEngine::Mesh::GetIndexValue(const int index) const
+{
+    const void* value = GetIndex(index);
+    const IndexFormat format = GetIndexFormat();
+
+    if (format == IndexFormat::UInt16)
+    {
+        return static_cast<T>(*static_cast<const uint16_t*>(value));
+    }
+    return static_cast<T>(*static_cast<const uint32_t*>(value));
 }

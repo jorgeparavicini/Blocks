@@ -23,18 +23,23 @@ enum class BlocksEngine::TriangleRaycastSide
     FrontAndBack
 };
 
-class BlocksEngine::TriangleShape : public ConvexPolyhedronShape
+class BlocksEngine::TriangleShape final : public ConvexPolyhedronShape
 {
 public:
     //------------------------------------------------------------------------------
     // Constructors, Destructors, Assignment & Move
     //------------------------------------------------------------------------------
+    TriangleShape(const std::array<Vector3<float>, 3>& vertices,
+                  const std::array<Vector3<float>, 3>& vertexNormals,
+                  int shapeId);
 
     TriangleShape(const TriangleShape&) = delete;
     TriangleShape& operator=(const TriangleShape&) = delete;
 
     TriangleShape(TriangleShape&&) = delete;
     TriangleShape& operator=(TriangleShape&&) = delete;
+
+    ~TriangleShape() override = default;
 
 
     //------------------------------------------------------------------------------
@@ -69,6 +74,9 @@ public:
 
     [[nodiscard]] float GetVolume() const override;
 
+    bool Raycast(const Ray& ray, RaycastInfo& raycastInfo, std::shared_ptr<Collider> collider) const override;
+
+
     static void ComputeSmoothTriangleMeshContact(const CollisionShape& shape1, const CollisionShape& shape2,
                                                  const Vector3<float>& localContactPointShape1,
                                                  const Vector3<float>& localContactPointShape2,
@@ -79,15 +87,6 @@ public:
 
 
 protected:
-    //------------------------------------------------------------------------------
-    // Constructors, Destructors, Assignment & Move
-    //------------------------------------------------------------------------------
-
-    TriangleShape(const Vector3<float>* vertices, const Vector3<float>* vertexNormals, int shapeId);
-
-    ~TriangleShape() override = default;
-
-
     //------------------------------------------------------------------------------
     // Fields
     //------------------------------------------------------------------------------
@@ -115,8 +114,6 @@ protected:
         const Vector3<float>& localContactPoint) const;
 
     [[nodiscard]] bool TestPointInside(const Vector3<>& worldPoint, const Collider& collider) const override;
-
-    bool Raycast(const Ray& ray, RaycastInfo& raycastInfo, std::shared_ptr<Collider> collider) const override;
 
     [[nodiscard]] size_t Size() const override;
 

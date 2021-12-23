@@ -39,7 +39,8 @@ public:
     // Methods
     //------------------------------------------------------------------------------
 
-    virtual void TestTriangle(const Vector3<float>* trianglePoints, const Vector3<float>* verticesNormals,
+    virtual void TestTriangle(const std::array<Vector3<float>, 3>& trianglePoints,
+                              const std::array<Vector3<float>, 3>& verticesNormals,
                               int shapeId) = 0;
 };
 

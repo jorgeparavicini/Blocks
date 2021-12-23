@@ -2,12 +2,15 @@
 #include "BlocksEngine/Physics/Collision/Shapes/TriangleShape.h"
 
 #include "BlocksEngine/Core/Transform.h"
+#include "BlocksEngine/Core/Math/Math.h"
 #include "BlocksEngine/Physics/Collision/RaycastInfo.h"
 #include "BlocksEngine/Physics/Collision/Shapes/AABB.h"
 
 using namespace BlocksEngine;
 
-TriangleShape::TriangleShape(const Vector3<>* vertices, const Vector3<>* vertexNormals, const int shapeId)
+TriangleShape::TriangleShape(const std::array<Vector3<>, 3>& vertices,
+                             const std::array<Vector3<>, 3>& vertexNormals,
+                             const int shapeId)
     : ConvexPolyhedronShape{CollisionShapeName::Triangle},
       faces_{HalfEdgeStructure::Face{}, HalfEdgeStructure::Face{}}
 {

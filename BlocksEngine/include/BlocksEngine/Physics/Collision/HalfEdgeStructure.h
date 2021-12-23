@@ -104,7 +104,7 @@ inline unsigned BlocksEngine::HalfEdgeStructure::AddVertex(const unsigned int ve
     return vertices_.size() - 1;
 }
 
-inline void BlocksEngine::HalfEdgeStructure::AddFace(const std::vector<unsigned> faceVertices)
+inline void BlocksEngine::HalfEdgeStructure::AddFace(std::vector<unsigned> faceVertices)
 {
     const Face face{std::move(faceVertices)};
     faces_.push_back(face);

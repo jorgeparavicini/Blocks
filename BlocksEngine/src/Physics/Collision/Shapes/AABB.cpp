@@ -70,7 +70,7 @@ bool AABB::TestRayIntersect(const Ray& ray) const
     return true;
 }
 
-AABB AABB::CreateFromTriangle(const Vector3<>* trianglePoints)
+AABB AABB::CreateFromTriangle(const std::array<Vector3<>, 3>& trianglePoints)
 {
     Vector3 minCoords{trianglePoints[0].x, trianglePoints[0].y, trianglePoints[0].z};
     Vector3 maxCoords{trianglePoints[0].x, trianglePoints[0].y, trianglePoints[0].z};
