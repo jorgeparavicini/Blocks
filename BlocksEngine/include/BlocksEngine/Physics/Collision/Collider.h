@@ -101,6 +101,13 @@ protected:
 
     void* userData_;
 
+    int broadPhaseId_;
+    unsigned short collisionCategoryBits_;
+    unsigned short collideWithMaskBits_;
+    std::vector<OverlappingPairs> overlappingPairs_;
+    bool hasCollisionShapesChangedSize_;
+    bool isTrigger_;
+
     //------------------------------------------------------------------------------
     // Methods
     //------------------------------------------------------------------------------

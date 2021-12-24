@@ -7,6 +7,8 @@ using namespace BlocksEngine;
 Collider::Collider(std::shared_ptr<CollisionBody> body)
     : Component{},
 body_{std::move(body)},
-material_{body->}
+material_{body->},
+broadPhaseId_{-1},
+
 {
 }
