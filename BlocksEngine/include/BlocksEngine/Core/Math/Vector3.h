@@ -10,6 +10,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <foundation/PxVec3.h>
 
 #include "BlocksEngine/Core/Math/Math.h"
 
@@ -81,6 +82,15 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
     //------------------------------------------------------------------------------
 
     operator DirectX::XMVECTOR() const noexcept;
+
+    operator physx::PxVec3() const noexcept
+    {
+        return physx::PxVec3{
+            static_cast<float>(this->x),
+            static_cast<float>(this->y),
+            static_cast<float>(this->z)
+        };
+    }
 
     // Comparison operators
     bool operator==(const Vector3<T>& v) const noexcept;

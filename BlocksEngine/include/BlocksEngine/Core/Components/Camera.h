@@ -39,7 +39,7 @@ private:
     float lastY_{0};
     Vector3<float> rotation_{0, 0, 0};
 
-    float moveSpeed_{10.0f};
+    float moveSpeed_{5.0f};
     float rotationSpeed_{10.0f};
     float keyboardRotationSpeed_{10.0f};
     float x_{0.1f};
@@ -51,4 +51,8 @@ private:
     [[nodiscard]] float ClampAngle(float angle, float min, float max) const;
 
     [[nodiscard]] DirectX::XMMATRIX CalculateProjection() const noexcept;
+
+    physx::PxController* controller_{nullptr};
+
+    physx::PxVec3 velocity_{};
 };

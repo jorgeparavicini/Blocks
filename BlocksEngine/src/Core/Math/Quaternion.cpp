@@ -17,11 +17,6 @@ Quaternion::Quaternion() noexcept
 {
 }
 
-constexpr Quaternion::Quaternion(const float ix, const float iy, const float iz, const float iw) noexcept
-    : XMFLOAT4{ix, iy, iz, iw}
-{
-}
-
 Quaternion::Quaternion(const Vector3<float>& v, const float scalar) noexcept
     : XMFLOAT4{v.x, v.y, v.z, scalar}
 {

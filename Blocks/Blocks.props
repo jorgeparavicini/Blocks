@@ -23,6 +23,11 @@
       <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
 xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     </PostBuildEvent>
+    <Link>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

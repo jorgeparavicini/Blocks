@@ -6,12 +6,24 @@
 using namespace BlocksEngine;
 
 
-Actor::Actor(std::weak_ptr<Game> game, const uint32_t index, const uint32_t generation, std::wstring name)
+Actor::Actor(std::weak_ptr<Game> game, const uint32_t index, const uint32_t generation, std::wstring name,
+             std::unique_ptr<Transform> transform, const bool isStatic)
     : Entity{index, generation},
       name_{std::move(name)},
       game_{std::move(game)},
-      pTransform_{std::make_shared<Transform>()}
+      pTransform_{std::move(transform)}
 {
+    const physx::PxTransform t{pTransform_->GetPosition(), pTransform_->GetRotation()};
+    if (isStatic)
+    {
+        actor_ = GetGame()->physics_->GetPhysics().createRigidStatic(t);
+    }
+    else
+    {
+        actor_ = GetGame()->physics_->GetPhysics().createRigidDynamic(t);
+    }
+
+    GetGame()->GetPhysics().GetScene().addActor(*actor_);
 }
 
 
@@ -40,9 +52,16 @@ std::shared_ptr<Transform> Actor::GetTransform() const noexcept
     return pTransform_;
 }
 
+physx::PxRigidActor& Actor::GetActor() const noexcept
+{
+    return *actor_;
+}
+
 void Actor::SetEventTypeForComponent(const Component& component, EventType eventTypes)
 {
-    assert("Main loop dependent methods must be called from the main thread" && std::this_thread::get_id() == GetGame()->GetMainThreadId());
+    assert(
+        "Main loop dependent methods must be called from the main thread" && std::this_thread::get_id() == GetGame()->
+        GetMainThreadId());
     // TODO: This is ugly af
     if ((eventTypes & EventType::Update) == EventType::None)
     {
@@ -98,7 +117,8 @@ void Actor::SetComponentEnabled(const Component& component, const bool enabled)
         updateQueue_.erase(component.GetIndex());
         renderQueue_.erase(component.GetIndex());
         render2DQueue_.erase(component.GetIndex());
-    } else
+    }
+    else
     {
         SetEventTypeForComponent(component, component.GetEventTypes());
     }

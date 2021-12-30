@@ -23,6 +23,7 @@
 #include "BlocksEngine/Graphics/Graphics.h"
 #include "BlocksEngine/Main/Window.h"
 #include "BlocksEngine/Main/WindowOptions.h"
+#include "BlocksEngine/Physics/Physics.h"
 
 namespace BlocksEngine
 {
@@ -80,6 +81,7 @@ public:
     [[nodiscard]] const Keyboard& Keyboard() const noexcept;
     [[nodiscard]] const Mouse& Mouse() const noexcept;
     [[nodiscard]] const Time& Time() const noexcept;
+    [[nodiscard]] Physics& GetPhysics();
     [[nodiscard]] std::shared_ptr<BaseDispatchQueue> MainDispatchQueue() const noexcept;
 
     [[nodiscard]] std::thread::id GetMainThreadId() const noexcept;
@@ -90,8 +92,8 @@ public:
     void ForceExit() noexcept;
     void SetActiveCamera(Camera& camera);
 
-    std::shared_ptr<Actor> AddActor();
-    std::shared_ptr<Actor> AddActor(std::wstring actorName);
+    std::shared_ptr<Actor> AddActor(std::unique_ptr<Transform> transform, bool isStatic = true);
+    std::shared_ptr<Actor> AddActor(std::wstring actorName, std::unique_ptr<Transform> transform, bool isStatic = true);
 
     void UpdateEventTypeForActor(const Actor& actor, EventType eventTypes);
 
@@ -114,6 +116,7 @@ private:
     void Initialize();
     void CreateLogger();
 
+    std::unique_ptr<Physics> physics_;
     int totalActorCount_{0};
     bool shutdownForced_{false};
     boost::log::sources::logger_mt logger_;
@@ -137,7 +140,7 @@ private:
     robin_hood::unordered_set<uint32_t> updateQueue_{};
     robin_hood::unordered_set<uint32_t> renderQueue_{};
     robin_hood::unordered_set<uint32_t> render2DQueue_{};
-    
+
     void DestroyRequestedActors();
 
     // Rendering loop Timer

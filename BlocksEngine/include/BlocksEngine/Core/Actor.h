@@ -63,6 +63,7 @@ public:
     [[nodiscard]] const std::wstring& GetName() const noexcept;
     [[nodiscard]] std::shared_ptr<Game> GetGame() const noexcept;
     [[nodiscard]] std::shared_ptr<Transform> GetTransform() const noexcept;
+    [[nodiscard]] physx::PxRigidActor& GetActor() const noexcept;
 
     //------------------------------------------------------------------------------
     // Events
@@ -155,6 +156,7 @@ public:
 
     friend Game;
     friend Component;
+    friend Camera;
 
     friend bool operator==(const Actor& actor1, const Actor& actor2)
     {
@@ -166,7 +168,8 @@ private:
     // Constructors
     //------------------------------------------------------------------------------
 
-    explicit Actor(std::weak_ptr<Game> game, uint32_t index, uint32_t generation, std::wstring name);
+    explicit Actor(std::weak_ptr<Game> game, uint32_t index, uint32_t generation, std::wstring name,
+                   std::unique_ptr<Transform> transform, bool isStatic = true);
 
     //------------------------------------------------------------------------------
     // Fields
@@ -179,7 +182,7 @@ private:
     std::queue<std::shared_ptr<Component>> pDestroyQueue_{};
 
     // Event Sets
-    // TODO: Rename as they are not queues per se
+    // TODO: Rename as they are not queues per se but we don't want to allow multiple values
     robin_hood::unordered_set<uint32_t> updateQueue_{};
     robin_hood::unordered_set<uint32_t> renderQueue_{};
     robin_hood::unordered_set<uint32_t> render2DQueue_{};
@@ -191,4 +194,8 @@ private:
 
     void SetEventTypeForComponent(const Component& component, EventType eventTypes);
     void SetComponentEnabled(const Component& component, bool enabled);
+
+
+    // Physx
+    physx::PxRigidActor* actor_;
 };

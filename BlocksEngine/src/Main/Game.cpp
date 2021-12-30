@@ -16,7 +16,8 @@
 using namespace BlocksEngine;
 
 Game::Game(std::unique_ptr<WindowOptions> options)
-    : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))},
+    : physics_{std::make_unique<Physics>()},
+      pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))},
       pMainDispatch_{std::make_shared<BlocksEngine::MainDispatchQueue>()},
       mainThreadId_{std::this_thread::get_id()}
 {
@@ -31,11 +32,9 @@ Game::Game(std::unique_ptr<WindowOptions> options)
 
 void Game::Initialize()
 {
-    const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera");
+    auto transform = std::make_unique<Transform>(Vector3<float>(0, 30, -10), Quaternion::Euler(0, 90, 90));
+    const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera", std::move(transform), false);
     const std::shared_ptr<Camera> camera = cameraActor->AddComponent<Camera>();
-    camera->GetTransform()->SetPosition(Vector3<float>(0, 30, -10));
-    const Quaternion rot = Quaternion::Euler(0, 90, 90);
-    camera->GetTransform()->SetRotation(rot);
     SetActiveCamera(*camera);
 
     RECT clientRect;
@@ -159,6 +158,11 @@ const Time& Game::Time() const noexcept
     return time_;
 }
 
+Physics& Game::GetPhysics()
+{
+    return *physics_;
+}
+
 std::shared_ptr<BaseDispatchQueue> Game::MainDispatchQueue() const noexcept
 {
     return pMainDispatch_;
@@ -174,13 +178,13 @@ const boost::log::sources::logger_mt& Game::Logger()
     return logger_;
 }
 
-std::shared_ptr<Actor> Game::AddActor()
+std::shared_ptr<Actor> Game::AddActor(std::unique_ptr<Transform> transform, const bool isStatic)
 {
     std::wstring name = L"Actor " + std::to_wstring(totalActorCount_);
-    return AddActor(std::move(name));
+    return AddActor(std::move(name), std::move(transform), isStatic);
 }
 
-std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
+std::shared_ptr<Actor> Game::AddActor(std::wstring actorName, std::unique_ptr<Transform> transform, const bool isStatic)
 {
     uint32_t index;
 
@@ -202,7 +206,9 @@ std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
         shared_from_this(),
         index,
         static_cast<uint32_t>(generations_[index]),
-        std::move(actorName)
+        std::move(actorName),
+        std::move(transform),
+        isStatic
     });
 
     ++totalActorCount_;
@@ -224,7 +230,6 @@ std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
 
 void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
 {
-    
     // TODO: Replace with map?
     if ((eventTypes & EventType::Update) == EventType::None)
     {
@@ -272,6 +277,7 @@ void Game::Tick() noexcept
     time_.Tick([&]
     {
         DestroyRequestedActors();
+        physics_->Update(time_.DeltaTime());
         Update();
     });
     Render();
@@ -282,6 +288,7 @@ void Game::Update()
     int count = 0;
     for (const uint32_t actorId : updateQueue_)
     {
+        // TODO: ???????????????? the fuck is this
         if (actorId > 1000)
         {
             int i = 0;
@@ -386,6 +393,7 @@ void Game::DestroyRequestedActors()
         renderQueue_.erase(index);
         render2DQueue_.erase(index);
 
-        AddActor();
+        // TODO: ????? why
+        //AddActor();
     }
 }

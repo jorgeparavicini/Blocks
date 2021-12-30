@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <PxPhysicsAPI.h>
+
 #include "BlocksEngine/Core/Math/Math.h"
 
 namespace BlocksEngine
@@ -19,7 +21,12 @@ namespace BlocksEngine
 struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
 {
     Quaternion() noexcept;
-    constexpr Quaternion(float ix, float iy, float iz, float iw) noexcept;
+
+    constexpr Quaternion(const float ix, const float iy, const float iz, const float iw) noexcept
+        : XMFLOAT4{ix, iy, iz, iw}
+    {
+    }
+
     Quaternion(const Vector3<float>& v, float scalar) noexcept;
     explicit Quaternion(const Vector4<float>& v) noexcept;
     explicit Quaternion(_In_reads_(4) const float* pArray) noexcept;
@@ -37,6 +44,11 @@ struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
 
     operator DirectX::XMVECTOR() const noexcept;
     operator std::string() const noexcept;
+
+    operator physx::PxQuat() const
+    {
+        return physx::PxQuat{this->x, this->y, this->z, this->w};
+    }
 
     // Comparison operators
     bool operator ==(const Quaternion& q) const noexcept;
