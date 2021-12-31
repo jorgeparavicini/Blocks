@@ -62,6 +62,7 @@ public:
     virtual void Update();
     virtual void Draw();
     virtual void Draw2D();
+    virtual void PhysicsUpdated();
 
     [[nodiscard]] EventType GetEventTypes() const noexcept;
     void SetEventTypes(EventType eventTypes);

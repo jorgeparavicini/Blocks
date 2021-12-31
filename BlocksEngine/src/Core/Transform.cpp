@@ -5,8 +5,11 @@ using namespace DirectX;
 using namespace BlocksEngine;
 
 
-Transform::Transform(physx::PxRigidActor* actor)
-    : actor_{actor},
+Transform::Transform(const Vector3<float>& position,
+                     const Quaternion& orientation,
+                     const Vector3<float>& scale)
+    : position_{position},
+      orientation_{orientation},
       scale_{Vector3<float>::One}
 {
 }
@@ -18,12 +21,12 @@ Matrix Transform::GetMatrix() const noexcept
         * Matrix::CreateScale(scale_);
 }
 
-Vector3<float> Transform::GetPosition() const noexcept
+const Vector3<float>& Transform::GetPosition() const noexcept
 {
-    return static_cast<Vector3<float>>(actor_->getGlobalPose().p);
+    return position_;
 }
 
-Vector3<> Transform::GetLocalPosition() const noexcept
+const Vector3<float>& Transform::GetLocalPosition() const noexcept
 {
     const auto p = parent_.lock();
     if (!p)
@@ -33,12 +36,12 @@ Vector3<> Transform::GetLocalPosition() const noexcept
     return GetPosition() - p->GetLocalPosition();
 }
 
-Quaternion Transform::GetOrientation() const noexcept
+const Quaternion& Transform::GetOrientation() const noexcept
 {
-    return static_cast<Quaternion>(actor_->getGlobalPose().q);
+    return orientation_;
 }
 
-Quaternion Transform::GetLocalOrientation() const noexcept
+const Quaternion& Transform::GetLocalOrientation() const noexcept
 {
     // TODO: This is probably wrong
     const auto p = parent_.lock();
@@ -49,12 +52,12 @@ Quaternion Transform::GetLocalOrientation() const noexcept
     return GetOrientation() - p->GetLocalOrientation();
 }
 
-Vector3<float> Transform::GetScale() const noexcept
+const Vector3<float>& Transform::GetScale() const noexcept
 {
     return scale_;
 }
 
-Vector3<> Transform::GetLocalScale() const noexcept
+const Vector3<float>& Transform::GetLocalScale() const noexcept
 {
     const auto p = parent_.lock();
     if (!p)
@@ -68,9 +71,7 @@ Vector3<> Transform::GetLocalScale() const noexcept
 // ReSharper disable once CppMemberFunctionMayBeConst
 void Transform::SetPosition(const Vector3<float>& position) noexcept
 {
-    auto t = actor_->getGlobalPose();
-    t.p = position;
-    actor_->setGlobalPose(t);
+    position_ = position;
 
     moved_(position);
 }
@@ -87,15 +88,15 @@ void Transform::SetLocalPosition(const Vector3<float>& position) noexcept
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void Transform::SetOrientation(const Quaternion& rotation) noexcept
+void Transform::SetOrientation(const Quaternion& orientation) noexcept
 {
-    auto t = actor_->getGlobalPose();
-    t.q = rotation;
-    actor_->setGlobalPose(t);
+    orientation_ = orientation;
+
+    rotated_(orientation);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
-void Transform::SetLocalOrientation(const Quaternion& rotation) noexcept
+void Transform::SetLocalOrientation(const Quaternion& orientation) noexcept
 {
     auto parentOrientation = Quaternion::Identity;
     if (const auto p = parent_.lock())
@@ -103,7 +104,7 @@ void Transform::SetLocalOrientation(const Quaternion& rotation) noexcept
         parentOrientation = p->GetOrientation();
     }
     // TODO: This is also probably wrong
-    SetOrientation(rotation * parentOrientation);
+    SetOrientation(orientation * parentOrientation);
 }
 
 void Transform::SetScale(const Vector3<float>& scale) noexcept
@@ -142,7 +143,8 @@ void Transform::RemoveChild(Transform& transform)
 
 bool Transform::operator==(const Transform& transform) const noexcept
 {
-    return actor_ == transform.actor_;
+    // TODO: Not sure if this is enough, we only check if it is the exact same object
+    return this == &transform;
 }
 
 boost::signals2::connection Transform::AddSignalOnMove(const MoveSignal::slot_type& slot) noexcept
@@ -150,8 +152,7 @@ boost::signals2::connection Transform::AddSignalOnMove(const MoveSignal::slot_ty
     return moved_.connect(slot);
 }
 
-void Transform::SetActor(physx::PxRigidActor* actor)
+boost::signals2::connection Transform::AddSignalOnRotate(const RotateSignal::slot_type& slot) noexcept
 {
-    actor_->release();
-    actor_ = actor;
+    return rotated_.connect(slot);
 }

@@ -10,13 +10,13 @@ Actor::Actor(std::weak_ptr<Game> game, const uint32_t index,
              const uint32_t generation, std::wstring name)
     : Entity{index, generation},
       name_{std::move(name)},
-      game_{std::move(game)}
+      game_{std::move(game)},
+      transform_{std::make_shared<Transform>()}
 {
     const physx::PxTransform t{Vector3<float>::Zero, Quaternion::Identity};
     auto& physics = GetGame()->physics_->GetPhysics();
     physx::PxRigidActor* const actor = physics.createRigidStatic(t);
     GetGame()->GetPhysics().GetScene().addActor(*actor);
-    transform_ = std::make_shared<Transform>(actor);
 }
 
 
@@ -45,11 +45,6 @@ std::shared_ptr<Transform> Actor::GetTransform() const noexcept
     return transform_;
 }
 
-physx::PxRigidActor& Actor::GetActor() const noexcept
-{
-    return *transform_->actor_;
-}
-
 void Actor::SetEventTypeForComponent(const Component& component, EventType eventTypes)
 {
     assert(
@@ -70,6 +65,11 @@ void Actor::SetEventTypeForComponent(const Component& component, EventType event
         render2DQueue_.erase(component.GetIndex());
     }
 
+    if ((eventTypes & EventType::PhysicsUpdated) == EventType::None)
+    {
+        physicsUpdatedQueue_.erase(component.GetIndex());
+    }
+
     if ((eventTypes & EventType::Update) == EventType::Update)
     {
         updateQueue_.insert(component.GetIndex());
@@ -85,6 +85,11 @@ void Actor::SetEventTypeForComponent(const Component& component, EventType event
         render2DQueue_.insert(component.GetIndex());
     }
 
+    if ((eventTypes & EventType::PhysicsUpdated) == EventType::PhysicsUpdated)
+    {
+        physicsUpdatedQueue_.insert(component.GetIndex());
+    }
+
     auto componentEvent = EventType::None;
     if (!updateQueue_.empty())
     {
@@ -98,6 +103,10 @@ void Actor::SetEventTypeForComponent(const Component& component, EventType event
     {
         componentEvent |= EventType::Render2D;
     }
+    if (!physicsUpdatedQueue_.empty())
+    {
+        componentEvent |= EventType::PhysicsUpdated;
+    }
 
     GetGame()->UpdateEventTypeForActor(*this, componentEvent);
 }
@@ -110,6 +119,7 @@ void Actor::SetComponentEnabled(const Component& component, const bool enabled)
         updateQueue_.erase(component.GetIndex());
         renderQueue_.erase(component.GetIndex());
         render2DQueue_.erase(component.GetIndex());
+        physicsUpdatedQueue_.erase(component.GetIndex());
     }
     else
     {
@@ -162,6 +172,21 @@ void Actor::Render2D() const
         else
         {
             // TODO: Same as in game don't abort...
+            abort();
+        }
+    }
+}
+
+void Actor::PhysicsUpdated() const
+{
+    for (const int componentId : physicsUpdatedQueue_)
+    {
+        if (const auto& component = pComponents_[componentId])
+        {
+            component->PhysicsUpdated();
+        }
+        else
+        {
             abort();
         }
     }

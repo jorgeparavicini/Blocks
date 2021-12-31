@@ -30,6 +30,7 @@ public:
     ~CharacterController() override;
 
     void Start() override;
+    void PhysicsUpdated() override;
 
     void Move(const Vector3<float>& motion) const;
 

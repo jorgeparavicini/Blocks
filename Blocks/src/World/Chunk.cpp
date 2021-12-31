@@ -6,6 +6,7 @@
 #include "Blocks/World/BlockRegistry.h"
 #include "Blocks/World/World.h"
 #include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Core/Components/Collider.h"
 #include "BlocksEngine/Core/Components/Renderer.h"
 #include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
 #include "BlocksEngine/Core/Math/Vector3.h"
@@ -306,29 +307,7 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
             {
                 renderer_->SetMesh(mesh);
 
-                physx::PxTriangleMeshDesc meshDesc;
-                meshDesc.points.count = colliderVertices.size();
-                meshDesc.points.stride = sizeof physx::PxVec3;
-                meshDesc.points.data = colliderVertices.data();
-
-                meshDesc.triangles.count = indices.size() / 3;
-                meshDesc.triangles.stride = 3 * sizeof int32_t;
-                meshDesc.triangles.data = indices.data();
-
-                physx::PxDefaultMemoryOutputStream writeBuffer;
-                if (!GetGame()->GetPhysics().GetCooking().cookTriangleMesh(meshDesc, writeBuffer))
-                {
-                    throw ENGINE_EXCEPTION("Could not cook delicacies");
-                }
-
-                physx::PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
-                physx::PxTriangleMeshGeometry triGeom;
-                auto& physics = GetGame()->GetPhysics();
-                triGeom.triangleMesh = physics.GetPhysics().createTriangleMesh(readBuffer);
-
-                const auto shape = physics.GetPhysics().createShape(triGeom, physics.DefaultMaterial());
-                GetActor()->GetActor().attachShape(*shape);
-                shape->release();
+                GetActor()->AddComponent<Collider>(std::move(colliderVertices), std::move(indices));
             }));
     });
 }

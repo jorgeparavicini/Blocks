@@ -127,6 +127,8 @@ private:
     void Update();
     void Render() const;
     void Render2D() const;
+    void PhysicsUpdate() const;
+    void PhysicsUpdated() const;
     static std::optional<int> ProcessApplicationMessages() noexcept;
 
     std::thread::id mainThreadId_;
@@ -140,6 +142,7 @@ private:
     robin_hood::unordered_set<uint32_t> updateQueue_{};
     robin_hood::unordered_set<uint32_t> renderQueue_{};
     robin_hood::unordered_set<uint32_t> render2DQueue_{};
+    robin_hood::unordered_set<uint32_t> physicsUpdatedQueue_{};
 
     void DestroyRequestedActors();
 

@@ -63,7 +63,6 @@ public:
     [[nodiscard]] const std::wstring& GetName() const noexcept;
     [[nodiscard]] std::shared_ptr<Game> GetGame() const noexcept;
     [[nodiscard]] std::shared_ptr<Transform> GetTransform() const noexcept;
-    [[nodiscard]] physx::PxRigidActor& GetActor() const noexcept;
 
     //------------------------------------------------------------------------------
     // Events
@@ -72,6 +71,7 @@ public:
     void Update() const;
     void Render() const;
     void Render2D() const;
+    void PhysicsUpdated() const;
 
 
     //------------------------------------------------------------------------------
@@ -156,7 +156,6 @@ public:
 
     friend Game;
     friend Component;
-    friend Camera;
 
     friend bool operator==(const Actor& actor1, const Actor& actor2)
     {
@@ -186,6 +185,7 @@ private:
     robin_hood::unordered_set<uint32_t> updateQueue_{};
     robin_hood::unordered_set<uint32_t> renderQueue_{};
     robin_hood::unordered_set<uint32_t> render2DQueue_{};
+    robin_hood::unordered_set<uint32_t> physicsUpdatedQueue_{};
 
     // Component states
     // TODO: We basically repeat stuff from the game class. Maybe it can be refactored

@@ -34,7 +34,7 @@ public:
     // Methods
     //------------------------------------------------------------------------------
 
-    void Update(float stepTime) const;
+    void Update() const;
 
     physx::PxPhysics& GetPhysics();
     physx::PxScene& GetScene();

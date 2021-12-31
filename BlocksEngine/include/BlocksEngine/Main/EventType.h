@@ -20,7 +20,8 @@ enum class BlocksEngine::EventType
     None = 0,
     Update = 1,
     Render = 2,
-    Render2D = 4
+    Render2D = 4,
+    PhysicsUpdated = 8
 };
 
 inline BlocksEngine::EventType operator|(BlocksEngine::EventType a, BlocksEngine::EventType b)

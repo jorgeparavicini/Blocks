@@ -244,6 +244,11 @@ void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
         render2DQueue_.erase(actor.GetIndex());
     }
 
+    if ((eventTypes & EventType::PhysicsUpdated) == EventType::None)
+    {
+        physicsUpdatedQueue_.erase(actor.GetIndex());
+    }
+
     if ((eventTypes & EventType::Update) == EventType::Update)
     {
         updateQueue_.insert(actor.GetIndex());
@@ -257,6 +262,11 @@ void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
     if ((eventTypes & EventType::Render2D) == EventType::Render2D)
     {
         render2DQueue_.insert(actor.GetIndex());
+    }
+
+    if ((eventTypes & EventType::PhysicsUpdated) == EventType::PhysicsUpdated)
+    {
+        physicsUpdatedQueue_.insert(actor.GetIndex());
     }
 }
 
@@ -275,7 +285,7 @@ void Game::Tick() noexcept
     time_.Tick([&]
     {
         DestroyRequestedActors();
-        physics_->Update(time_.DeltaTime());
+        PhysicsUpdate();
         Update();
     });
     Render();
@@ -351,6 +361,27 @@ void Game::Render2D() const
     }
 
     renderTarget.EndDraw();
+}
+
+void Game::PhysicsUpdate() const
+{
+    physics_->Update();
+    PhysicsUpdated();
+}
+
+void Game::PhysicsUpdated() const
+{
+    for (const int actorId : physicsUpdatedQueue_)
+    {
+        if (const auto& actor = pActors_[actorId])
+        {
+            actor->PhysicsUpdated();
+        }
+        else
+        {
+            abort();
+        }
+    }
 }
 
 

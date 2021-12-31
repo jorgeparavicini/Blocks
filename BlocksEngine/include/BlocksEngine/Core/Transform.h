@@ -26,21 +26,24 @@ class BlocksEngine::Transform
 {
 public:
     using MoveSignal = boost::signals2::signal<void(const Vector3<float>&)>;
+    using RotateSignal = boost::signals2::signal<void(const Quaternion&)>;
 
-    explicit Transform(physx::PxRigidActor* actor);
+    explicit Transform(const Vector3<float>& position = Vector3<float>::Zero,
+                       const Quaternion& orientation = Quaternion::Identity,
+                       const Vector3<float>& scale = Vector3<float>::One);
 
     [[nodiscard]] Matrix GetMatrix() const noexcept;
-    [[nodiscard]] Vector3<float> GetPosition() const noexcept;
-    [[nodiscard]] Vector3<float> GetLocalPosition() const noexcept;
-    [[nodiscard]] Quaternion GetOrientation() const noexcept;
-    [[nodiscard]] Quaternion GetLocalOrientation() const noexcept;
-    [[nodiscard]] Vector3<float> GetScale() const noexcept;
-    [[nodiscard]] Vector3<float> GetLocalScale() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetPosition() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetLocalPosition() const noexcept;
+    [[nodiscard]] const Quaternion& GetOrientation() const noexcept;
+    [[nodiscard]] const Quaternion& GetLocalOrientation() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetScale() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetLocalScale() const noexcept;
 
     void SetPosition(const Vector3<float>& position) noexcept;
     void SetLocalPosition(const Vector3<float>& position) noexcept;
-    void SetOrientation(const Quaternion& rotation) noexcept;
-    void SetLocalOrientation(const Quaternion& rotation) noexcept;
+    void SetOrientation(const Quaternion& orientation) noexcept;
+    void SetLocalOrientation(const Quaternion& orientation) noexcept;
     void SetScale(const Vector3<float>& scale) noexcept;
     void SetLocalScale(const Vector3<float>& scale) noexcept;
 
@@ -51,18 +54,19 @@ public:
     [[nodiscard]] bool operator==(const Transform& transform) const noexcept;
 
     boost::signals2::connection AddSignalOnMove(const MoveSignal::slot_type& slot) noexcept;
+    boost::signals2::connection AddSignalOnRotate(const RotateSignal::slot_type& slot) noexcept;
 
     friend Actor;
 
 private:
-    physx::PxRigidActor* actor_;
+    Vector3<float> position_;
+    Quaternion orientation_;
     Vector3<float> scale_;
 
     std::weak_ptr<Transform> parent_;
     std::vector<std::weak_ptr<Transform>> children_{};
 
-    void SetActor(physx::PxRigidActor* actor);
-
     // Signals
     MoveSignal moved_{};
+    RotateSignal rotated_{};
 };

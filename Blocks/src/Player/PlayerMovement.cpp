@@ -69,4 +69,5 @@ void Blocks::PlayerMovement::Update()
     const auto newOrientation = BlocksEngine::Quaternion::CreateFromAxisAngle(
         BlocksEngine::Vector3<float>::Up, deltaX * rotationSpeed_ * deltaTime);
     GetTransform()->SetOrientation(orientation * newOrientation);
+    const auto o = GetTransform()->GetOrientation();
 }

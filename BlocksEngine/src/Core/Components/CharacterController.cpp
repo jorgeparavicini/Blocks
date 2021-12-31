@@ -22,6 +22,7 @@ CharacterController::~CharacterController()
 
 void CharacterController::Start()
 {
+    SetEventTypes(EventType::PhysicsUpdated);
     physx::PxControllerManager* manager = PxCreateControllerManager(GetGame()->GetPhysics().GetScene());
     physx::PxBoxControllerDesc desc;
     desc.halfHeight = 1.0f;
@@ -35,7 +36,7 @@ void CharacterController::Start()
     desc.climbingMode = physx::PxCapsuleClimbingMode::eEASY;*/
     desc.stepOffset = 0.1f;
     desc.material = &GetGame()->GetPhysics().DefaultMaterial();
-    const auto pos = GetTransform()->GetPosition();
+    const auto& pos = GetTransform()->GetPosition();
     desc.position = {pos.x, pos.y, pos.z};
 
     controller_ = manager->createController(desc);
@@ -48,6 +49,12 @@ void CharacterController::Start()
     {
         controller_->setPosition({newPos.x, newPos.y, newPos.z});
     });
+}
+
+void CharacterController::PhysicsUpdated()
+{
+    const auto t = controller_->getActor()->getGlobalPose();
+    GetTransform()->SetPosition(static_cast<Vector3<float>>(t.p));
 }
 
 void CharacterController::Move(const Vector3<float>& motion) const

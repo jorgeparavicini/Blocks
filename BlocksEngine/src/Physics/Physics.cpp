@@ -60,7 +60,7 @@ Physics::~Physics()
     PX_RELEASE(foundation_);
 }
 
-void Physics::Update(const float stepTime) const
+void Physics::Update() const
 {
     constexpr float delta = 1.0f / 60.0f;
     scene_->simulate(delta);
