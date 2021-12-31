@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Components\CharacterController.cpp" />
     <ClCompile Include="src\Physics\Physics.cpp" />
     <ClInclude Include="external\physx\include\characterkinematic\PxBoxController.h" />
     <ClInclude Include="external\physx\include\characterkinematic\PxCapsuleController.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="external\physx\include\vehicle\PxVehicleUtilTelemetry.h" />
     <ClInclude Include="external\physx\include\vehicle\PxVehicleWheels.h" />
     <ClInclude Include="external\robin_hood\include\robin_hood.h" />
+    <ClInclude Include="include\BlocksEngine\Core\Components\CharacterController.h" />
     <ClInclude Include="include\BlocksEngine\Core\Entity.h" />
     <ClInclude Include="include\BlocksEngine\Utility\Concepts.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h" />

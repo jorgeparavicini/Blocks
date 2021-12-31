@@ -389,8 +389,8 @@ void Chunk::Start()
         const auto sectorPosition = GetTransform()->GetPosition() + Vector3<float>{
             0, static_cast<float>(SectionHeight) * i, 0
         };
-        auto transform = std::make_unique<Transform>(sectorPosition);
-        const std::shared_ptr<Actor> sectorActor = GetGame()->AddActor(std::move(transform));
+        const std::shared_ptr<Actor> sectorActor = GetGame()->AddActor();
+        sectorActor->GetTransform()->SetPosition(sectorPosition);
         sections_[i] = std::move(sectorActor->AddComponent<ChunkSection>(*this, i));
     }
 }

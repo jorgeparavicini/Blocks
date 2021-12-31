@@ -127,7 +127,7 @@ Chunk::ChunkData World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
 std::shared_ptr<Chunk> World::CreateChunk(Chunk::ChunkCoords coords)
 {
     auto name = L"Chunk: " + std::to_wstring(coords.x) + L", " + std::to_wstring(coords.y);
-    const std::shared_ptr<Actor> actor = GetGame()->AddActor(std::move(name), std::make_unique<Transform>());
+    const std::shared_ptr<Actor> actor = GetGame()->AddActor(std::move(name));
     const std::shared_ptr<Chunk> chunk = actor->AddComponent<Chunk>(*this, coords);
     chunks_[coords] = chunk;
 

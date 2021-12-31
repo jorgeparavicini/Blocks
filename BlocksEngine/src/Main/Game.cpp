@@ -32,8 +32,8 @@ Game::Game(std::unique_ptr<WindowOptions> options)
 
 void Game::Initialize()
 {
-    auto transform = std::make_unique<Transform>(Vector3<float>(0, 30, -10), Quaternion::Euler(0, 90, 90));
-    const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera", std::move(transform), false);
+    const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera");
+    cameraActor->GetTransform()->SetPosition({0, 30, -10});
     const std::shared_ptr<Camera> camera = cameraActor->AddComponent<Camera>();
     SetActiveCamera(*camera);
 
@@ -178,13 +178,13 @@ const boost::log::sources::logger_mt& Game::Logger()
     return logger_;
 }
 
-std::shared_ptr<Actor> Game::AddActor(std::unique_ptr<Transform> transform, const bool isStatic)
+std::shared_ptr<Actor> Game::AddActor()
 {
     std::wstring name = L"Actor " + std::to_wstring(totalActorCount_);
-    return AddActor(std::move(name), std::move(transform), isStatic);
+    return AddActor(std::move(name));
 }
 
-std::shared_ptr<Actor> Game::AddActor(std::wstring actorName, std::unique_ptr<Transform> transform, const bool isStatic)
+std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
 {
     uint32_t index;
 
@@ -206,9 +206,7 @@ std::shared_ptr<Actor> Game::AddActor(std::wstring actorName, std::unique_ptr<Tr
         shared_from_this(),
         index,
         static_cast<uint32_t>(generations_[index]),
-        std::move(actorName),
-        std::move(transform),
-        isStatic
+        std::move(actorName)
     });
 
     ++totalActorCount_;

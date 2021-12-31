@@ -17,6 +17,11 @@ Quaternion::Quaternion() noexcept
 {
 }
 
+Quaternion::Quaternion(const physx::PxQuat& q) noexcept
+    : XMFLOAT4{q.x, q.y, q.z, q.w}
+{
+}
+
 Quaternion::Quaternion(const Vector3<float>& v, const float scalar) noexcept
     : XMFLOAT4{v.x, v.y, v.z, scalar}
 {
@@ -205,6 +210,29 @@ void Quaternion::Inverse(Quaternion& result) const noexcept
     XMStoreFloat4(&result, XMQuaternionInverse(q));
 }
 
+Vector3<> Quaternion::EulerAngles() const noexcept
+{
+    Vector3<float> result;
+
+    // X axis
+    const float sinRCosP = 2 * (w * x + y * z);
+    const float cosRCosP = 1 - 2 * (x * x + y * y);
+    result.x = std::atan2(sinRCosP, cosRCosP);
+
+    // Y axis
+    const float sinP = 2 * (w * y - z * x);
+    result.y = std::abs(sinP) >= 1
+                   ? std::copysign(Math::Pi / 2, sinP)
+                   : std::asin(sinP);
+
+    // Z axis
+    const float sinYCosP = 2 * (w * z + x * y);
+    const float cosYCosP = 1 - 2 * (y * y + z * z);
+    result.z = std::atan2(sinYCosP, cosYCosP);
+
+    return result * Math::RadToDeg;
+}
+
 float Quaternion::Dot(const Quaternion& q) const noexcept
 {
     const XMVECTOR q1 = XMLoadFloat4(this);
@@ -341,8 +369,9 @@ Quaternion Quaternion::EulerRadians(const Vector3<float>& v)
 
 Quaternion Quaternion::EulerRadians(const float x, const float y, const float z)
 {
+    // TODO: This does not produce the expected results or is inconsistent
     Quaternion r;
-    XMStoreFloat4(&r, XMQuaternionRotationRollPitchYaw(x, y, z));
+    XMStoreFloat4(&r, XMQuaternionRotationRollPitchYaw(-x, -y, -z));
     return r;
 }
 

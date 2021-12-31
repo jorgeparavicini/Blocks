@@ -187,9 +187,11 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <ClInclude Include="include\Blocks\World\BlockRegistry.h" />
     <ClInclude Include="include\Blocks\World\LoadingScreen.h" />
     <ClInclude Include="include\Blocks\Player\PlayerDebugs.h" />
+    <ClInclude Include="include\Blocks\Player\PlayerMovement.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Player\PlayerDebugs.cpp" />
+    <ClCompile Include="src\Player\PlayerMovement.cpp" />
     <ClCompile Include="src\World\BlockRegistry.cpp" />
     <ClCompile Include="src\World\Chunk.cpp" />
     <ClCompile Include="src\World\Block.cpp" />

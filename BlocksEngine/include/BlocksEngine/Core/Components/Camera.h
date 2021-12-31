@@ -37,11 +37,10 @@ public:
 private:
     float lastX_{0};
     float lastY_{0};
-    Vector3<float> rotation_{0, 0, 0};
 
     float moveSpeed_{5.0f};
-    float rotationSpeed_{10.0f};
-    float keyboardRotationSpeed_{10.0f};
+    float rotationSpeed_{1.0f};
+    float keyboardRotationSpeed_{1.0f};
     float x_{0.1f};
     Matrix projection_;
     Matrix worldView_;

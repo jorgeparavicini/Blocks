@@ -6,24 +6,17 @@
 using namespace BlocksEngine;
 
 
-Actor::Actor(std::weak_ptr<Game> game, const uint32_t index, const uint32_t generation, std::wstring name,
-             std::unique_ptr<Transform> transform, const bool isStatic)
+Actor::Actor(std::weak_ptr<Game> game, const uint32_t index,
+             const uint32_t generation, std::wstring name)
     : Entity{index, generation},
       name_{std::move(name)},
-      game_{std::move(game)},
-      pTransform_{std::move(transform)}
+      game_{std::move(game)}
 {
-    const physx::PxTransform t{pTransform_->GetPosition(), pTransform_->GetRotation()};
-    if (isStatic)
-    {
-        actor_ = GetGame()->physics_->GetPhysics().createRigidStatic(t);
-    }
-    else
-    {
-        actor_ = GetGame()->physics_->GetPhysics().createRigidDynamic(t);
-    }
-
-    GetGame()->GetPhysics().GetScene().addActor(*actor_);
+    const physx::PxTransform t{Vector3<float>::Zero, Quaternion::Identity};
+    auto& physics = GetGame()->physics_->GetPhysics();
+    physx::PxRigidActor* const actor = physics.createRigidStatic(t);
+    GetGame()->GetPhysics().GetScene().addActor(*actor);
+    transform_ = std::make_shared<Transform>(actor);
 }
 
 
@@ -49,12 +42,12 @@ std::shared_ptr<Game> Actor::GetGame() const noexcept
 
 std::shared_ptr<Transform> Actor::GetTransform() const noexcept
 {
-    return pTransform_;
+    return transform_;
 }
 
 physx::PxRigidActor& Actor::GetActor() const noexcept
 {
-    return *actor_;
+    return *transform_->actor_;
 }
 
 void Actor::SetEventTypeForComponent(const Component& component, EventType eventTypes)

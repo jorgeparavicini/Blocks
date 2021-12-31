@@ -10,6 +10,7 @@
 #pragma once
 
 #include <PxPhysicsAPI.h>
+#include <string>
 
 #include "BlocksEngine/Core/Math/Math.h"
 
@@ -26,6 +27,8 @@ struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
         : XMFLOAT4{ix, iy, iz, iw}
     {
     }
+
+    explicit Quaternion(const physx::PxQuat& q) noexcept;
 
     Quaternion(const Vector3<float>& v, float scalar) noexcept;
     explicit Quaternion(const Vector4<float>& v) noexcept;
@@ -78,6 +81,8 @@ struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
     void Conjugate(Quaternion& result) const noexcept;
 
     void Inverse(Quaternion& result) const noexcept;
+
+    [[nodiscard]] Vector3<float> EulerAngles() const noexcept;
 
     [[nodiscard]] float Dot(const Quaternion& q) const noexcept;
 

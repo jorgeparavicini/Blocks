@@ -168,8 +168,8 @@ private:
     // Constructors
     //------------------------------------------------------------------------------
 
-    explicit Actor(std::weak_ptr<Game> game, uint32_t index, uint32_t generation, std::wstring name,
-                   std::unique_ptr<Transform> transform, bool isStatic = true);
+    explicit Actor(std::weak_ptr<Game> game, uint32_t index,
+                   uint32_t generation, std::wstring name);
 
     //------------------------------------------------------------------------------
     // Fields
@@ -177,7 +177,7 @@ private:
 
     std::wstring name_;
     std::weak_ptr<Game> game_;
-    std::shared_ptr<Transform> pTransform_{};
+    std::shared_ptr<Transform> transform_{};
     std::vector<std::shared_ptr<Component>> pComponents_{};
     std::queue<std::shared_ptr<Component>> pDestroyQueue_{};
 
@@ -194,8 +194,4 @@ private:
 
     void SetEventTypeForComponent(const Component& component, EventType eventTypes);
     void SetComponentEnabled(const Component& component, bool enabled);
-
-
-    // Physx
-    physx::PxRigidActor* actor_;
 };

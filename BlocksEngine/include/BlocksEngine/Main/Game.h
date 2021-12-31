@@ -92,8 +92,8 @@ public:
     void ForceExit() noexcept;
     void SetActiveCamera(Camera& camera);
 
-    std::shared_ptr<Actor> AddActor(std::unique_ptr<Transform> transform, bool isStatic = true);
-    std::shared_ptr<Actor> AddActor(std::wstring actorName, std::unique_ptr<Transform> transform, bool isStatic = true);
+    std::shared_ptr<Actor> AddActor();
+    std::shared_ptr<Actor> AddActor(std::wstring actorName);
 
     void UpdateEventTypeForActor(const Actor& actor, EventType eventTypes);
 

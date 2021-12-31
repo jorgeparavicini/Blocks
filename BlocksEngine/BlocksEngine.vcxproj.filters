@@ -759,6 +759,9 @@
     <ClInclude Include="external\physx\include\foundation\PxMat33.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Core\Components\CharacterController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -917,35 +920,14 @@
     <ClCompile Include="src\Physics\Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Components\CharacterController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks Engine.props" />
     <None Include="packages.config" />
     <None Include="cpp.hint" />
-    <None Include="external\physx\lib\LowLevelAABB_static_64.pdb" />
-    <None Include="external\physx\lib\LowLevelDynamics_static_64.pdb" />
-    <None Include="external\physx\lib\PhysX_64.dll" />
-    <None Include="external\physx\lib\PhysX_64.exp" />
-    <None Include="external\physx\lib\PhysX_64.map" />
-    <None Include="external\physx\lib\PhysX_64.pdb" />
-    <None Include="external\physx\lib\PhysXCharacterKinematic_static_64.pdb" />
-    <None Include="external\physx\lib\PhysXCommon_64.dll" />
-    <None Include="external\physx\lib\PhysXCommon_64.exp" />
-    <None Include="external\physx\lib\PhysXCommon_64.map" />
-    <None Include="external\physx\lib\PhysXCommon_64.pdb" />
-    <None Include="external\physx\lib\PhysXCooking_64.dll" />
-    <None Include="external\physx\lib\PhysXCooking_64.exp" />
-    <None Include="external\physx\lib\PhysXCooking_64.map" />
-    <None Include="external\physx\lib\PhysXCooking_64.pdb" />
-    <None Include="external\physx\lib\PhysXDevice64.dll" />
-    <None Include="external\physx\lib\PhysXExtensions_static_64.pdb" />
-    <None Include="external\physx\lib\PhysXFoundation_64.dll" />
-    <None Include="external\physx\lib\PhysXFoundation_64.exp" />
-    <None Include="external\physx\lib\PhysXFoundation_64.pdb" />
-    <None Include="external\physx\lib\PhysXGpu_64.dll" />
-    <None Include="external\physx\lib\PhysXPvdSDK_static_64.pdb" />
-    <None Include="external\physx\lib\PhysXTask_static_64.pdb" />
-    <None Include="external\physx\lib\PhysXVehicle_static_64.pdb" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Graphics\Material\Albedo\AlbedoPS.hlsl" />
@@ -957,22 +939,5 @@
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="external\physx\lib\LowLevelDynamics_static_64.lib" />
-    <Library Include="external\physx\lib\PhysX_64.lib" />
-    <Library Include="external\physx\lib\PhysXCharacterKinematic_static_64.lib" />
-    <Library Include="external\physx\lib\PhysXCommon_64.lib" />
-    <Library Include="external\physx\lib\PhysXCooking_64.lib" />
-    <Library Include="external\physx\lib\PhysXExtensions_static_64.lib" />
-    <Library Include="external\physx\lib\PhysXFoundation_64.lib" />
-    <Library Include="external\physx\lib\PhysXPvdSDK_static_64.lib" />
-    <Library Include="external\physx\lib\PhysXTask_static_64.lib" />
-    <Library Include="external\physx\lib\PhysXVehicle_static_64.lib" />
-    <Library Include="external\physx\lib\LowLevel_static_64.lib" />
-    <Library Include="external\physx\lib\LowLevelAABB_static_64.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="external\physx\lib\LowLevel_static_64.pdb" />
   </ItemGroup>
 </Project>

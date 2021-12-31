@@ -9,37 +9,60 @@
 
 #pragma once
 
+#include <boost/signals2/signal.hpp>
+
 #include "BlocksEngine/Core/Math/Matrix.h"
 #include "BlocksEngine/Core/Math/Quaternion.h"
 #include "BlocksEngine/Core/Math/Vector3.h"
 
 namespace BlocksEngine
 {
+    class Camera;
+    class Actor;
     class Transform;
 }
 
 class BlocksEngine::Transform
 {
 public:
-    explicit Transform(Vector3<float> position = Vector3<float>::Zero,
-                       Quaternion rotation = Quaternion::Identity,
-                       Vector3<float> scale = Vector3<float>::One);
+    using MoveSignal = boost::signals2::signal<void(const Vector3<float>&)>;
 
-    [[nodiscard]] const Matrix& GetMatrix() const noexcept;
-    [[nodiscard]] const Vector3<float>& GetPosition() noexcept;
-    [[nodiscard]] const Quaternion& GetRotation() noexcept;
-    [[nodiscard]] const Vector3<float>& GetScale() noexcept;
+    explicit Transform(physx::PxRigidActor* actor);
 
-    void SetPosition(Vector3<float> position) noexcept;
-    void SetRotation(Quaternion rotation) noexcept;
-    void SetScale(Vector3<float> scale) noexcept;
+    [[nodiscard]] Matrix GetMatrix() const noexcept;
+    [[nodiscard]] Vector3<float> GetPosition() const noexcept;
+    [[nodiscard]] Vector3<float> GetLocalPosition() const noexcept;
+    [[nodiscard]] Quaternion GetOrientation() const noexcept;
+    [[nodiscard]] Quaternion GetLocalOrientation() const noexcept;
+    [[nodiscard]] Vector3<float> GetScale() const noexcept;
+    [[nodiscard]] Vector3<float> GetLocalScale() const noexcept;
 
-    void UpdateMatrix() noexcept;
+    void SetPosition(const Vector3<float>& position) noexcept;
+    void SetLocalPosition(const Vector3<float>& position) noexcept;
+    void SetOrientation(const Quaternion& rotation) noexcept;
+    void SetLocalOrientation(const Quaternion& rotation) noexcept;
+    void SetScale(const Vector3<float>& scale) noexcept;
+    void SetLocalScale(const Vector3<float>& scale) noexcept;
+
+    void SetParent(std::weak_ptr<Transform> parent);
+    void AddChild(std::weak_ptr<Transform> child);
+    void RemoveChild(Transform& transform);
+
+    [[nodiscard]] bool operator==(const Transform& transform) const noexcept;
+
+    boost::signals2::connection AddSignalOnMove(const MoveSignal::slot_type& slot) noexcept;
+
+    friend Actor;
 
 private:
-    Vector3<float> position_;
-    Quaternion rotation_;
+    physx::PxRigidActor* actor_;
     Vector3<float> scale_;
 
-    Matrix matrix_;
+    std::weak_ptr<Transform> parent_;
+    std::vector<std::weak_ptr<Transform>> children_{};
+
+    void SetActor(physx::PxRigidActor* actor);
+
+    // Signals
+    MoveSignal moved_;
 };
