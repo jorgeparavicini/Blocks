@@ -23,10 +23,16 @@ CharacterController::~CharacterController()
 void CharacterController::Start()
 {
     physx::PxControllerManager* manager = PxCreateControllerManager(GetGame()->GetPhysics().GetScene());
-    physx::PxCapsuleControllerDesc desc;
-    desc.height = 2.0f;
+    physx::PxBoxControllerDesc desc;
+    desc.halfHeight = 1.0f;
+    desc.halfForwardExtent = 0.45f;
+    desc.halfSideExtent = 0.45f;
+    desc.contactOffset = 0.01f;
+
+    // Capsule
+    /* desc.height = 2.0f;
     desc.radius = 0.5f;
-    desc.climbingMode = physx::PxCapsuleClimbingMode::eEASY;
+    desc.climbingMode = physx::PxCapsuleClimbingMode::eEASY;*/
     desc.stepOffset = 0.1f;
     desc.material = &GetGame()->GetPhysics().DefaultMaterial();
     const auto pos = GetTransform()->GetPosition();

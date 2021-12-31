@@ -64,5 +64,5 @@ private:
     void SetActor(physx::PxRigidActor* actor);
 
     // Signals
-    MoveSignal moved_;
+    MoveSignal moved_{};
 };
