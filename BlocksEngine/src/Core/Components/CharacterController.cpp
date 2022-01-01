@@ -34,7 +34,7 @@ void CharacterController::Start()
     /* desc.height = 2.0f;
     desc.radius = 0.5f;
     desc.climbingMode = physx::PxCapsuleClimbingMode::eEASY;*/
-    desc.stepOffset = 0.1f;
+    desc.stepOffset = 0.f;
     desc.material = &GetGame()->GetPhysics().DefaultMaterial();
     const auto& pos = GetTransform()->GetPosition();
     desc.position = {pos.x, pos.y, pos.z};
@@ -55,6 +55,11 @@ void CharacterController::PhysicsUpdated()
 {
     const auto t = controller_->getActor()->getGlobalPose();
     GetTransform()->SetPosition(static_cast<Vector3<float>>(t.p));
+}
+
+Vector3<> CharacterController::GetFootPosition() const noexcept
+{
+    return static_cast<Vector3<float>>(controller_->getFootPosition());
 }
 
 void CharacterController::Move(const Vector3<float>& motion) const

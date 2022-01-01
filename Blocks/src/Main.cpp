@@ -58,10 +58,12 @@ int WINAPI WinMain(
 
             const auto cameraActor = game->MainCamera().GetActor();
 
+            // TODO: We shouldn't have to specify both
             playerActor->GetTransform()->AddChild(cameraActor->GetTransform());
             cameraActor->GetTransform()->SetParent(playerActor->GetTransform());
 
             playerActor->GetTransform()->SetPosition({0, 30, 0});
+            cameraActor->GetTransform()->SetLocalPosition({0, 1, 0});
             cameraActor->AddComponent<Blocks::PlayerMovement>(std::move(characterController));
 
             playerActor->AddComponent<Blocks::PlayerDebugs>();

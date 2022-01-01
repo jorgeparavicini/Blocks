@@ -32,5 +32,6 @@ private:
 
     float keyboardRotationSpeed_{1.0f};
     float rotationSpeed_{2.0f};
-    float moveSpeed_{3.0f};
+    float moveSpeed_{4.0f};
+    float jumpHeight_{1.1f};
 };

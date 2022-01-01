@@ -32,6 +32,8 @@ public:
     void Start() override;
     void PhysicsUpdated() override;
 
+    [[nodiscard]] Vector3<float> GetFootPosition() const noexcept;
+
     void Move(const Vector3<float>& motion) const;
 
 private:

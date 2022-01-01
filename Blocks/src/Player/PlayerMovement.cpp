@@ -18,11 +18,39 @@ void Blocks::PlayerMovement::Update()
 {
     const float deltaTime = GetGame()->Time().DeltaTime();
 
-    velocity_ += static_cast<BlocksEngine::Vector3<float>>(GetGame()->GetPhysics().GetScene().getGravity()) * deltaTime;
-    controller_.lock()->Move(velocity_ * deltaTime);
-    // TODO: Reset velocity if grounded
-
+    auto& physics = GetGame()->GetPhysics();
     const BlocksEngine::Keyboard& keyboard = GetActor()->GetGame()->Keyboard();
+
+
+    velocity_ += static_cast<BlocksEngine::Vector3<float>>(GetGame()->GetPhysics().GetScene().getGravity()) * deltaTime;
+    // Remove gravity if player is grounded
+    // TODO: Test if this shape is good enough
+    // I enabled the physx Visual Debugger scene query transmission but haven't gotten it to work so these overlaps appear there.
+    const auto overlapShape = physx::PxBoxGeometry{0.45f, 0.01f, 0.45f};
+    const auto transform = physx::PxTransform{controller_.lock()->GetFootPosition()};
+    physx::PxOverlapBuffer hit;
+
+    const bool isGrounded = physics.GetScene().overlap(overlapShape, transform, hit,
+                                                       physx::PxQueryFilterData{
+                                                           physx::PxQueryFlag::eANY_HIT | physx::PxQueryFlag::eSTATIC
+                                                       });
+    if (isGrounded && velocity_.y < 0)
+    {
+        velocity_ = BlocksEngine::Vector3<float>::Zero;
+    }
+
+    if (keyboard.KeyIsPressed(VK_SPACE) && isGrounded)
+    {
+        // TODO: This should only trigger once (KeyDown)
+        // The current solution is temporary
+        if (velocity_.y <= 0)
+        {
+            velocity_.y += std::sqrt(jumpHeight_ * -2.0f * physics.GetScene().getGravity().y);
+        }
+    }
+
+    controller_.lock()->Move(velocity_ * deltaTime);
+
 
     const auto& playerOrientation = controller_.lock()->GetTransform()->GetOrientation();
     BlocksEngine::Vector3 motion{BlocksEngine::Vector3<float>::Zero};

@@ -35,6 +35,7 @@ Physics::Physics(const bool recordMemoryAllocations, const bool connectVisualDeb
     sceneDesc.cpuDispatcher = cpuDispatcher_;
     sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
     scene_ = physics_->createScene(sceneDesc);
+    scene_->getScenePvdClient()->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 
     defaultMaterial_ = physics_->createMaterial(0.5f, 0.5f, 0.6f);
     physx::PxRigidStatic* groundPlane = PxCreatePlane(*physics_, physx::PxPlane{0, 1, 0, 0}, *defaultMaterial_);
