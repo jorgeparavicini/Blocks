@@ -27,4 +27,6 @@ public:
 private:
     Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pTextBrush_;
     Microsoft::WRL::ComPtr<IDWriteTextFormat> pTextFormat_;
+
+    std::weak_ptr<BlocksEngine::Transform> cameraTransform_;
 };

@@ -53,6 +53,10 @@ struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
         return physx::PxQuat{this->x, this->y, this->z, this->w};
     }
 
+    friend std::ostream& operator<<(std::ostream& os, const Quaternion& q);
+    friend std::wostream& operator<<(std::wostream& os, const Quaternion& q);
+
+
     // Comparison operators
     bool operator ==(const Quaternion& q) const noexcept;
     bool operator !=(const Quaternion& q) const noexcept;
@@ -109,6 +113,8 @@ struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
 private:
     static Quaternion EulerRadians(const Vector3<float>& v);
     static Quaternion EulerRadians(float x, float y, float z);
+    static Vector3<float> NormalizeAngles(const Vector3<float>& v);
+    static float NormalizeAngle(float f);
 };
 
 // Binary operators

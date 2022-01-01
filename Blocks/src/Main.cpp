@@ -52,11 +52,19 @@ int WINAPI WinMain(
 
         game->AddSignalGameStart([&game]
         {
+            const auto playerActor = game->AddActor(L"Player");
+
+            auto characterController = playerActor->AddComponent<BlocksEngine::CharacterController>();
+
             const auto cameraActor = game->MainCamera().GetActor();
-            cameraActor->GetTransform()->SetPosition({0, 30, 0});
-            cameraActor->AddComponent<Blocks::PlayerDebugs>();
-            auto characterController = cameraActor->AddComponent<BlocksEngine::CharacterController>();
+
+            playerActor->GetTransform()->AddChild(cameraActor->GetTransform());
+            cameraActor->GetTransform()->SetParent(playerActor->GetTransform());
+
+            playerActor->GetTransform()->SetPosition({0, 30, 0});
             cameraActor->AddComponent<Blocks::PlayerMovement>(std::move(characterController));
+
+            playerActor->AddComponent<Blocks::PlayerDebugs>();
 
             const auto worldActor = game->AddActor(L"World");
             worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 4);

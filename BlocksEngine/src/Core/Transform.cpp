@@ -4,13 +4,14 @@
 using namespace DirectX;
 using namespace BlocksEngine;
 
+// TODO: Testing
 
 Transform::Transform(const Vector3<float>& position,
                      const Quaternion& orientation,
                      const Vector3<float>& scale)
     : position_{position},
       orientation_{orientation},
-      scale_{Vector3<float>::One}
+      scale_{scale}
 {
 }
 
@@ -43,13 +44,12 @@ const Quaternion& Transform::GetOrientation() const noexcept
 
 const Quaternion& Transform::GetLocalOrientation() const noexcept
 {
-    // TODO: This is probably wrong
     const auto p = parent_.lock();
     if (!p)
     {
         return GetOrientation();
     }
-    return GetOrientation() - p->GetLocalOrientation();
+    return GetOrientation() / p->GetLocalOrientation();
 }
 
 const Vector3<float>& Transform::GetScale() const noexcept
@@ -68,15 +68,25 @@ const Vector3<float>& Transform::GetLocalScale() const noexcept
     return scale_ / p->GetLocalScale();
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
+std::weak_ptr<Transform> Transform::GetChild(const size_t index) const noexcept
+{
+    return children_[index];
+}
+
 void Transform::SetPosition(const Vector3<float>& position) noexcept
 {
+    const auto diff = position - position_;
     position_ = position;
+
+    for (auto& child : children_)
+    {
+        const auto c = child.lock();
+        c->SetPosition(diff + c->GetPosition());
+    }
 
     moved_(position);
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void Transform::SetLocalPosition(const Vector3<float>& position) noexcept
 {
     auto parentPos = Vector3<float>::Zero;
@@ -87,12 +97,23 @@ void Transform::SetLocalPosition(const Vector3<float>& position) noexcept
     SetPosition(position + parentPos);
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst
 void Transform::SetOrientation(const Quaternion& orientation) noexcept
 {
-    orientation_ = orientation;
+    Quaternion o;
+    orientation.Normalize(o);
+    Quaternion inverted;
+    o.Inverse(inverted);
+    const auto diff = orientation_ * inverted;
+    diff.Inverse(inverted);
+    orientation_ = o;
 
-    rotated_(orientation);
+    for (auto& child : children_)
+    {
+        const auto c = child.lock();
+        c->SetOrientation(c->GetOrientation() * inverted);
+    }
+
+    rotated_(o);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst
@@ -103,7 +124,6 @@ void Transform::SetLocalOrientation(const Quaternion& orientation) noexcept
     {
         parentOrientation = p->GetOrientation();
     }
-    // TODO: This is also probably wrong
     SetOrientation(orientation * parentOrientation);
 }
 

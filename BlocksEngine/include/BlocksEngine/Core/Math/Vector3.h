@@ -10,6 +10,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <iostream>
 #include <foundation/PxVec3.h>
 
 #include "BlocksEngine/Core/Math/Math.h"
@@ -94,6 +95,20 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
             static_cast<float>(this->z)
         };
     }
+
+    /*
+    friend std::ostream& operator<<(std::ostream& os, const Vector3& v)
+    {
+        os << std::to_string(v.x) << ", " << std::to_string(v.y) << ", " << std::to_string(v.z);
+        return os;
+    }*/
+
+    friend std::wostream& operator<<(std::wostream& os, const Vector3<T>& v)
+    {
+        os << v.x << ", " << v.y << ", " << v.z;
+        return os;
+    }
+
 
     // Comparison operators
     bool operator==(const Vector3<T>& v) const noexcept;

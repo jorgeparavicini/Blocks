@@ -33,7 +33,6 @@ Game::Game(std::unique_ptr<WindowOptions> options)
 void Game::Initialize()
 {
     const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera");
-    cameraActor->GetTransform()->SetPosition({0, 30, -10});
     const std::shared_ptr<Camera> camera = cameraActor->AddComponent<Camera>();
     SetActiveCamera(*camera);
 

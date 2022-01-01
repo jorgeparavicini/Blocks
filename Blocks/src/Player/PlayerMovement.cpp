@@ -24,24 +24,24 @@ void Blocks::PlayerMovement::Update()
 
     const BlocksEngine::Keyboard& keyboard = GetActor()->GetGame()->Keyboard();
 
-    const auto orientation = GetTransform()->GetOrientation();
+    const auto& playerOrientation = controller_.lock()->GetTransform()->GetOrientation();
     BlocksEngine::Vector3 motion{BlocksEngine::Vector3<float>::Zero};
 
     if (keyboard.KeyIsPressed('W'))
     {
-        motion += orientation * BlocksEngine::Vector3<float>::Forward;
+        motion += playerOrientation * BlocksEngine::Vector3<float>::Forward;
     }
     if (keyboard.KeyIsPressed('S'))
     {
-        motion += orientation * BlocksEngine::Vector3<float>::Backward;
+        motion += playerOrientation * BlocksEngine::Vector3<float>::Backward;
     }
     if (keyboard.KeyIsPressed('A'))
     {
-        motion += orientation * BlocksEngine::Vector3<float>::Left;
+        motion += playerOrientation * BlocksEngine::Vector3<float>::Left;
     }
     if (keyboard.KeyIsPressed('D'))
     {
-        motion += orientation * BlocksEngine::Vector3<float>::Right;
+        motion += playerOrientation * BlocksEngine::Vector3<float>::Right;
     }
 
     controller_.lock()->Move(motion * moveSpeed_ * deltaTime);
@@ -66,8 +66,11 @@ void Blocks::PlayerMovement::Update()
         deltaY += keyboardRotationSpeed_;
     }
 
-    const auto newOrientation = BlocksEngine::Quaternion::CreateFromAxisAngle(
+    const auto newPlayerOrientation = BlocksEngine::Quaternion::CreateFromAxisAngle(
         BlocksEngine::Vector3<float>::Up, deltaX * rotationSpeed_ * deltaTime);
-    GetTransform()->SetOrientation(orientation * newOrientation);
-    const auto o = GetTransform()->GetOrientation();
+    controller_.lock()->GetTransform()->SetOrientation(playerOrientation * newPlayerOrientation);
+
+    const auto newCameraOrientation = BlocksEngine::Quaternion::CreateFromAxisAngle(
+        BlocksEngine::Vector3<float>::Right, deltaY * rotationSpeed_ * deltaTime);
+    GetTransform()->SetLocalOrientation(GetTransform()->GetLocalOrientation() * newCameraOrientation);
 }

@@ -39,6 +39,7 @@ public:
     [[nodiscard]] const Quaternion& GetLocalOrientation() const noexcept;
     [[nodiscard]] const Vector3<float>& GetScale() const noexcept;
     [[nodiscard]] const Vector3<float>& GetLocalScale() const noexcept;
+    [[nodiscard]] std::weak_ptr<Transform> GetChild(size_t index) const noexcept;
 
     void SetPosition(const Vector3<float>& position) noexcept;
     void SetLocalPosition(const Vector3<float>& position) noexcept;

@@ -212,7 +212,47 @@ void Quaternion::Inverse(Quaternion& result) const noexcept
 
 Vector3<> Quaternion::EulerAngles() const noexcept
 {
+    // TODO: SIMD Optimization
+    const float sqw = w * w;
+    const float sqx = x * x;
+    const float sqy = y * y;
+    const float sqz = z * z;
+    const float unit = sqx + sqy + sqz + sqw;
+    const float test = x * w - y * z;
+
     Vector3<float> result;
+
+    if (test > 0.4995f * unit) // singularity at north pole
+    {
+        result.x = Math::Pi / 2;
+        result.y = 2.0f * std::atan2(y, x);
+        result.z = 0;
+        return NormalizeAngles(result * Math::RadToDeg);
+    }
+
+    if (test < -0.4995f * unit)
+    {
+        result.x = -Math::Pi / 2;
+        result.y = -2.0f * std::atan2(y, x);
+        result.z = 0;
+        return NormalizeAngles(result * Math::RadToDeg);
+    }
+
+    // W -> W
+    // X -> Y
+    // Y -> Z
+    // Z -> X
+
+    /*result.x = std::asin(2.0f * (y * x - w * z));
+    result.y = std::atan2(2.0f * y * w + 2.0f * z * x, 1 - 2.0f * (sqx + sqw));
+    result.z = std::atan2(2.0f * y * z + 2.0f * x * w, 1 - 2.0f * (sqz + sqx));
+    */
+    result.x = std::asin(2.0f * (w * x - y * z));
+    result.y = std::atan2(2.0f * w * y + 2.0f * z * x, 1 - 2.0f * (sqx + sqy));
+    result.z = std::atan2(2.0f * w * z + 2.0f * x * y, 1 - 2.0f * (sqz + sqx));
+
+    return NormalizeAngles(result * Math::RadToDeg);
+    // TODO: This is in the XYZ order but it needs to be in ZXY order.
 
     // X axis
     const float sinRCosP = 2 * (w * x + y * z);
@@ -375,6 +415,25 @@ Quaternion Quaternion::EulerRadians(const float x, const float y, const float z)
     return r;
 }
 
+Vector3<> Quaternion::NormalizeAngles(const Vector3<>& v)
+{
+    return {NormalizeAngle(v.x), NormalizeAngle(v.y), NormalizeAngle(v.z)};
+}
+
+float Quaternion::NormalizeAngle(float f)
+{
+    while (f > 360.0f)
+    {
+        f -= 360.0f;
+    }
+    while (f < 0.0f)
+    {
+        f += 360.0f;
+    }
+
+    return f;
+}
+
 Quaternion Quaternion::Euler(const Vector3<float>& v)
 {
     return EulerRadians(v * Math::DegToRad);
@@ -453,4 +512,19 @@ Quaternion operator*(const float s, const Quaternion& q) noexcept
     Quaternion r;
     XMStoreFloat4(&r, XMVectorScale(quat, s));
     return r;
+}
+
+namespace BlocksEngine
+{
+    std::ostream& operator<<(std::ostream& os, const Quaternion& q)
+    {
+        os << q.x << ", " << q.y << ", " << q.z << ", " << q.w;
+        return os;
+    }
+
+    std::wostream& operator<<(std::wostream& os, const Quaternion& q)
+    {
+        os << q.x << ", " << q.y << ", " << q.z << ", " << q.w;
+        return os;
+    }
 }
