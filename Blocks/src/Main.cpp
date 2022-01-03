@@ -2,7 +2,7 @@
 
 #include <chrono>
 #include <thread>
-#include <Windows.h>
+#include <Blocks/Player/PlayerMovement.h>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/file.hpp>
@@ -10,6 +10,7 @@
 #include "Blocks/Player/PlayerDebugs.h"
 #include "Blocks/World/World.h"
 #include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Core/Components/CharacterController.h"
 #include "BlocksEngine/Exceptions/Exception.h"
 #include "BlocksEngine/Main/Game.h"
 
@@ -38,8 +39,10 @@ int WINAPI WinMain(
     _In_ LPSTR lpCmdLine,
     _In_ int nShowCmd)
 {
+    UNREFERENCED_PARAMETER(hInstance);
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+    UNREFERENCED_PARAMETER(nShowCmd);
 
     SetupLogging();
 
@@ -49,10 +52,24 @@ int WINAPI WinMain(
 
         game->AddSignalGameStart([&game]
         {
-            game->MainCamera().GetActor()->AddComponent<Blocks::PlayerDebugs>();
+            const auto playerActor = game->AddActor(L"Player");
+
+            auto characterController = playerActor->AddComponent<BlocksEngine::CharacterController>();
+
+            const auto cameraActor = game->MainCamera().GetActor();
+
+            // TODO: We shouldn't have to specify both
+            playerActor->GetTransform()->AddChild(cameraActor->GetTransform());
+            cameraActor->GetTransform()->SetParent(playerActor->GetTransform());
+
+            playerActor->GetTransform()->SetPosition({0, 30, 0});
+            cameraActor->GetTransform()->SetLocalPosition({0, 1, 0});
+            cameraActor->AddComponent<Blocks::PlayerMovement>(std::move(characterController));
+
+            playerActor->AddComponent<Blocks::PlayerDebugs>();
 
             const auto worldActor = game->AddActor(L"World");
-            worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 16);
+            worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 10);
         });
         return game->Start();
     }

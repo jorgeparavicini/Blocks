@@ -155,8 +155,6 @@ Matrix& Matrix::operator=(const XMFLOAT3X3& m) noexcept
     _43 = 0.f;
     _44 = 1.f;
 
-    isDirty_ = true;
-
     return *this;
 }
 
@@ -178,8 +176,6 @@ Matrix& Matrix::operator=(const XMFLOAT4X3& m) noexcept
     _42 = m._42;
     _43 = m._43;
     _44 = 1.f;
-
-    isDirty_ = true;
 
     return *this;
 }
@@ -206,8 +202,6 @@ Matrix& Matrix::operator+=(const Matrix& m) noexcept
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_31), x3);
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_41), x4);
 
-    isDirty_ = true;
-
     return *this;
 }
 
@@ -233,8 +227,6 @@ Matrix& Matrix::operator-=(const Matrix& m) noexcept
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_31), x3);
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_41), x4);
 
-    isDirty_ = true;
-
     return *this;
 }
 
@@ -245,8 +237,6 @@ Matrix& Matrix::operator*=(const Matrix& m) noexcept
     const XMMATRIX x = XMMatrixMultiply(m1, m2);
 
     XMStoreFloat4x4(this, x);
-
-    isDirty_ = true;
 
     return *this;
 }
@@ -267,8 +257,6 @@ Matrix& Matrix::operator*=(const float s) noexcept
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_21), x2);
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_31), x3);
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_41), x4);
-
-    isDirty_ = true;
 
     return *this;
 }
@@ -292,8 +280,6 @@ Matrix& Matrix::operator/=(const float s) noexcept
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_21), x2);
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_31), x3);
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_41), x4);
-
-    isDirty_ = true;
 
     return *this;
 }
@@ -319,8 +305,6 @@ Matrix& Matrix::operator/=(const Matrix& m) noexcept
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_21), x2);
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_31), x3);
     XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(&_41), x4);
-
-    isDirty_ = true;
 
     return *this;
 }
@@ -355,21 +339,6 @@ Matrix Matrix::operator-() const noexcept
 }
 
 //------------------------------------------------------------------------------
-// State manipulation
-//------------------------------------------------------------------------------
-
-bool Matrix::IsDirty() const noexcept
-{
-    return isDirty_;
-}
-
-void Matrix::ConsumeIsDirty() noexcept
-{
-    isDirty_ = false;
-}
-
-
-//------------------------------------------------------------------------------
 // Properties
 //------------------------------------------------------------------------------
 
@@ -383,8 +352,6 @@ void Matrix::Up(const Vector3<float>& v) noexcept
     _21 = v.x;
     _22 = v.y;
     _23 = v.z;
-
-    isDirty_ = true;
 }
 
 Vector3<float> Matrix::Down() const noexcept
@@ -397,8 +364,6 @@ void Matrix::Down(const Vector3<float>& v) noexcept
     _21 = -v.x;
     _22 = -v.y;
     _23 = -v.z;
-
-    isDirty_ = true;
 }
 
 Vector3<float> Matrix::Right() const noexcept
@@ -411,8 +376,6 @@ void Matrix::Right(const Vector3<float>& v) noexcept
     _11 = v.x;
     _12 = v.y;
     _13 = v.z;
-
-    isDirty_ = true;
 }
 
 Vector3<float> Matrix::Left() const noexcept
@@ -425,8 +388,6 @@ void Matrix::Left(const Vector3<float>& v) noexcept
     _11 = -v.x;
     _12 = -v.y;
     _13 = -v.z;
-
-    isDirty_ = true;
 }
 
 Vector3<float> Matrix::Forward() const noexcept
@@ -439,8 +400,6 @@ void Matrix::Forward(const Vector3<float>& v) noexcept
     _31 = -v.x;
     _32 = -v.y;
     _33 = -v.z;
-
-    isDirty_ = true;
 }
 
 Vector3<float> Matrix::Backward() const noexcept
@@ -453,8 +412,6 @@ void Matrix::Backward(const Vector3<float>& v) noexcept
     _31 = v.x;
     _32 = v.y;
     _33 = v.z;
-
-    isDirty_ = true;
 }
 
 Vector3<float> Matrix::Translation() const noexcept
@@ -467,8 +424,6 @@ void Matrix::Translation(const Vector3<float>& v) noexcept
     _41 = v.x;
     _42 = v.y;
     _43 = v.z;
-
-    isDirty_ = true;
 }
 
 //------------------------------------------------------------------------------

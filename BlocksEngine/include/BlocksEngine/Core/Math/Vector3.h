@@ -10,6 +10,8 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <iostream>
+#include <foundation/PxVec3.h>
 
 #include "BlocksEngine/Core/Math/Math.h"
 
@@ -54,6 +56,9 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
     {
     }
 
+    explicit Vector3(const physx::PxVec3& vec3) noexcept;
+    explicit Vector3(const physx::PxExtendedVec3& vec3) noexcept;
+
     explicit Vector3(_In_reads_(3) const T* pArray) noexcept;
 
     Vector3(DirectX::FXMVECTOR v) noexcept;
@@ -81,6 +86,29 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
     //------------------------------------------------------------------------------
 
     operator DirectX::XMVECTOR() const noexcept;
+
+    operator physx::PxVec3() const noexcept
+    {
+        return physx::PxVec3{
+            static_cast<float>(this->x),
+            static_cast<float>(this->y),
+            static_cast<float>(this->z)
+        };
+    }
+
+    /*
+    friend std::ostream& operator<<(std::ostream& os, const Vector3& v)
+    {
+        os << std::to_string(v.x) << ", " << std::to_string(v.y) << ", " << std::to_string(v.z);
+        return os;
+    }*/
+
+    friend std::wostream& operator<<(std::wostream& os, const Vector3<T>& v)
+    {
+        os << v.x << ", " << v.y << ", " << v.z;
+        return os;
+    }
+
 
     // Comparison operators
     bool operator==(const Vector3<T>& v) const noexcept;
@@ -360,7 +388,16 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
     }
 
     template <class U, class V>
-    friend Vector3 operator-(const Vector3<U>& v1, const Vector3<V>& v2);
+    friend Vector3 operator-(const Vector3<U>& v1, const Vector3<V>& v2)
+    {
+        const DirectX::XMVECTOR x1 = Vector3<U>::Load(&v1);
+        const DirectX::XMVECTOR x2 = Vector3<V>::Load(&v2);
+        const DirectX::XMVECTOR x = DirectX::XMVectorSubtract(x1, x2);
+
+        BlocksEngine::Vector3 result;
+        Vector3<T>::Store(&result, x);
+        return result;
+    }
 
     template <class U>
     friend Vector3<T> operator*(const Vector3<T>& v1, const Vector3<U>& v2) noexcept
@@ -420,142 +457,84 @@ private:
     static void Store(typename Vector3Base<T>::Base* pDestination, DirectX::FXMVECTOR v) noexcept;
 };
 
-template <class T, class U, class V>
-BlocksEngine::Vector3<T> operator-(const BlocksEngine::Vector3<U>& v1, const BlocksEngine::Vector3<V>& v2) noexcept
-{
-    const DirectX::XMVECTOR x1 = BlocksEngine::Vector3<U>::Load(&v1);
-    const DirectX::XMVECTOR x2 = BlocksEngine::Vector3<V>::Load(&v2);
-    const DirectX::XMVECTOR x = DirectX::XMVectorSubtract(x1, x2);
-
-    BlocksEngine::Vector3 result;
-    BlocksEngine::Vector3<T>::Store(&result, x);
-    return result;
-}
-
-/*template <class T, class U, class V>
-BlocksEngine::Vector3<T> operator*(const BlocksEngine::Vector3<U>& v1, const BlocksEngine::Vector3<V>& v2) noexcept
-{
-    const DirectX::XMVECTOR x1 = BlocksEngine::Vector3<U>::Load(&v1);
-    const DirectX::XMVECTOR x2 = BlocksEngine::Vector3<V>::Load(&v2);
-    const DirectX::XMVECTOR x = DirectX::XMVectorMultiply(x1, x2);
-
-    BlocksEngine::Vector3 result;
-    BlocksEngine::Vector3<T>::Store(&result, x);
-    return result;
-}
-
-template <class T, class U, class V>
-BlocksEngine::Vector3<T> operator/(const BlocksEngine::Vector3<U>& v1, const BlocksEngine::Vector3<V>& v2) noexcept
-{
-    const DirectX::XMVECTOR x1 = BlocksEngine::Vector3<U>::Load(&v1);
-    const DirectX::XMVECTOR x2 = BlocksEngine::Vector3<V>::Load(&v2);
-    const DirectX::XMVECTOR x = DirectX::XMVectorDivide(x1, x2);
-
-    BlocksEngine::Vector3 result;
-    BlocksEngine::Vector3<T>::Store(&result, x);
-    return result;
-}
-
-template <class T, class U>
-BlocksEngine::Vector3<T> operator/(const BlocksEngine::Vector3<U>& v, const float s) noexcept
-{
-    const DirectX::XMVECTOR x1 = BlocksEngine::Vector3<U>::Load(&v);
-    const DirectX::XMVECTOR x = DirectX::XMVectorScale(x1, 1.0f / s);
-
-    BlocksEngine::Vector3 result;
-    BlocksEngine::Vector3<T>::Store(&result, x);
-    return result;
-}
-
-template <class T, class U>
-BlocksEngine::Vector3<T> operator*(const float s, const BlocksEngine::Vector3<U>& v) noexcept
-{
-    const DirectX::XMVECTOR x1 = BlocksEngine::Vector3<U>::Load(&v);
-    const DirectX::XMVECTOR x = DirectX::XMVectorScale(x1, s);
-
-    BlocksEngine::Vector3 result;
-    BlocksEngine::Vector3<T>::Store(&result, x);
-    return result;
-}
-*/
 
 // Constants
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Zero{0.0f, 0.0f, 0.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Zero{0.0f, 0.0f, 0.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Zero{0, 0, 0};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Zero{0, 0, 0};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Zero{0u, 0u, 0u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Zero{0u, 0u, 0u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::One{1.0f, 1.0f, 1.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::One{1.0f, 1.0f, 1.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::One{1, 1, 1};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::One{1, 1, 1};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::One{1u, 1u, 1u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::One{1u, 1u, 1u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::UnitX{1.0f, 0.0f, 0.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::UnitX{1.0f, 0.0f, 0.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::UnitX{1, 0, 0};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::UnitX{1, 0, 0};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::UnitX{1u, 0u, 0u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::UnitX{1u, 0u, 0u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::UnitY{0.0f, 1.0f, 0.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::UnitY{0.0f, 1.0f, 0.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::UnitY{0, 1, 0};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::UnitY{0, 1, 0};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::UnitY{0u, 1u, 0u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::UnitY{0u, 1u, 0u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::UnitZ{0.0f, 0.0f, 1.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::UnitZ{0.0f, 0.0f, 1.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::UnitZ{0, 0, 1};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::UnitZ{0, 0, 1};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::UnitZ{0u, 0u, 1u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::UnitZ{0u, 0u, 1u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Up{0.0f, 1.0f, 0.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Up{0.0f, 1.0f, 0.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Up{0, 1, 0};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Up{0, 1, 0};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Up{0u, 1u, 0u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Up{0u, 1u, 0u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Down{0.0f, -1.0f, 0.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Down{0.0f, -1.0f, 0.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Down{0, -1, 0};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Down{0, -1, 0};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Down{0u, 1u, 0u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Down{0u, 1u, 0u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Right{1.0f, 0.0f, 0.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Right{1.0f, 0.0f, 0.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Right{1, 0, 0};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Right{1, 0, 0};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Right{1u, 0u, 0u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Right{1u, 0u, 0u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Left{-1.0f, 0.0f, 0.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Left{-1.0f, 0.0f, 0.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Left{-1, 0, 0};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Left{-1, 0, 0};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Left{1u, 0u, 0u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Left{1u, 0u, 0u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Forward{0.0f, 0.0f, 1.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Forward{0.0f, 0.0f, 1.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Forward{0, 0, 1};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Forward{0, 0, 1};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Forward{0u, 0u, 1u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Forward{0u, 0u, 1u};
 
 template <>
-const BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Backward{0.0f, 0.0f, -1.0f};
+constexpr BlocksEngine::Vector3<float> BlocksEngine::Vector3<float>::Backward{0.0f, 0.0f, -1.0f};
 template <>
-const BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Backward{0, 0, -1};
+constexpr BlocksEngine::Vector3<int32_t> BlocksEngine::Vector3<int32_t>::Backward{0, 0, -1};
 template <>
-const BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Backward{0u, 0u, 1u};
+constexpr BlocksEngine::Vector3<uint32_t> BlocksEngine::Vector3<uint32_t>::Backward{0u, 0u, 1u};
 
 //------------------------------------------------------------------------------
 // Storage

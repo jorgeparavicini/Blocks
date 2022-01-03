@@ -9,6 +9,9 @@
 
 #pragma once
 
+#include <PxPhysicsAPI.h>
+#include <string>
+
 #include "BlocksEngine/Core/Math/Math.h"
 
 namespace BlocksEngine
@@ -19,7 +22,14 @@ namespace BlocksEngine
 struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
 {
     Quaternion() noexcept;
-    constexpr Quaternion(float ix, float iy, float iz, float iw) noexcept;
+
+    constexpr Quaternion(const float ix, const float iy, const float iz, const float iw) noexcept
+        : XMFLOAT4{ix, iy, iz, iw}
+    {
+    }
+
+    explicit Quaternion(const physx::PxQuat& q) noexcept;
+
     Quaternion(const Vector3<float>& v, float scalar) noexcept;
     explicit Quaternion(const Vector4<float>& v) noexcept;
     explicit Quaternion(_In_reads_(4) const float* pArray) noexcept;
@@ -37,6 +47,15 @@ struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
 
     operator DirectX::XMVECTOR() const noexcept;
     operator std::string() const noexcept;
+
+    operator physx::PxQuat() const
+    {
+        return physx::PxQuat{this->x, this->y, this->z, this->w};
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Quaternion& q);
+    friend std::wostream& operator<<(std::wostream& os, const Quaternion& q);
+
 
     // Comparison operators
     bool operator ==(const Quaternion& q) const noexcept;
@@ -67,6 +86,8 @@ struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
 
     void Inverse(Quaternion& result) const noexcept;
 
+    [[nodiscard]] Vector3<float> EulerAngles() const noexcept;
+
     [[nodiscard]] float Dot(const Quaternion& q) const noexcept;
 
     // Static functions
@@ -92,6 +113,8 @@ struct BlocksEngine::Quaternion : DirectX::XMFLOAT4
 private:
     static Quaternion EulerRadians(const Vector3<float>& v);
     static Quaternion EulerRadians(float x, float y, float z);
+    static Vector3<float> NormalizeAngles(const Vector3<float>& v);
+    static float NormalizeAngle(float f);
 };
 
 // Binary operators

@@ -8,4 +8,5 @@
 #pragma once
 
 // Include all headers to be precompiled here
+#include <Windows.h>
 #define NOMINMAX

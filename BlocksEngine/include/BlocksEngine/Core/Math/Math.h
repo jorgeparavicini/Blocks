@@ -15,13 +15,13 @@ namespace BlocksEngine
     struct Matrix;
     struct Quaternion;
 
-    template <class T = float>
+    template <typename T = float>
     struct Vector2;
 
-    template <class T = float>
+    template <typename T = float>
     struct Vector3;
 
-    template <class T = float>
+    template <typename T = float>
     struct Vector4;
 
 
@@ -40,5 +40,6 @@ class BlocksEngine::Math
 {
 public:
     static const float DegToRad;
+    static const float RadToDeg;
     static const float Pi;
 };

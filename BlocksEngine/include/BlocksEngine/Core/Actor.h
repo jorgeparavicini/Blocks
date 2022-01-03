@@ -71,6 +71,7 @@ public:
     void Update() const;
     void Render() const;
     void Render2D() const;
+    void PhysicsUpdated() const;
 
 
     //------------------------------------------------------------------------------
@@ -166,7 +167,8 @@ private:
     // Constructors
     //------------------------------------------------------------------------------
 
-    explicit Actor(std::weak_ptr<Game> game, uint32_t index, uint32_t generation, std::wstring name);
+    explicit Actor(std::weak_ptr<Game> game, uint32_t index,
+                   uint32_t generation, std::wstring name);
 
     //------------------------------------------------------------------------------
     // Fields
@@ -174,15 +176,16 @@ private:
 
     std::wstring name_;
     std::weak_ptr<Game> game_;
-    std::shared_ptr<Transform> pTransform_{};
+    std::shared_ptr<Transform> transform_{};
     std::vector<std::shared_ptr<Component>> pComponents_{};
     std::queue<std::shared_ptr<Component>> pDestroyQueue_{};
 
     // Event Sets
-    // TODO: Rename as they are not queues per se
+    // TODO: Rename as they are not queues per se but we don't want to allow multiple values
     robin_hood::unordered_set<uint32_t> updateQueue_{};
     robin_hood::unordered_set<uint32_t> renderQueue_{};
     robin_hood::unordered_set<uint32_t> render2DQueue_{};
+    robin_hood::unordered_set<uint32_t> physicsUpdatedQueue_{};
 
     // Component states
     // TODO: We basically repeat stuff from the game class. Maybe it can be refactored

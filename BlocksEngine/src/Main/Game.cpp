@@ -16,7 +16,8 @@
 using namespace BlocksEngine;
 
 Game::Game(std::unique_ptr<WindowOptions> options)
-    : pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))},
+    : physics_{std::make_unique<Physics>()},
+      pWindow_{std::make_unique<BlocksEngine::Window>(std::move(options))},
       pMainDispatch_{std::make_shared<BlocksEngine::MainDispatchQueue>()},
       mainThreadId_{std::this_thread::get_id()}
 {
@@ -33,9 +34,6 @@ void Game::Initialize()
 {
     const std::shared_ptr<Actor> cameraActor = AddActor(L"Main Camera");
     const std::shared_ptr<Camera> camera = cameraActor->AddComponent<Camera>();
-    camera->GetTransform()->SetPosition(Vector3<float>(0, 30, -10));
-    const Quaternion rot = Quaternion::Euler(0, 90, 90);
-    camera->GetTransform()->SetRotation(rot);
     SetActiveCamera(*camera);
 
     RECT clientRect;
@@ -160,6 +158,11 @@ const Time& Game::Time() const noexcept
     return time_;
 }
 
+Physics& Game::GetPhysics()
+{
+    return *physics_;
+}
+
 std::shared_ptr<BaseDispatchQueue> Game::MainDispatchQueue() const noexcept
 {
     return pMainDispatch_;
@@ -225,7 +228,6 @@ std::shared_ptr<Actor> Game::AddActor(std::wstring actorName)
 
 void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
 {
-    
     // TODO: Replace with map?
     if ((eventTypes & EventType::Update) == EventType::None)
     {
@@ -242,6 +244,11 @@ void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
         render2DQueue_.erase(actor.GetIndex());
     }
 
+    if ((eventTypes & EventType::PhysicsUpdated) == EventType::None)
+    {
+        physicsUpdatedQueue_.erase(actor.GetIndex());
+    }
+
     if ((eventTypes & EventType::Update) == EventType::Update)
     {
         updateQueue_.insert(actor.GetIndex());
@@ -255,6 +262,11 @@ void Game::UpdateEventTypeForActor(const Actor& actor, EventType eventTypes)
     if ((eventTypes & EventType::Render2D) == EventType::Render2D)
     {
         render2DQueue_.insert(actor.GetIndex());
+    }
+
+    if ((eventTypes & EventType::PhysicsUpdated) == EventType::PhysicsUpdated)
+    {
+        physicsUpdatedQueue_.insert(actor.GetIndex());
     }
 }
 
@@ -273,6 +285,7 @@ void Game::Tick() noexcept
     time_.Tick([&]
     {
         DestroyRequestedActors();
+        PhysicsUpdate();
         Update();
     });
     Render();
@@ -283,6 +296,7 @@ void Game::Update()
     int count = 0;
     for (const uint32_t actorId : updateQueue_)
     {
+        // TODO: ???????????????? the fuck is this
         if (actorId > 1000)
         {
             int i = 0;
@@ -349,6 +363,27 @@ void Game::Render2D() const
     renderTarget.EndDraw();
 }
 
+void Game::PhysicsUpdate() const
+{
+    physics_->Update();
+    PhysicsUpdated();
+}
+
+void Game::PhysicsUpdated() const
+{
+    for (const int actorId : physicsUpdatedQueue_)
+    {
+        if (const auto& actor = pActors_[actorId])
+        {
+            actor->PhysicsUpdated();
+        }
+        else
+        {
+            abort();
+        }
+    }
+}
+
 
 std::optional<int> Game::ProcessApplicationMessages() noexcept
 {
@@ -387,6 +422,7 @@ void Game::DestroyRequestedActors()
         renderQueue_.erase(index);
         render2DQueue_.erase(index);
 
-        AddActor();
+        // TODO: ????? why
+        //AddActor();
     }
 }

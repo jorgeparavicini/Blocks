@@ -5,7 +5,6 @@
 
 #include "BlocksEngine/Core/Actor.h"
 #include "BlocksEngine/Core/Transform.h"
-#include "BlocksEngine/Core/Input/Keyboard.h"
 #include "BlocksEngine/Main/Game.h"
 
 using namespace BlocksEngine;
@@ -18,7 +17,7 @@ Matrix Camera::WorldViewProjection() const noexcept
 Matrix Camera::WorldView() const noexcept
 {
     const Vector3 position = GetTransform()->GetPosition();
-    const Matrix rotation = Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+    const Matrix rotation = Matrix::CreateFromQuaternion(GetTransform()->GetOrientation());
 
     Vector3 target = Vector3<float>::Transform(Vector3<float>::Forward, rotation);
     target.Normalize();
@@ -36,6 +35,12 @@ void Camera::OnWindowResized(const int width, const int height) noexcept
     projection_ = std::move(CalculateProjection());
 }
 
+void Camera::Update()
+{
+    worldView_ = WorldView();
+    wvp_ = worldView_ * projection_;
+}
+
 void Camera::Start()
 {
     SetEventTypes(EventType::Update);
@@ -44,83 +49,6 @@ void Camera::Start()
         bind(&Camera::OnWindowResized, this, _1, _2)
     );
     projection_ = CalculateProjection();
-}
-
-void Camera::Update()
-{
-    worldView_ = WorldView();
-    wvp_ = worldView_ * projection_;
-
-    const auto deltaTime = static_cast<float>(GetGame()->Time().DeltaTime());
-    x_ += 0.01f;
-    const Keyboard& keyboard = GetActor()->GetGame()->Keyboard();
-    const auto position = GetTransform()->GetPosition();
-    //GetTransform()->SetRotation(Quaternion::CreateFromYawPitchRoll(0, 1, x_));
-    if (keyboard.KeyIsPressed('W'))
-    {
-        GetTransform()->SetPosition(
-            position + GetTransform()->GetRotation() * Vector3<float>::Forward * moveSpeed_ * deltaTime);
-    }
-
-    if (keyboard.KeyIsPressed('S'))
-    {
-        GetTransform()->SetPosition(
-            position + GetTransform()->GetRotation() * Vector3<float>::Backward * moveSpeed_ * deltaTime);
-    }
-
-    if (keyboard.KeyIsPressed('A'))
-    {
-        GetTransform()->SetPosition(
-            position + GetTransform()->GetRotation() * Vector3<float>::Left * moveSpeed_ * deltaTime);
-    }
-
-    if (keyboard.KeyIsPressed('D'))
-    {
-        GetTransform()->SetPosition(
-            position + GetTransform()->GetRotation() * Vector3<float>::Right * moveSpeed_ * deltaTime);
-    }
-
-    if (keyboard.KeyIsPressed('Q'))
-    {
-        GetTransform()->SetPosition(
-            position + GetTransform()->GetRotation() * Vector3<float>::Up * moveSpeed_ * deltaTime);
-    }
-
-    if (keyboard.KeyIsPressed('E'))
-    {
-        GetTransform()->SetPosition(
-            position + GetTransform()->GetRotation() * Vector3<float>::Down * moveSpeed_ * deltaTime);
-    }
-
-    const Mouse& mouse = GetActor()->GetGame()->Mouse();
-    //float deltaX = mouse.GetPosX() - lastX_;
-    //float deltaY = mouse.GetPosY() - lastY_;
-    float deltaX = 0;
-    float deltaY = 0;
-
-    if (keyboard.KeyIsPressed(VK_LEFT))
-    {
-        deltaX -= keyboardRotationSpeed_;
-    }
-    if (keyboard.KeyIsPressed(VK_RIGHT))
-    {
-        deltaX += keyboardRotationSpeed_;
-    }
-    if (keyboard.KeyIsPressed(VK_UP))
-    {
-        deltaY -= keyboardRotationSpeed_;
-    }
-    if (keyboard.KeyIsPressed(VK_DOWN))
-    {
-        deltaY += keyboardRotationSpeed_;
-    }
-
-    lastX_ = static_cast<float>(mouse.GetPosX());
-    lastY_ = static_cast<float>(mouse.GetPosY());
-
-    rotation_.x = ClampAngle(rotation_.x + deltaY * rotationSpeed_ * deltaTime, -85.0f, 85.0f);
-    rotation_.y += deltaX * rotationSpeed_ * deltaTime;
-    GetTransform()->SetRotation(Quaternion::Euler(rotation_));
 }
 
 float Camera::ClampAngle(float angle, const float min, const float max) const

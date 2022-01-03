@@ -70,10 +70,6 @@ struct BlocksEngine::Matrix : DirectX::XMFLOAT4X4
     Matrix operator+() const noexcept;
     Matrix operator-() const noexcept;
 
-    // State getters
-    [[nodiscard]] bool IsDirty() const noexcept;
-    void ConsumeIsDirty() noexcept;
-
     // Properties
     [[nodiscard]] Vector3<float> Up() const noexcept;
     void Up(const Vector3<float>& v) noexcept;
@@ -161,9 +157,6 @@ struct BlocksEngine::Matrix : DirectX::XMFLOAT4X4
 
     // Constants
     static const Matrix Identity;
-
-private:
-    bool isDirty_{true};
 };
 
 BlocksEngine::Matrix operator+(const BlocksEngine::Matrix& m1, const BlocksEngine::Matrix& m2) noexcept;
