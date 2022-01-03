@@ -126,8 +126,8 @@ Chunk::ChunkData World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
 
 std::shared_ptr<Chunk> World::CreateChunk(Chunk::ChunkCoords coords)
 {
-    const std::shared_ptr<Actor> actor = GetGame()->AddActor(
-        L"Chunk: " + std::to_wstring(coords.x) + L", " + std::to_wstring(coords.y));
+    auto name = L"Chunk: " + std::to_wstring(coords.x) + L", " + std::to_wstring(coords.y);
+    const std::shared_ptr<Actor> actor = GetGame()->AddActor(std::move(name));
     const std::shared_ptr<Chunk> chunk = actor->AddComponent<Chunk>(*this, coords);
     chunks_[coords] = chunk;
 
@@ -208,7 +208,7 @@ void World::UpdateChunks()
     {
         if (!activeChunkCoords_.contains(coords))
         {
-                chunks_[coords]->Disable();
+            chunks_[coords]->Disable();
         }
     }
 

@@ -17,6 +17,8 @@ void PlayerDebugs::Start()
 {
     SetEventTypes(EventType::Render2D);
 
+    cameraTransform_ = GetTransform()->GetChild(0);
+
     ID2D1RenderTarget& renderTarget = GetGame()->Graphics().Get2DRenderTarget();
 
     HRESULT hr;
@@ -34,7 +36,7 @@ void PlayerDebugs::Start()
             L"",
             &pTextFormat_));
 
-    pTextFormat_->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
+    pTextFormat_->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
     pTextFormat_->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 }
 
@@ -43,13 +45,21 @@ void PlayerDebugs::Draw2D()
     std::wstringstream ss;
 
     ss << std::fixed << std::setprecision(2);
-    ss << "FPS: " << GetGame()->Time().FramesPerSecond() << '\n';
-    ss << "Position: " << GetTransform()->GetPosition().x << ", " << GetTransform()->GetPosition().y << ", " <<
-        GetTransform()->GetPosition().z << '\n';
+    ss << "FPS: " << GetGame()->Time().FramesPerSecond() << "\n\n";
+    ss << "Player:\n";
+    ss << "\tPosition: " << GetTransform()->GetPosition() << '\n';
+    ss << "\tOrientation: " << GetTransform()->GetOrientation() << '\n';
+    ss << "\tRotation: " << GetTransform()->GetOrientation().EulerAngles() << "\n\n";
+    ss << "Camera:\n";
+    ss << "\tPosition: " << cameraTransform_.lock()->GetPosition() << '\n';
+    ss << "\tOrientation: " << cameraTransform_.lock()->GetOrientation() << '\n';
+    ss << "\tRotation: " << cameraTransform_.lock()->GetOrientation().EulerAngles() << '\n';
+    ss << "\tLocal Rotation: " << cameraTransform_.lock()->GetLocalOrientation().EulerAngles() << std::flush;
+
 
     const auto size = GetGame()->Graphics().Size();
     const float x = static_cast<float>(size.x);
-    const D2D1_RECT_F rect = D2D1::RectF((x - 500.0f), 0.0f, 0.0f, 200.0f);
+    const D2D1_RECT_F rect = D2D1::RectF(0.0f, 0.0f, 600.0f, 200.0f);
 
     ID2D1RenderTarget& renderTarget = GetGame()->Graphics().Get2DRenderTarget();
 

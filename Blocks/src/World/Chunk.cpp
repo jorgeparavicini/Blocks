@@ -1,9 +1,12 @@
 ﻿#include "Blocks/pch.h"
 #include "Blocks/World/Chunk.h"
 
+#include <BlocksEngine/Exceptions/EngineException.h>
+
 #include "Blocks/World/BlockRegistry.h"
 #include "Blocks/World/World.h"
 #include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Core/Components/Collider.h"
 #include "BlocksEngine/Core/Components/Renderer.h"
 #include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
 #include "BlocksEngine/Core/Math/Vector3.h"
@@ -46,7 +49,8 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
     return std::make_unique<DispatchWorkItem>([this]
     {
         std::vector<Vertex> vertices;
-        std::vector<int> indices;
+        std::vector<physx::PxVec3> colliderVertices;
+        std::vector<int32_t> indices;
 
         constexpr int dimensions[3] = {Width, SectionHeight, Depth};
 
@@ -194,6 +198,30 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
 
                             const Block& block = BlockRegistry::GetBlock(blockId);
 
+                            colliderVertices.push_back({
+                                static_cast<float>(x[0]),
+                                static_cast<float>(x[1]),
+                                static_cast<float>(x[2])
+                            });
+
+                            colliderVertices.push_back({
+                                static_cast<float>(x[0] + du[0]),
+                                static_cast<float>(x[1] + du[1]),
+                                static_cast<float>(x[2] + du[2])
+                            });
+
+                            colliderVertices.push_back({
+                                static_cast<float>(x[0] + dv[0]),
+                                static_cast<float>(x[1] + dv[1]),
+                                static_cast<float>(x[2] + dv[2])
+                            });
+
+                            colliderVertices.push_back({
+                                static_cast<float>(x[0] + du[0] + dv[0]),
+                                static_cast<float>(x[1] + du[1] + dv[1]),
+                                static_cast<float>(x[2] + du[2] + dv[2])
+                            });
+
                             int vertexCount = static_cast<int>(vertices.size());
                             vertices.push_back(Vertex{
                                 {
@@ -274,10 +302,13 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
             std::make_shared<IndexBuffer>(gfx, indices));
 
 
-        GetGame()->MainDispatchQueue()->Async(std::make_shared<DispatchWorkItem>([this, mesh]
-        {
-            renderer_->SetMesh(mesh);
-        }));
+        GetGame()->MainDispatchQueue()->Async(std::make_shared<DispatchWorkItem>(
+            [this, mesh, colliderVertices = move(colliderVertices), indices = move(indices)]
+            {
+                renderer_->SetMesh(mesh);
+
+                GetActor()->AddComponent<Collider>(std::move(colliderVertices), std::move(indices));
+            }));
     });
 }
 
@@ -334,10 +365,10 @@ void Chunk::Start()
     GetTransform()->SetPosition({static_cast<float>(coords_.x) * Width, 0, static_cast<float>(coords_.y) * Depth});
     for (int i = 0; i < SectionsPerChunk; ++i)
     {
-        const std::shared_ptr<Actor> sectorActor = GetGame()->AddActor();
         const auto sectorPosition = GetTransform()->GetPosition() + Vector3<float>{
             0, static_cast<float>(SectionHeight) * i, 0
         };
+        const std::shared_ptr<Actor> sectorActor = GetGame()->AddActor();
         sectorActor->GetTransform()->SetPosition(sectorPosition);
         sections_[i] = std::move(sectorActor->AddComponent<ChunkSection>(*this, i));
     }

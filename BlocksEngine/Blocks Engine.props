@@ -22,6 +22,10 @@
       <ObjectFileOutput>$(OutDir)resources\%(Filename).cso</ObjectFileOutput>
       <ShaderModel>4.0</ShaderModel>
     </FxCompile>
+    <Link>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

@@ -9,37 +9,65 @@
 
 #pragma once
 
+#include <boost/signals2/signal.hpp>
+
 #include "BlocksEngine/Core/Math/Matrix.h"
 #include "BlocksEngine/Core/Math/Quaternion.h"
 #include "BlocksEngine/Core/Math/Vector3.h"
 
 namespace BlocksEngine
 {
+    class Camera;
+    class Actor;
     class Transform;
 }
 
 class BlocksEngine::Transform
 {
 public:
-    explicit Transform(Vector3<float> position = Vector3<float>::Zero,
-                       Quaternion rotation = Quaternion::Identity,
-                       Vector3<float> scale = Vector3<float>::One);
+    using MoveSignal = boost::signals2::signal<void(const Vector3<float>&)>;
+    using RotateSignal = boost::signals2::signal<void(const Quaternion&)>;
 
-    [[nodiscard]] const Matrix& GetMatrix() const noexcept;
-    [[nodiscard]] const Vector3<float>& GetPosition() noexcept;
-    [[nodiscard]] const Quaternion& GetRotation() noexcept;
-    [[nodiscard]] const Vector3<float>& GetScale() noexcept;
+    explicit Transform(const Vector3<float>& position = Vector3<float>::Zero,
+                       const Quaternion& orientation = Quaternion::Identity,
+                       const Vector3<float>& scale = Vector3<float>::One);
 
-    void SetPosition(Vector3<float> position) noexcept;
-    void SetRotation(Quaternion rotation) noexcept;
-    void SetScale(Vector3<float> scale) noexcept;
+    [[nodiscard]] Matrix GetMatrix() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetPosition() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetLocalPosition() const noexcept;
+    [[nodiscard]] const Quaternion& GetOrientation() const noexcept;
+    [[nodiscard]] const Quaternion& GetLocalOrientation() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetScale() const noexcept;
+    [[nodiscard]] const Vector3<float>& GetLocalScale() const noexcept;
+    [[nodiscard]] std::weak_ptr<Transform> GetChild(size_t index) const noexcept;
 
-    void UpdateMatrix() noexcept;
+    void SetPosition(const Vector3<float>& position) noexcept;
+    void SetLocalPosition(const Vector3<float>& position) noexcept;
+    void SetOrientation(const Quaternion& orientation) noexcept;
+    void SetLocalOrientation(const Quaternion& orientation) noexcept;
+    void SetScale(const Vector3<float>& scale) noexcept;
+    void SetLocalScale(const Vector3<float>& scale) noexcept;
+
+    void SetParent(std::weak_ptr<Transform> parent);
+    void AddChild(std::weak_ptr<Transform> child);
+    void RemoveChild(Transform& transform);
+
+    [[nodiscard]] bool operator==(const Transform& transform) const noexcept;
+
+    boost::signals2::connection AddSignalOnMove(const MoveSignal::slot_type& slot) noexcept;
+    boost::signals2::connection AddSignalOnRotate(const RotateSignal::slot_type& slot) noexcept;
+
+    friend Actor;
 
 private:
     Vector3<float> position_;
-    Quaternion rotation_;
+    Quaternion orientation_;
     Vector3<float> scale_;
 
-    Matrix matrix_;
+    std::weak_ptr<Transform> parent_;
+    std::vector<std::weak_ptr<Transform>> children_{};
+
+    // Signals
+    MoveSignal moved_{};
+    RotateSignal rotated_{};
 };

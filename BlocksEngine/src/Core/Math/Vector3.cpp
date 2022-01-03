@@ -28,6 +28,26 @@ constexpr Vector3<T>::Vector3(const T x, const T y, const T z) noexcept
 {
 }*/
 
+template <typename T>
+Vector3<T>::Vector3(const physx::PxVec3& vec3) noexcept
+    : Vector3Base<T>::Base{
+        static_cast<float>(vec3.x),
+        static_cast<float>(vec3.y),
+        static_cast<float>(vec3.z)
+    }
+{
+}
+
+template <typename T>
+Vector3<T>::Vector3(const physx::PxExtendedVec3& vec3) noexcept
+    : Vector3Base<T>::Base{
+        static_cast<float>(vec3.x),
+        static_cast<float>(vec3.y),
+        static_cast<float>(vec3.z)
+    }
+{
+}
+
 template <class T>
 Vector3<T>::Vector3(_In_reads_(3) const T* pArray) noexcept
     : Vector3Base<T>::Base{pArray}

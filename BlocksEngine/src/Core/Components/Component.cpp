@@ -55,6 +55,10 @@ void Component::Draw2D()
 {
 }
 
+void Component::PhysicsUpdated()
+{
+}
+
 EventType Component::GetEventTypes() const noexcept
 {
     return eventTypes_;

@@ -39,7 +39,7 @@ void Renderer::Draw()
     {
         return;
     }
-
+    const auto t = GetActor()->GetTransform()->GetMatrix();
     const auto wvp = GetActor()->GetTransform()->GetMatrix() * GetGame()->MainCamera().WorldViewProjection();
 
     const Graphics& gfx = GetGame()->Graphics();
