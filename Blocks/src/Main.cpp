@@ -69,7 +69,7 @@ int WINAPI WinMain(
             playerActor->AddComponent<Blocks::PlayerDebugs>();
 
             const auto worldActor = game->AddActor(L"World");
-            worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 4);
+            worldActor->AddComponent<Blocks::World>(game->MainCamera().GetTransform(), 10);
         });
         return game->Start();
     }
