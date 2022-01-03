@@ -102,6 +102,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
@@ -128,6 +129,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
@@ -148,6 +150,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
@@ -172,6 +175,7 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
@@ -179,6 +183,29 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_C.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Config.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Export.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\BasicGenerators.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Blends.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Cellular.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarp.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarpFractal.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Fractal.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Generator.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Modifiers.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Perlin.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Simplex.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Value.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Metadata.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\SmartNode.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Config.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Export.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FunctionList.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\InlInclude.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\SIMDTypeList.h" />
     <ClInclude Include="external\robin_hood\include\robin_hood.h" />
     <ClInclude Include="include\Blocks\World\Chunk.h" />
     <ClInclude Include="include\Blocks\pch.h" />
@@ -212,9 +239,14 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks.props" />
+    <CopyFileToFolders Include="external\FastNoise2\lib\FastNoise.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\stone.png" />
+    <Image Include="..\..\..\..\terrain2.dds" />
     <Image Include="resources\images\dirt.png" />
     <Image Include="resources\images\dirt_2.png" />
     <Image Include="resources\images\grass.png" />
@@ -222,6 +254,9 @@ xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="external\FastNoise2\lib\FastNoise.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

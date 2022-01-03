@@ -48,12 +48,12 @@ public:
      * \brief Each chunk is split into multiple sections stacked on top of each other.
      * The SectionHeight indicates the nr of blocks per section on the Y axis
      */
-    static constexpr int SectionHeight = 16;
+    static constexpr int SectionHeight = 48;
 
     /**
      * \brief The number of sections to stack on top of each other per chunk
      */
-    static constexpr int SectionsPerChunk = 2;
+    static constexpr int SectionsPerChunk = 1;
 
     /**
      * \brief The total number of blocks in a chunk on the Y axis

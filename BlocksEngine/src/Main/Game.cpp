@@ -59,6 +59,7 @@ void Game::Initialize()
     //Graphics().GetContext().RSSetState(rasterizer.Get());
 }
 
+
 void Game::CreateLogger()
 {
     // TODO: We need a logging abstraction. For now this will do, but in the future i don't want to need to call BOOST_*

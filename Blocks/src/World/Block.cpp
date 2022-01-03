@@ -78,3 +78,24 @@ const Blocks::Block Blocks::Block::Grass = {
     },
     false
 };
+
+const Blocks::Block Blocks::Block::Stone = {
+    3,
+    {
+        {
+            // Front
+            4,
+            // Left
+            4,
+            // Back
+            4,
+            // Right
+            4,
+            // Top
+            3,
+            // Bottom
+            3
+        }
+    },
+    false
+};

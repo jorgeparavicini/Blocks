@@ -3,6 +3,7 @@
 
 #include <shared_mutex>
 #include <boost/log/trivial.hpp>
+#include <FastNoise/FastNoise.h>
 
 #include "BlocksEngine/Core/Actor.h"
 #include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
@@ -26,7 +27,7 @@ void World::Start()
     GenerateWorld();
 
     // Comment this to show a loading screen whilst world is loading.
-    loadingScreen_->LevelLoaded();
+    //loadingScreen_->LevelLoaded();
 }
 
 void World::Update()
@@ -105,8 +106,20 @@ void World::OnWorldGenerated()
     meshRequestGroup->Execute();
 }
 
-Chunk::ChunkData World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
+Chunk::ChunkData World::GenerateChunk(const std::shared_ptr<Chunk> chunk) const
 {
+    auto fnPerlin = FastNoise::New<FastNoise::Perlin>();
+
+    const Chunk::ChunkCoords coords = chunk->GetCoords();
+    std::vector<float> noiseOutput(Chunk::Width * Chunk::Depth);
+    fnPerlin->GenUniformGrid2D(noiseOutput.data(), coords.x * Chunk::Width, coords.y * Chunk::Depth, Chunk::Width,
+                               Chunk::Depth, 0.04f, 48295);
+    //fnPerlin->GenUniformGrid3D(noiseOutput.data(), 0, 0, 0, 16, 16, 16, 0.2f, 1337);
+
+
+    constexpr int center = 25;
+    constexpr int delta = 20;
+
     auto blocks = std::vector<uint8_t>(Chunk::Size);
     for (int i = 0; i < Chunk::Width; i++)
     {
@@ -114,10 +127,16 @@ Chunk::ChunkData World::GenerateChunk(std::shared_ptr<Chunk> chunk) const
         {
             for (int k = 0; k < Chunk::Depth; k++)
             {
-                const int y = static_cast<int>(std::round(
-                    3.0 * std::sin(Math::Pi * i / 12.0 - Math::Pi * k * 0.1) + 20.0));
-
-                blocks[Chunk::GetFlatIndex(i, j, k)] = j < y ? (j == y - 1 ? 2 : 1) : 0;
+                const int targetHeight = center + static_cast<int>(
+                    std::round(noiseOutput[k * Chunk::Depth + i] * delta));
+                if (targetHeight > 17)
+                {
+                    blocks[Chunk::GetFlatIndex(i, j, k)] = j < targetHeight ? (j == targetHeight - 1 ? 2 : 1) : 0;
+                }
+                else
+                {
+                    blocks[Chunk::GetFlatIndex(i, j, k)] = j < targetHeight ? 3 : 0;
+                }
             }
         }
     }

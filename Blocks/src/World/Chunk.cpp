@@ -58,7 +58,7 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
         {
             for (int j = 0; j < dimensions[1]; ++j)
             {
-                for (int k = 0; j < dimensions[2]; ++k)
+                for (int k = 0; k < dimensions[2]; ++k)
                 {
                     if (GetBlock({i, j, k}) != Block::Air)
                     {

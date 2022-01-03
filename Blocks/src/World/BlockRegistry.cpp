@@ -29,7 +29,8 @@ Blocks::BlockRegistry::BlockRegistry():
         {
             {Block::Air.GetId(), Block::Air},
             {Block::Dirt.GetId(), Block::Dirt},
-            {Block::Grass.GetId(), Block::Grass}
+            {Block::Grass.GetId(), Block::Grass},
+            {Block::Stone.GetId(), Block::Stone}
         }
     }
 {
