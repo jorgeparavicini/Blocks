@@ -62,7 +62,7 @@ int WINAPI WinMain(
             playerActor->GetTransform()->AddChild(cameraActor->GetTransform());
             cameraActor->GetTransform()->SetParent(playerActor->GetTransform());
 
-            playerActor->GetTransform()->SetPosition({0, 30, 0});
+            playerActor->GetTransform()->SetPosition({0, 50, 0});
             cameraActor->GetTransform()->SetLocalPosition({0, 1, 0});
             cameraActor->AddComponent<Blocks::PlayerMovement>(std::move(characterController));
 
