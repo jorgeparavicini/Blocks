@@ -303,7 +303,8 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
 
 
         GetGame()->MainDispatchQueue()->Async(std::make_shared<DispatchWorkItem>(
-            [this, mesh, colliderVertices = move(colliderVertices), indices = move(indices)]
+            [this, mesh, colliderVertices = move(colliderVertices), indices = move(indices)]()
+        mutable
             {
                 renderer_->SetMesh(mesh);
 
