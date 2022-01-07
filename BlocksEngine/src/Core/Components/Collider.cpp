@@ -60,7 +60,7 @@ void Collider::Start()
         const auto shape = physics.GetPhysics().createShape(triGeom, physics.DefaultMaterial());
 
         actor_->attachShape(*shape);
-        shape->release();
+        //shape->release();
     });
 
     DispatchQueue::Background()->Async(workItem);

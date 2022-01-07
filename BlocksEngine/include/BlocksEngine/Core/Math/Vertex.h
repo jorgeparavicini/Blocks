@@ -15,13 +15,9 @@ namespace BlocksEngine
 {
     struct Vertex
     {
-        DirectX::XMFLOAT3 pos;
-
-        struct
-        {
-            float u;
-            float v;
-        } tex;
+        Vector3<float> pos;
+        Vector2<float> texCoord;
+        Vector3<float> normal;
 
         unsigned int texIndex;
     };

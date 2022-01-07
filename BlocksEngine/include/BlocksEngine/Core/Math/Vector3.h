@@ -11,7 +11,7 @@
 
 #include <DirectXMath.h>
 #include <iostream>
-#include <foundation/PxVec3.h>
+#include <PxPhysicsAPI.h>
 
 #include "BlocksEngine/Core/Math/Math.h"
 
@@ -184,7 +184,13 @@ struct BlocksEngine::Vector3 : Vector3Base<T>::Base
     [[nodiscard]] float Dot(const Vector3<U>& v) const noexcept;
 
     template <class U>
-    void Cross(const Vector3<U>& v, Vector3<T>& result) const noexcept;
+    void Cross(const Vector3<U>& v, Vector3<T>& result) const noexcept
+    {
+        const DirectX::XMVECTOR v1 = Load(this);
+        const DirectX::XMVECTOR v2 = Load(&v);
+        const DirectX::XMVECTOR x = DirectX::XMVector3Cross(v1, v2);
+        Store(&result, x);
+    }
 
     template <class U>
     [[nodiscard]] Vector3<T> Cross(const Vector3<U>& v) const noexcept;

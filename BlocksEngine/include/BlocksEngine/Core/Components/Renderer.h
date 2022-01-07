@@ -12,14 +12,23 @@
 #include <DirectXMath.h>
 
 #include "BlocksEngine/Core/Components/Component.h"
+#include "BlocksEngine/Graphics/PixelConstantBuffers.h"
 #include "BlocksEngine/Graphics/VertexConstantBuffer.h"
+#include "BlocksEngine/Graphics/Material/Light.h"
 #include "BlocksEngine/Graphics/Material/Material.h"
 #include "BlocksEngine/Graphics/Mesh/Mesh.h"
 
 namespace BlocksEngine
 {
+    struct CBPerObject;
     class Renderer;
 }
+
+struct BlocksEngine::CBPerObject
+{
+    DirectX::XMMATRIX wvp;
+    DirectX::XMMATRIX world;
+};
 
 class BlocksEngine::Renderer final : public Component
 {
@@ -36,5 +45,7 @@ public:
 private:
     std::shared_ptr<Material> pMaterial_;
     std::shared_ptr<Mesh> pMesh_;
-    std::shared_ptr<VertexConstantBuffer<DirectX::XMMATRIX>> pConstantBuffer_;
+    std::shared_ptr<VertexConstantBuffer<CBPerObject>> pConstantBuffer_;
+
+    inline static std::unique_ptr<PixelConstantBuffer<Light>> lightBuffer_{nullptr};
 };

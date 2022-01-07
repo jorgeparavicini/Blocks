@@ -765,6 +765,9 @@
     <ClInclude Include="include\BlocksEngine\Core\Components\Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

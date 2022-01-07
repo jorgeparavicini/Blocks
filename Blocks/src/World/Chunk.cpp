@@ -230,6 +230,7 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
                                     static_cast<float>(x[2])
                                 },
                                 {static_cast<float>(flipUvs ? 0 : uv[1]), static_cast<float>(uv[0])},
+                                {0, 0, 0},
                                 block.GetTextures()[faceId]
                             });
 
@@ -240,6 +241,7 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
                                     static_cast<float>(x[2] + du[2])
                                 },
                                 {static_cast<float>(0), static_cast<float>(flipUvs ? 0 : uv[0])},
+                                {0, 0, 0},
                                 block.GetTextures()[faceId]
                             });
 
@@ -250,6 +252,7 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
                                     static_cast<float>(x[2] + dv[2])
                                 },
                                 {static_cast<float>(uv[1]), static_cast<float>(flipUvs ? uv[0] : 0)},
+                                {0, 0, 0},
                                 block.GetTextures()[faceId]
                             });
 
@@ -260,6 +263,7 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
                                     static_cast<float>(x[2] + du[2] + dv[2])
                                 },
                                 {static_cast<float>(flipUvs ? uv[1] : 0), static_cast<float>(0)},
+                                {0, 0, 0},
                                 block.GetTextures()[faceId]
                             });
 
@@ -293,6 +297,24 @@ std::unique_ptr<DispatchWorkItem> Chunk::ChunkSection::RegenerateMesh()
                     }
                 }
             }
+        }
+
+        for (size_t i = 0; i < indices.size(); i += 3)
+        {
+            const auto v1 = vertices[indices[i + 1]].pos - vertices[indices[i]].pos;
+            const auto v2 = vertices[indices[i + 2]].pos - vertices[indices[i]].pos;
+            Vector3<float> faceNormal;
+            v2.Cross(v1, faceNormal);
+            faceNormal.Normalize();
+
+            vertices[indices[i]].normal += faceNormal;
+            vertices[indices[i + 1]].normal += faceNormal;
+            vertices[indices[i + 2]].normal += faceNormal;
+        }
+
+        for (size_t i = 0; i < indices.size(); ++i)
+        {
+            vertices[indices[i]].normal.Normalize();
         }
 
         const Graphics& gfx = GetGame()->Graphics();

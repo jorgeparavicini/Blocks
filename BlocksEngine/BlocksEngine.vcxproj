@@ -214,6 +214,7 @@
     <ClInclude Include="include\BlocksEngine\Core\Components\CharacterController.h" />
     <ClInclude Include="include\BlocksEngine\Core\Components\Collider.h" />
     <ClInclude Include="include\BlocksEngine\Core\Entity.h" />
+    <ClInclude Include="include\BlocksEngine\Graphics\Material\Light.h" />
     <ClInclude Include="include\BlocksEngine\Utility\Concepts.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\Material\ConstantBuffer.h" />
     <ClInclude Include="include\BlocksEngine\Graphics\ConstantBufferBase.h" />

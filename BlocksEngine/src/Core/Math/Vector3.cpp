@@ -235,16 +235,6 @@ float Vector3<T>::Dot(const Vector3<U>& v) const noexcept
 
 template <class T>
 template <class U>
-void Vector3<T>::Cross(const Vector3<U>& v, Vector3<T>& result) const noexcept
-{
-    const XMVECTOR v1 = Load(this);
-    const XMVECTOR v2 = Load(&v);
-    const XMVECTOR x = XMVector3Cross(v1, v2);
-    Store(&result, x);
-}
-
-template <class T>
-template <class U>
 Vector3<T> Vector3<T>::Cross(const Vector3<U>& v) const noexcept
 {
     const XMVECTOR v1 = Load(this);

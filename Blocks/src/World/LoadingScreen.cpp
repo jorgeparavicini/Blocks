@@ -11,6 +11,8 @@ using namespace Blocks;
 
 void LoadingScreen::Start()
 {
+    SetEventTypes(EventType::Render2D);
+
     ID2D1RenderTarget& renderTarget = GetGame()->Graphics().Get2DRenderTarget();
     HRESULT hr;
     GFX_THROW_INFO(renderTarget.CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::AliceBlue, 1.0f), &pBrush_));

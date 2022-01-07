@@ -5,7 +5,10 @@
 #include <boost/log/trivial.hpp>
 #include <FastNoise/FastNoise.h>
 
+#include "Blocks/Player/PlayerDebugs.h"
+#include "Blocks/Player/PlayerMovement.h"
 #include "BlocksEngine/Core/Actor.h"
+#include "BlocksEngine/Core/Components/CharacterController.h"
 #include "BlocksEngine/Core/Dispatch/DispatchQueue.h"
 #include "BlocksEngine/Core/Dispatch/DispatchWorkGroup.h"
 #include "BlocksEngine/Main/Game.h"
@@ -190,6 +193,24 @@ void World::OnWorldLoaded() const
 {
     BOOST_LOG_TRIVIAL(info) << "World successfully loaded";
     loadingScreen_->LevelLoaded();
+
+    const auto game = GetGame();
+
+    const auto playerActor = game->AddActor(L"Player");
+
+    auto characterController = playerActor->AddComponent<CharacterController>();
+
+    const auto cameraActor = game->MainCamera().GetActor();
+
+    // TODO: We shouldn't have to specify both
+    playerActor->GetTransform()->AddChild(cameraActor->GetTransform());
+    cameraActor->GetTransform()->SetParent(playerActor->GetTransform());
+
+    playerActor->GetTransform()->SetPosition({0, 30, 0});
+    cameraActor->GetTransform()->SetLocalPosition({0, 1, 0});
+    cameraActor->AddComponent<PlayerMovement>(std::move(characterController));
+
+    playerActor->AddComponent<PlayerDebugs>();
 }
 
 void World::UpdateChunks()

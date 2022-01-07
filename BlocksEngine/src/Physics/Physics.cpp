@@ -18,7 +18,7 @@ Physics::Physics(const bool recordMemoryAllocations, const bool connectVisualDeb
     {
         pvd_ = PxCreatePvd(*foundation_);
         physx::PxPvdTransport* transport = physx::PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
-        pvd_->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
+        //pvd_->connect(*transport, physx::PxPvdInstrumentationFlag::eALL);
     }
 
     physics_ = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation_, physx::PxTolerancesScale(), recordMemoryAllocations,
