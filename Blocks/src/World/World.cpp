@@ -111,7 +111,7 @@ void World::OnWorldGenerated()
 
 Chunk::ChunkData World::GenerateChunk(const std::shared_ptr<Chunk> chunk) const
 {
-    auto fnPerlin = FastNoise::New<FastNoise::Perlin>();
+    const auto fnPerlin = FastNoise::New<FastNoise::Perlin>();
 
     const Chunk::ChunkCoords coords = chunk->GetCoords();
     std::vector<float> noiseOutput(Chunk::Width * Chunk::Depth);
@@ -120,9 +120,6 @@ Chunk::ChunkData World::GenerateChunk(const std::shared_ptr<Chunk> chunk) const
     //fnPerlin->GenUniformGrid3D(noiseOutput.data(), 0, 0, 0, 16, 16, 16, 0.2f, 1337);
 
 
-    constexpr int center = 25;
-    constexpr int delta = 20;
-
     auto blocks = std::vector<uint8_t>(Chunk::Size);
     for (int i = 0; i < Chunk::Width; i++)
     {
@@ -130,6 +127,8 @@ Chunk::ChunkData World::GenerateChunk(const std::shared_ptr<Chunk> chunk) const
         {
             for (int k = 0; k < Chunk::Depth; k++)
             {
+                constexpr int delta = 20;
+                constexpr int center = 25;
                 const int targetHeight = center + static_cast<int>(
                     std::round(noiseOutput[k * Chunk::Depth + i] * delta));
                 if (targetHeight > 17)
