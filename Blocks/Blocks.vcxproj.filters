@@ -14,4 +14,163 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Blocks\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\World\Block.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\World\Chunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\World\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\World\BlockRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\World\LoadingScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\Player\PlayerDebugs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\robin_hood\include\robin_hood.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_C.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Export.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Metadata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\SmartNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\BasicGenerators.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Blends.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Cellular.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarpFractal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Fractal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Modifiers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Perlin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Simplex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Export.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FunctionList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\InlInclude.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\SIMDTypeList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Blocks\Player\PlayerMovement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\Block.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\Chunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\BlockRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\LoadingScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\PlayerDebugs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\PlayerMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Blocks.props" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\images\dirt.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\images\dirt_2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\images\terrain.dds" />
+    <Image Include="resources\images\grass.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\stone.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\terrain2.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="external\FastNoise2\lib\FastNoise.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="external\FastNoise2\lib\FastNoise.lib" />
+  </ItemGroup>
 </Project>

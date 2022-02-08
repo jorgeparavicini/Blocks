@@ -59,15 +59,19 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Blocks.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Blocks.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Blocks.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Blocks.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -84,66 +88,202 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
+xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
+xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
+xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FastNoise.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(PlatformShortName)\$(Configuration)\resources\*" "$(OutDir)resources\" /Y /I /E
+xcopy "$(ProjectDir)resources\*" "$(OutDir)resources\" /Y /I /E /S</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Blocks.Engine\Blocks.Engine.vcxproj">
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_C.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Config.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\FastNoise_Export.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\BasicGenerators.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Blends.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Cellular.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarp.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\DomainWarpFractal.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Fractal.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Generator.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Modifiers.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Perlin.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Simplex.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Generators\Value.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\Metadata.h" />
+    <ClInclude Include="external\FastNoise2\include\FastNoise\SmartNode.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Config.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FastSIMD_Export.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\FunctionList.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\InlInclude.h" />
+    <ClInclude Include="external\FastNoise2\include\FastSIMD\SIMDTypeList.h" />
+    <ClInclude Include="external\robin_hood\include\robin_hood.h" />
+    <ClInclude Include="include\Blocks\World\Chunk.h" />
+    <ClInclude Include="include\Blocks\pch.h" />
+    <ClInclude Include="include\Blocks\World\Block.h" />
+    <ClInclude Include="include\Blocks\World\World.h" />
+    <ClInclude Include="include\Blocks\World\BlockRegistry.h" />
+    <ClInclude Include="include\Blocks\World\LoadingScreen.h" />
+    <ClInclude Include="include\Blocks\Player\PlayerDebugs.h" />
+    <ClInclude Include="include\Blocks\Player\PlayerMovement.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Player\PlayerDebugs.cpp" />
+    <ClCompile Include="src\Player\PlayerMovement.cpp" />
+    <ClCompile Include="src\World\BlockRegistry.cpp" />
+    <ClCompile Include="src\World\Chunk.cpp" />
+    <ClCompile Include="src\World\Block.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\World\LoadingScreen.cpp" />
+    <ClCompile Include="src\World\World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlocksEngine\BlocksEngine.vcxproj">
       <Project>{367a269f-7c6e-4222-aac9-8a56b436cfef}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Blocks.props" />
+    <CopyFileToFolders Include="external\FastNoise2\lib\FastNoise.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\stone.png" />
+    <Image Include="..\..\..\..\terrain2.dds" />
+    <Image Include="resources\images\dirt.png" />
+    <Image Include="resources\images\dirt_2.png" />
+    <Image Include="resources\images\grass.png" />
+    <Image Include="resources\images\terrain.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="external\FastNoise2\lib\FastNoise.lib" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\boost.1.77.0.0\build\boost.targets" Condition="Exists('..\packages\boost.1.77.0.0\build\boost.targets')" />
+    <Import Project="..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets" Condition="Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" />
+    <Import Project="..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets" Condition="Exists('..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets')" />
+    <Import Project="..\packages\boost_log-vc142.1.77.0.0\build\boost_log-vc142.targets" Condition="Exists('..\packages\boost_log-vc142.1.77.0.0\build\boost_log-vc142.targets')" />
+    <Import Project="..\packages\boost_filesystem-vc142.1.77.0.0\build\boost_filesystem-vc142.targets" Condition="Exists('..\packages\boost_filesystem-vc142.1.77.0.0\build\boost_filesystem-vc142.targets')" />
+    <Import Project="..\packages\boost_date_time-vc142.1.77.0.0\build\boost_date_time-vc142.targets" Condition="Exists('..\packages\boost_date_time-vc142.1.77.0.0\build\boost_date_time-vc142.targets')" />
+    <Import Project="..\packages\boost_thread-vc142.1.77.0.0\build\boost_thread-vc142.targets" Condition="Exists('..\packages\boost_thread-vc142.1.77.0.0\build\boost_thread-vc142.targets')" />
+    <Import Project="..\packages\boost_log_setup-vc142.1.77.0.0\build\boost_log_setup-vc142.targets" Condition="Exists('..\packages\boost_log_setup-vc142.1.77.0.0\build\boost_log_setup-vc142.targets')" />
+    <Import Project="..\packages\boost_chrono-vc142.1.77.0.0\build\boost_chrono-vc142.targets" Condition="Exists('..\packages\boost_chrono-vc142.1.77.0.0\build\boost_chrono-vc142.targets')" />
+    <Import Project="..\packages\boost_atomic-vc142.1.77.0.0\build\boost_atomic-vc142.targets" Condition="Exists('..\packages\boost_atomic-vc142.1.77.0.0\build\boost_atomic-vc142.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\boost.1.77.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.77.0.0\build\boost.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.XAudio2.Redist.1.2.8\build\native\Microsoft.XAudio2.Redist.targets'))" />
+    <Error Condition="!Exists('..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_desktop_2017.2021.10.19.1\build\native\directxtk_desktop_2017.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_log-vc142.1.77.0.0\build\boost_log-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_log-vc142.1.77.0.0\build\boost_log-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_filesystem-vc142.1.77.0.0\build\boost_filesystem-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_filesystem-vc142.1.77.0.0\build\boost_filesystem-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_date_time-vc142.1.77.0.0\build\boost_date_time-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_date_time-vc142.1.77.0.0\build\boost_date_time-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_thread-vc142.1.77.0.0\build\boost_thread-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_thread-vc142.1.77.0.0\build\boost_thread-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_log_setup-vc142.1.77.0.0\build\boost_log_setup-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_log_setup-vc142.1.77.0.0\build\boost_log_setup-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_chrono-vc142.1.77.0.0\build\boost_chrono-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_chrono-vc142.1.77.0.0\build\boost_chrono-vc142.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_atomic-vc142.1.77.0.0\build\boost_atomic-vc142.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_atomic-vc142.1.77.0.0\build\boost_atomic-vc142.targets'))" />
+  </Target>
 </Project>

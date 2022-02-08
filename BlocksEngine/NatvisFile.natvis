@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="BlocksEngine::Vector3">
+		<DisplayString>{{x = {x}, y = {y}, z = {z}}</DisplayString>
+	</Type>
+	<Type Name="BlocksEngine::Actor">
+		<DisplayString>{{ {name_} - Actor }}</DisplayString>
+	</Type>
+</AutoVisualizer>
